@@ -7,6 +7,8 @@ import * as vscode from 'vscode';
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
+    var outputChannel :vscode.OutputChannel;
+
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "wandbox-vscode" is now active!');
@@ -23,10 +25,24 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(disposable);
 
     context.subscriptions.push(
-        vscode.commands.registerCommand('extension.invokeWandbox', () => {
-            var outputChannel = vscode.window.createOutputChannel('Wandbox');
+        vscode.commands.registerCommand('extension.invokeWandbox', (args :any[]) => {
+            if (!outputChannel) {
+                outputChannel = vscode.window.createOutputChannel('Wandbox');
+            }
             outputChannel.show();
             outputChannel.appendLine('Bow-wow!');
+
+            args && args.forEach(arg => {
+                outputChannel.appendLine('arg: ' +arg);
+            });
+
+            var activeTextEditor = vscode.window.activeTextEditor;
+            if (null !== activeTextEditor)
+            {
+                outputChannel.appendLine('fileName: ' +activeTextEditor.document.fileName);
+                outputChannel.appendLine('text: ' +activeTextEditor.document.getText());
+                outputChannel.appendLine('languageId: ' +activeTextEditor.document.languageId);
+            }
         })
     );
 }
