@@ -24,7 +24,9 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(
         vscode.commands.registerCommand('extension.invokeWandbox', () => {
-            vscode.window.showInformationMessage('Bow-wow!');
+            var outputChannel = vscode.window.createOutputChannel('Wandbox');
+            outputChannel.show();
+            outputChannel.appendLine('Bow-wow!');
         })
     );
 }
