@@ -26,6 +26,22 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(disposable);
 
     context.subscriptions.push(
+        vscode.commands.registerCommand('extension.getWandboxList', () => {
+            if (!outputChannel) {
+                outputChannel = vscode.window.createOutputChannel('Wandbox');
+            }
+            outputChannel.show();
+            outputChannel.appendLine('Bow-wow!');
+
+            request.get('http://melpon.org/wandbox/api/list.json', function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                outputChannel.append(body) // Show the HTML for the Google homepage. 
+                outputChannel.appendLine('');
+            }
+            });
+        })
+    );
+    context.subscriptions.push(
         vscode.commands.registerCommand('extension.invokeWandbox', (args :any[]) => {
             if (!outputChannel) {
                 outputChannel = vscode.window.createOutputChannel('Wandbox');
@@ -44,12 +60,6 @@ export function activate(context: vscode.ExtensionContext) {
                 outputChannel.appendLine('text: ' +activeTextEditor.document.getText());
                 outputChannel.appendLine('languageId: ' +activeTextEditor.document.languageId);
             }
-            
-            request.get('http://melpon.org/wandbox/api/list.json', function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-                outputChannel.append(body) // Show the HTML for the Google homepage. 
-            }
-            })
         })
     );
 }
