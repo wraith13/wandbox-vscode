@@ -31,12 +31,17 @@ export function activate(context: vscode.ExtensionContext) {
                 outputChannel = vscode.window.createOutputChannel('Wandbox');
             }
             outputChannel.show();
-            outputChannel.appendLine('Bow-wow!');
+            outputChannel.appendLine('Bow-wow! ' + new Date().toString());
 
+            outputChannel.appendLine('HTTP GET http://melpon.org/wandbox/api/list.json');
             request.get('http://melpon.org/wandbox/api/list.json', function (error, response, body) {
             if (!error && response.statusCode == 200) {
-                outputChannel.append(body) // Show the HTML for the Google homepage. 
+                outputChannel.append(JSON.stringify(JSON.parse(body), null, 4));
                 outputChannel.appendLine('');
+            } else if (response.statusCode) {
+                outputChannel.appendLine('statusCode: ' +response.statusCode);
+            } else {
+                outputChannel.appendLine('error: ' +error);
             }
             });
         })
@@ -47,7 +52,7 @@ export function activate(context: vscode.ExtensionContext) {
                 outputChannel = vscode.window.createOutputChannel('Wandbox');
             }
             outputChannel.show();
-            outputChannel.appendLine('Bow-wow!');
+            outputChannel.appendLine('Bow-wow! ' + new Date().toString());
 
             args && args.forEach(arg => {
                 outputChannel.appendLine('arg: ' +arg);
