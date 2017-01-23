@@ -31,13 +31,29 @@ export function activate(context: vscode.ExtensionContext) {
                 outputChannel = vscode.window.createOutputChannel('Wandbox');
             }
             outputChannel.show();
+            outputChannel.appendLine('');
             outputChannel.appendLine('Bow-wow! ' + new Date().toString());
 
             outputChannel.appendLine('HTTP GET http://melpon.org/wandbox/api/list.json');
             request.get('http://melpon.org/wandbox/api/list.json', function (error, response, body) {
             if (!error && response.statusCode == 200) {
-                outputChannel.append(JSON.stringify(JSON.parse(body), null, 4));
-                outputChannel.appendLine('');
+                var provider = vscode.workspace.registerTextDocumentContentProvider
+                (
+                    'wandbox-list-json',
+                    new class implements vscode.TextDocumentContentProvider {
+                        onDidChange?: vscode.Event<vscode.Uri>;
+                        provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): string | Thenable<string>
+                        {
+                            return JSON.stringify(JSON.parse(body), null, 4);
+                        }
+                    }
+                );
+                vscode.workspace.openTextDocument(vscode.Uri.parse('wandbox-list-json://melpon.org/wandbox-api-list.json')).then(
+                    (value: vscode.TextDocument)=>{
+                        vscode.window.showTextDocument(value);
+                        provider.dispose();
+                    }
+                )
             } else if (response.statusCode) {
                 outputChannel.appendLine('statusCode: ' +response.statusCode);
             } else {
@@ -52,6 +68,7 @@ export function activate(context: vscode.ExtensionContext) {
                 outputChannel = vscode.window.createOutputChannel('Wandbox');
             }
             outputChannel.show();
+            outputChannel.appendLine('');
             outputChannel.appendLine('Bow-wow! ' + new Date().toString());
 
             args && args.forEach(arg => {
