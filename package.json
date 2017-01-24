@@ -19,9 +19,6 @@
     "main": "./out/src/extension",
     "contributes": {
         "commands": [{
-            "command": "extension.sayHello",
-            "title": "Hello World"
-        },{
             "command": "extension.openWandboxWeb",
             "title": "Wandbox Web"
         },{

@@ -8,7 +8,6 @@ import * as request from 'request';
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext)
 {
-
     var outputChannel :vscode.OutputChannel;
     var makeSureOutputChannel = () =>
     {
@@ -26,6 +25,42 @@ export function activate(context: vscode.ExtensionContext)
     {
         outputChannel.show();
         outputChannel.appendLine('Bow-wow! ' + new Date().toString());
+    }
+    var getList = (callback : (string) => void) =>
+    {
+        outputChannel.appendLine('HTTP GET http://melpon.org/wandbox/api/list.json?from=wandbox-vscode');
+        var result = request.get
+        (
+            'http://melpon.org/wandbox/api/list.json?from=wandbox-vscode',
+            function(error, response, body)
+            {
+                if (!error && response.statusCode == 200)
+                {
+                    callback(body);
+                }
+                else
+                if (response.statusCode)
+                {
+                    outputChannel.appendLine('statusCode: ' +response.statusCode);
+                }
+                else
+                {
+                    outputChannel.appendLine('error: ' +error);
+                }
+            }
+        );
+    }
+    var list;
+    var makeSureList = (callback : (any) => void) =>
+    {
+        if (!list)
+        {
+            getList(body => callback(list = JSON.parse(body)));
+        }
+        else
+        {
+            callback(list);
+        }
     }
 
     // Use the console to output diagnostic information (console.log) and errors (console.error)
@@ -57,30 +92,12 @@ export function activate(context: vscode.ExtensionContext)
                 makeSureOutputChannel();
                 bowWow();
 
-                outputChannel.appendLine('HTTP GET http://melpon.org/wandbox/api/list.json?from=wandbox-vscode');
-                request.get
+                makeSureList
                 (
-                    'http://melpon.org/wandbox/api/list.json',
-                    function (error, response, body)
-                    {
-                        if (!error && response.statusCode == 200)
-                        {
-                            var list = JSON.parse(body);
-                            list && list.forEach
-                            (
-                                item => outputChannel.appendLine(item.name +'\t' +item.language)
-                            );
-                        }
-                        else
-                        if (response.statusCode)
-                        {
-                            outputChannel.appendLine('statusCode: ' +response.statusCode);
-                        }
-                        else
-                        {
-                            outputChannel.appendLine('error: ' +error);
-                        }
-                    }
+                    list => list && list.forEach
+                    (
+                        item => outputChannel.appendLine(item.name +'\t' +item.language)
+                    )
                 );
             }
         )
@@ -95,48 +112,35 @@ export function activate(context: vscode.ExtensionContext)
                 makeSureOutputChannel();
                 bowWow();
 
-                outputChannel.appendLine('HTTP GET http://melpon.org/wandbox/api/list.json?from=wandbox-vscode');
-                request.get
+                getList
                 (
-                    'http://melpon.org/wandbox/api/list.json',
-                    function (error, response, body)
+                    body =>
                     {
-                        if (!error && response.statusCode == 200)
-                        {
-                            var provider = vscode.workspace.registerTextDocumentContentProvider
-                            (
-                                'wandbox-list-json',
-                                new class implements vscode.TextDocumentContentProvider
+                        list = JSON.parse(body);
+                        var provider = vscode.workspace.registerTextDocumentContentProvider
+                        (
+                            'wandbox-list-json',
+                            new class implements vscode.TextDocumentContentProvider
+                            {
+                                provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken)
+                                    : string | Thenable<string>
                                 {
-                                    provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken)
-                                        : string | Thenable<string>
-                                    {
-                                        return JSON.stringify(JSON.parse(body), null, 4);
-                                    }
+                                    return JSON.stringify(list, null, 4);
                                 }
-                            );
-                            vscode.workspace.openTextDocument
-                            (
-                                vscode.Uri.parse('wandbox-list-json://melpon.org/wandbox-api-list.json')
-                            )
-                            .then
-                            (
-                                (value: vscode.TextDocument) =>
-                                {
-                                    vscode.window.showTextDocument(value);
-                                    provider.dispose();
-                                }
-                            );
-                        }
-                        else
-                        if (response.statusCode)
-                        {
-                            outputChannel.appendLine('statusCode: ' +response.statusCode);
-                        }
-                        else
-                        {
-                            outputChannel.appendLine('error: ' +error);
-                        }
+                            }
+                        );
+                        vscode.workspace.openTextDocument
+                        (
+                            vscode.Uri.parse('wandbox-list-json://melpon.org/wandbox-api-list.json')
+                        )
+                        .then
+                        (
+                            (value: vscode.TextDocument) =>
+                            {
+                                vscode.window.showTextDocument(value);
+                                provider.dispose();
+                            }
+                        );
                     }
                 );
             }
