@@ -11,7 +11,7 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.sayHello",
+        "onCommand:extension.openWandboxWeb",
         "onCommand:extension.getWandboxList",
         "onCommand:extension.invokeWandbox"
     ],
@@ -20,6 +20,9 @@
         "commands": [{
             "command": "extension.sayHello",
             "title": "Hello World"
+        },{
+            "command": "extension.openWandboxWeb",
+            "title": "Wandbox Web"
         },{
             "command": "extension.getWandboxList",
             "title": "Wandbox List"
