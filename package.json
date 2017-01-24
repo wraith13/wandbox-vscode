@@ -13,6 +13,7 @@
     "activationEvents": [
         "onCommand:extension.openWandboxWeb",
         "onCommand:extension.getWandboxList",
+        "onCommand:extension.showWandboxItem",
         "onCommand:extension.showWandboxListJson",
         "onCommand:extension.invokeWandbox"
     ],
@@ -20,13 +21,16 @@
     "contributes": {
         "commands": [{
             "command": "extension.openWandboxWeb",
-            "title": "Wandbox Web"
+            "title": "Wandbox: Web"
         },{
             "command": "extension.getWandboxList",
-            "title": "Wandbox List"
+            "title": "Wandbox: List"
+        },{
+            "command": "extension.showWandboxItem",
+            "title": "Wandbox: Show"
         },{
             "command": "extension.showWandboxListJson",
-            "title": "Wandbox List Raw"
+            "title": "Wandbox: List Raw"
         },{
             "command": "extension.invokeWandbox",
             "title": "Wandbox"
