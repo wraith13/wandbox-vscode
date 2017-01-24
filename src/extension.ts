@@ -65,6 +65,44 @@ export function activate(context: vscode.ExtensionContext)
                     {
                         if (!error && response.statusCode == 200)
                         {
+                            var list = JSON.parse(body);
+                            list && list.forEach
+                            (
+                                item => outputChannel.appendLine(item.name +'\t' +item.language)
+                            );
+                        }
+                        else
+                        if (response.statusCode)
+                        {
+                            outputChannel.appendLine('statusCode: ' +response.statusCode);
+                        }
+                        else
+                        {
+                            outputChannel.appendLine('error: ' +error);
+                        }
+                    }
+                );
+            }
+        )
+    );
+    context.subscriptions.push
+    (
+        vscode.commands.registerCommand
+        (
+            'extension.showWandboxListJson',
+            () =>
+            {
+                makeSureOutputChannel();
+                bowWow();
+
+                outputChannel.appendLine('HTTP GET http://melpon.org/wandbox/api/list.json?from=wandbox-vscode');
+                request.get
+                (
+                    'http://melpon.org/wandbox/api/list.json',
+                    function (error, response, body)
+                    {
+                        if (!error && response.statusCode == 200)
+                        {
                             var provider = vscode.workspace.registerTextDocumentContentProvider
                             (
                                 'wandbox-list-json',
