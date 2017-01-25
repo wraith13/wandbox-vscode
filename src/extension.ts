@@ -131,19 +131,28 @@ export function activate(context: vscode.ExtensionContext)
         { extension:'groovy', wandbox:'groovy-2.2.1' },
         { extension:'gvy', wandbox:'groovy-2.2.1' },
     ];
+    var fileSetting = [ ];
     var getWandboxCompilerName = (vscodeLang :string, fileName :string) :string =>
     {
         var hit : string;
-        vscodeLang && languageMapping.forEach
-        (
-            item =>
-            {
-                if (item.vscode == vscodeLang)
+        var setting = fileSetting[fileName];
+        if (setting)
+        {
+            hit = setting.compilerName;
+        }
+        if (!hit)
+        {
+            vscodeLang && languageMapping.forEach
+            (
+                item =>
                 {
-                    hit = item.wandbox;
+                    if (item.vscode == vscodeLang)
+                    {
+                        hit = item.wandbox;
+                    }
                 }
-            }
-        );
+            );
+        }
         if (!hit && fileName)
         {
             var elements = fileName.split('.');
@@ -180,7 +189,7 @@ export function activate(context: vscode.ExtensionContext)
     var bowWow = () =>
     {
         outputChannel.show();
-        outputChannel.appendLine('Bow-wow! ' + new Date().toString());
+        outputChannel.appendLine('🐾 Bow-wow! ' + new Date().toString());
     };
     var getList = (callback : (string) => void) =>
     {
@@ -349,6 +358,75 @@ export function activate(context: vscode.ExtensionContext)
     (
         vscode.commands.registerCommand
         (
+            'extension.setWandboxFileOptions',
+            () =>
+            {
+                makeSureOutputChannel();
+                bowWow();
+
+                var activeTextEditor = vscode.window.activeTextEditor;
+                if (null !== activeTextEditor)
+                {
+                    var fileName = activeTextEditor.document.fileName;
+                    vscode.window.showInputBox({ prompt:'Enter compiler name' }).then
+                    (
+                        compilerName =>
+                        {
+                            if (compilerName)
+                            {
+                                fileSetting[fileName] = fileSetting[fileName] || { };
+                                fileSetting[fileName].compilerName = compilerName;
+                                outputChannel.appendLine('Set compiler "' +compilerName+'" for "' +fileName +'"');
+                            }
+                            else
+                            {
+                                outputChannel.appendLine('👉 You can see compilers list by [Wandbox: List] command.');
+                            }
+                        }
+                    );
+                }
+                else
+                {
+                    outputChannel.appendLine('🚫 No active text editor!');
+                }
+            }
+        )
+    );    
+    context.subscriptions.push
+    (
+        vscode.commands.registerCommand
+        (
+            'extension.resetWandboxFileOptions',
+            () =>
+            {
+                makeSureOutputChannel();
+                bowWow();
+
+                var activeTextEditor = vscode.window.activeTextEditor;
+                if (null !== activeTextEditor)
+                {
+                    var fileName = activeTextEditor.document.fileName;
+                    if (fileSetting[fileName])
+                    {
+                        delete fileSetting[fileName];
+                        outputChannel.appendLine('Reset setting for "' +fileName +'"');
+                    }
+                    else
+                    {
+                        outputChannel.appendLine('⚠️ Not found setting for "' +fileName +'"');
+                    }
+                }
+                else
+                {
+                    outputChannel.appendLine('🚫 No active text editor!');
+                }
+            }
+        )
+    );    
+    context.subscriptions.push
+    (
+        vscode.commands.registerCommand
+        (
             'extension.invokeWandbox',
             (args :any[]) =>
             {
@@ -363,6 +441,7 @@ export function activate(context: vscode.ExtensionContext)
                 var activeTextEditor = vscode.window.activeTextEditor;
                 if (null !== activeTextEditor)
                 {
+                    activeTextEditor.document
                     //outputChannel.appendLine('fileName: ' +activeTextEditor.document.fileName);
                     //outputChannel.appendLine('text: ' +activeTextEditor.document.getText());
                     //outputChannel.appendLine('languageId: ' +activeTextEditor.document.languageId);
@@ -432,7 +511,7 @@ export function activate(context: vscode.ExtensionContext)
                                     }
                                     if (body.program_error)
                                     {
-                                        outputChannel.appendLine('program_error: ');
+                                        outputChannel.appendLine('🚫 program_error: ');
                                         outputChannel.appendLine(body.program_error);
                                     }
                                     //body.program_message
@@ -451,10 +530,14 @@ export function activate(context: vscode.ExtensionContext)
                     }
                     else
                     {
-                        outputChannel.appendLine('🚫 Unknown language Error!');
+                        outputChannel.appendLine('🚫 Unknown language!');
                         outputChannel.appendLine('👉 You can use set a compiler by [Wandbox: Set] command.');
                         outputChannel.appendLine('👉 You can see compilers list by [Wandbox: List] command.');
                     }
+                }
+                else
+                {
+                    outputChannel.appendLine('🚫 No active text editor!');
                 }
             }
         )

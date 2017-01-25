@@ -15,6 +15,8 @@
         "onCommand:extension.getWandboxList",
         "onCommand:extension.showWandboxItem",
         "onCommand:extension.showWandboxListJson",
+        "onCommand:extension.setWandboxFileOptions",
+        "onCommand:extension.resetWandboxFileOptions",
         "onCommand:extension.invokeWandbox"
     ],
     "main": "./out/src/extension",
@@ -31,6 +33,12 @@
         },{
             "command": "extension.showWandboxListJson",
             "title": "Wandbox: List Raw"
+        },{
+            "command": "extension.setWandboxFileOptions",
+            "title": "Wandbox: Set"
+        },{
+            "command": "extension.resetWandboxFileOptions",
+            "title": "Wandbox: Reset"
         },{
             "command": "extension.invokeWandbox",
             "title": "Wandbox"
