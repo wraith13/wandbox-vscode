@@ -24,28 +24,36 @@
     "contributes": {
         "commands": [{
             "command": "extension.openWandboxWeb",
-            "title": "Wandbox: Web"
+            "title": "Web",
+            "category": "Wandbox"
         },{
             "command": "extension.getWandboxList",
-            "title": "Wandbox: List"
+            "title": "List",
+            "category": "Wandbox"
         },{
             "command": "extension.showWandboxItem",
-            "title": "Wandbox: Show"
+            "title": "Show",
+            "category": "Wandbox"
         },{
             "command": "extension.showWandboxListJson",
-            "title": "Wandbox: List Raw"
+            "title": "List Raw",
+            "category": "Wandbox"
         },{
             "command": "extension.setWandboxFileOptions",
-            "title": "Wandbox: Set"
+            "title": "Set",
+            "category": "Wandbox"
         },{
             "command": "extension.resetWandboxFileOptions",
-            "title": "Wandbox: Reset"
+            "title": "Reset",
+            "category": "Wandbox"
         },{
             "command": "extension.invokeWandbox",
-            "title": "Wandbox"
+            "title": "Run",
+            "category": "Wandbox"
         },{
             "command": "extension.shareWandbox",
-            "title": "Wandbox: Share"
+            "title": "Share",
+            "category": "Wandbox"
         }]
     },
     "scripts": {
