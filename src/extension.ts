@@ -100,7 +100,38 @@ export function activate(context: vscode.ExtensionContext)
         //  YAML
         { vscode:'yaml', wandbox:null },
     ];
-    var getWandboxCompilerName = (vscodeLang :string, callback : (string) => void) =>
+    var extensionMapping =
+    [
+        { extension:'cpp', wandbox:'clang-head' },
+        { extension:'cxx', wandbox:'clang-head' },
+        { extension:'c', wandbox:'clang-3.3-c' },
+        { extension:'d', wandbox:'dmd-head' },
+        { extension:'rill', wandbox:'rill-head' },
+        { extension:'hs', wandbox:'ghc-head' },
+        { extension:'pl', wandbox:'perl-head' },
+        { extension:'py', wandbox:'python-head' },
+        { extension:'rb', wandbox:'ruby-head' },
+        { extension:'php', wandbox:'php-head' },
+        { extension:'erl', wandbox:'erlang-head' },
+        { extension:'ex', wandbox:'elixir-head' },
+        { extension:'exs', wandbox:'elixir-head' },
+        { extension:'js', wandbox:'node-head' },
+        { extension:'coffee', wandbox:'coffee-script-head' },
+        { extension:'sql', wandbox:'sqlite-head' },
+        { extension:'scala', wandbox:'scala-2.12.x' },
+        { extension:'lua', wandbox:'lua-5.3.0' },
+        { extension:'rs', wandbox:'rust-head' },
+        { extension:'vim', wandbox:'vim-7.4.1714' },
+        { extension:'swift', wandbox:'swift-2.2' },
+        { extension:'sh', wandbox:'bash' },
+        { extension:'lazy', wandbox:'lazyk' },
+        { extension:'lisp', wandbox:'clisp-2.49.0' },
+        { extension:'pas', wandbox:'fpc-2.6.2' },
+        { extension:'java', wandbox:'java8-openjdk' },
+        { extension:'groovy', wandbox:'groovy-2.2.1' },
+        { extension:'gvy', wandbox:'groovy-2.2.1' },
+    ];
+    var getWandboxCompilerName = (vscodeLang :string, fileName :string, callback : (string) => void) =>
     {
         var hit : string;
         vscodeLang && languageMapping.forEach
@@ -113,6 +144,24 @@ export function activate(context: vscode.ExtensionContext)
                 }
             }
         );
+        if (!hit && fileName)
+        {
+            var elements = fileName.split('.');
+            if (2 <= elements.length)
+            {
+                var extension = elements[elements.length -1];
+                extensionMapping.forEach
+                (
+                    item =>
+                    {
+                        if (item.extension == extension)
+                        {
+                            hit = item.wandbox;
+                        }
+                    }
+                );
+            }
+        }
         if (hit)
         {
             callback(hit);
@@ -315,17 +364,29 @@ export function activate(context: vscode.ExtensionContext)
                 var activeTextEditor = vscode.window.activeTextEditor;
                 if (null !== activeTextEditor)
                 {
-                    outputChannel.appendLine('fileName: ' +activeTextEditor.document.fileName);
-                    outputChannel.appendLine('text: ' +activeTextEditor.document.getText());
-                    outputChannel.appendLine('languageId: ' +activeTextEditor.document.languageId);
+                    //outputChannel.appendLine('fileName: ' +activeTextEditor.document.fileName);
+                    //outputChannel.appendLine('text: ' +activeTextEditor.document.getText());
+                    //outputChannel.appendLine('languageId: ' +activeTextEditor.document.languageId);
                     getWandboxCompilerName
                     (
                         activeTextEditor.document.languageId,
+                        activeTextEditor.document.fileName,
                         name =>
                         {
                             if (name)
                             {
-                                outputChannel.appendLine('HTTP POST http://melpon.org/wandbox/api/compile.json?from=wandbox-vscode');
+                                outputChannel.appendLine('HTTP POST http://melpon.org/wandbox/api/compile.json');
+                                outputChannel.appendLine
+                                (
+                                    JSON.stringify
+                                    (
+                                        {
+                                            compiler: name
+                                        },
+                                        null,
+                                        4
+                                    )
+                                );
                                 request
                                 (
                                     {
@@ -345,19 +406,18 @@ export function activate(context: vscode.ExtensionContext)
                                     },
                                     function(error, response, body)
                                     {
+                                        if (response.statusCode)
+                                        {
+                                            outputChannel.appendLine('statusCode(HTTP): ' +response.statusCode);
+                                        }
                                         if (!error && response.statusCode == 200)
                                         {
                                             //var result = JSON.parse(body);
                                             outputChannel.appendLine(JSON.stringify(body, null, 4));
                                         }
                                         else
-                                        if (response.statusCode)
                                         {
-                                            outputChannel.appendLine('statusCode: ' +response.statusCode);
                                             outputChannel.appendLine(body);
-                                        }
-                                        else
-                                        {
                                             outputChannel.appendLine('error: ' +error);
                                         }
                                     }
