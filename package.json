@@ -17,7 +17,8 @@
         "onCommand:extension.showWandboxListJson",
         "onCommand:extension.setWandboxFileOptions",
         "onCommand:extension.resetWandboxFileOptions",
-        "onCommand:extension.invokeWandbox"
+        "onCommand:extension.invokeWandbox",
+        "onCommand:extension.shareWandbox"
     ],
     "main": "./out/src/extension",
     "contributes": {
@@ -42,6 +43,9 @@
         },{
             "command": "extension.invokeWandbox",
             "title": "Wandbox"
+        },{
+            "command": "extension.shareWandbox",
+            "title": "Wandbox: Share"
         }]
     },
     "scripts": {

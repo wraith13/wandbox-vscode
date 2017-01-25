@@ -422,124 +422,123 @@ export function activate(context: vscode.ExtensionContext)
                 }
             }
         )
-    );    
+    );
+    var invokeWandbox = (args ?: any) =>
+    {
+        makeSureOutputChannel();
+        bowWow();
+
+        var activeTextEditor = vscode.window.activeTextEditor;
+        if (null !== activeTextEditor)
+        {
+            activeTextEditor.document
+            //outputChannel.appendLine('fileName: ' +activeTextEditor.document.fileName);
+            //outputChannel.appendLine('text: ' +activeTextEditor.document.getText());
+            //outputChannel.appendLine('languageId: ' +activeTextEditor.document.languageId);
+            var compilerName = getWandboxCompilerName
+            (
+                activeTextEditor.document.languageId,
+                activeTextEditor.document.fileName
+            );
+
+            if (compilerName)
+            {
+                outputChannel.appendLine('HTTP POST http://melpon.org/wandbox/api/compile.json');
+                var json =
+                {
+                    compiler: compilerName
+                };
+                if (args && args.share)
+                {
+                    json['save'] = true;
+                }
+                outputChannel.appendLine(JSON.stringify(json, null, 4));
+                json['code'] = activeTextEditor.document.getText();
+                json['from'] = 'wandbox-vscode';
+                request
+                (
+                    {
+                        url: 'http://melpon.org/wandbox/api/compile.json',
+                        method: 'POST',
+                        headers:
+                        {
+                            //'Content-Type': 'application/json',
+                            'User-Agent': 'wandbox-vscode'
+                        },
+                        json: json
+                    },
+                    function(error, response, body)
+                    {
+                        if (response.statusCode)
+                        {
+                            outputChannel.appendLine('HTTP statusCode: ' +response.statusCode);
+                        }
+                        if (!error && response.statusCode == 200)
+                        {
+                            body.status && outputChannel.appendLine('status: ' +body.status);
+                            body.signal && outputChannel.appendLine('🚦 signal: ' +body.signal);
+                            if (body.compiler_output)
+                            {
+                                outputChannel.appendLine('compiler_output: ');
+                                outputChannel.appendLine(body.compiler_output);
+                            }
+                            if (body.compiler_error)
+                            {
+                                outputChannel.appendLine('🚫 compiler_error: ');
+                                outputChannel.appendLine(body.compiler_error);
+                            }
+                            //body.compiler_message
+                            //merged messages compiler_output and compiler_error
+                            if (body.program_output)
+                            {
+                                outputChannel.appendLine('program_output: ');
+                                outputChannel.appendLine(body.program_output);
+                            }
+                            if (body.program_error)
+                            {
+                                outputChannel.appendLine('🚫 program_error: ');
+                                outputChannel.appendLine(body.program_error);
+                            }
+                            //body.program_message
+                            //merged messages program_output and program_error
+                            //body.permlink && outputChannel.appendLine('🔗 permlink: ' +body.permlink);
+                            body.url && outputChannel.appendLine('🔗 url: ' +body.url);
+
+                        }
+                        else
+                        {
+                            outputChannel.appendLine(body);
+                            outputChannel.appendLine('error: ' +error);
+                        }
+                    }
+                );
+            }
+            else
+            {
+                outputChannel.appendLine('🚫 Unknown language!');
+                outputChannel.appendLine('👉 You can use set a compiler by [Wandbox: Set] command.');
+                outputChannel.appendLine('👉 You can see compilers list by [Wandbox: List] command.');
+            }
+        }
+        else
+        {
+            outputChannel.appendLine('🚫 No active text editor!');
+        }
+    }
     context.subscriptions.push
     (
         vscode.commands.registerCommand
         (
             'extension.invokeWandbox',
-            (args :any[]) =>
-            {
-                makeSureOutputChannel();
-                bowWow();
-
-                args && args.forEach
-                (
-                    arg => outputChannel.appendLine('arg: ' +arg)
-                );
-
-                var activeTextEditor = vscode.window.activeTextEditor;
-                if (null !== activeTextEditor)
-                {
-                    activeTextEditor.document
-                    //outputChannel.appendLine('fileName: ' +activeTextEditor.document.fileName);
-                    //outputChannel.appendLine('text: ' +activeTextEditor.document.getText());
-                    //outputChannel.appendLine('languageId: ' +activeTextEditor.document.languageId);
-                    var compilerName = getWandboxCompilerName
-                    (
-                        activeTextEditor.document.languageId,
-                        activeTextEditor.document.fileName
-                    );
-
-                    if (compilerName)
-                    {
-                        outputChannel.appendLine('HTTP POST http://melpon.org/wandbox/api/compile.json');
-                        outputChannel.appendLine
-                        (
-                            JSON.stringify
-                            (
-                                {
-                                    compiler: compilerName
-                                },
-                                null,
-                                4
-                            )
-                        );
-                        request
-                        (
-                            {
-                                url: 'http://melpon.org/wandbox/api/compile.json',
-                                method: 'POST',
-                                headers:
-                                {
-                                    //'Content-Type': 'application/json',
-                                    'User-Agent': 'wandbox-vscode'
-                                },
-                                json:
-                                {
-                                    compiler: compilerName,
-                                    code: activeTextEditor.document.getText(),
-                                    from: 'wandbox-vscode'
-                                }
-                            },
-                            function(error, response, body)
-                            {
-                                if (response.statusCode)
-                                {
-                                    outputChannel.appendLine('HTTP statusCode: ' +response.statusCode);
-                                }
-                                if (!error && response.statusCode == 200)
-                                {
-                                    body.status && outputChannel.appendLine('status: ' +body.status);
-                                    body.signal && outputChannel.appendLine('🚦 signal: ' +body.signal);
-                                    if (body.compiler_output)
-                                    {
-                                        outputChannel.appendLine('compiler_output: ');
-                                        outputChannel.appendLine(body.compiler_output);
-                                    }
-                                    if (body.compiler_error)
-                                    {
-                                        outputChannel.appendLine('🚫 compiler_error: ');
-                                        outputChannel.appendLine(body.compiler_error);
-                                    }
-                                    //body.compiler_message
-                                    //merged messages compiler_output and compiler_error
-                                    if (body.program_output)
-                                    {
-                                        outputChannel.appendLine('program_output: ');
-                                        outputChannel.appendLine(body.program_output);
-                                    }
-                                    if (body.program_error)
-                                    {
-                                        outputChannel.appendLine('🚫 program_error: ');
-                                        outputChannel.appendLine(body.program_error);
-                                    }
-                                    //body.program_message
-                                    //merged messages program_output and program_error
-                                    body.permlink && outputChannel.appendLine('🔗 permlink: ' +body.permlink);
-                                    body.url && outputChannel.appendLine('🔗 url: ' +body.url);
-
-                                }
-                                else
-                                {
-                                    outputChannel.appendLine(body);
-                                    outputChannel.appendLine('error: ' +error);
-                                }
-                            }
-                        );
-                    }
-                    else
-                    {
-                        outputChannel.appendLine('🚫 Unknown language!');
-                        outputChannel.appendLine('👉 You can use set a compiler by [Wandbox: Set] command.');
-                        outputChannel.appendLine('👉 You can see compilers list by [Wandbox: List] command.');
-                    }
-                }
-                else
-                {
-                    outputChannel.appendLine('🚫 No active text editor!');
-                }
-            }
+            () => invokeWandbox()
+        )
+    );
+    context.subscriptions.push
+    (
+        vscode.commands.registerCommand
+        (
+            'extension.shareWandbox',
+            () => invokeWandbox({ share: true })
         )
     );
 }
