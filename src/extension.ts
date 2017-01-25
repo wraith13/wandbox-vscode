@@ -412,8 +412,35 @@ export function activate(context: vscode.ExtensionContext)
                                         }
                                         if (!error && response.statusCode == 200)
                                         {
-                                            //var result = JSON.parse(body);
-                                            outputChannel.appendLine(JSON.stringify(body, null, 4));
+                                            body.status && outputChannel.appendLine('status: ' +body.status);
+                                            body.signal && outputChannel.appendLine('🚦signal: ' +body.signal);
+                                            if (body.compiler_output)
+                                            {
+                                                outputChannel.appendLine('compiler_output: ');
+                                                outputChannel.appendLine(body.compiler_output);
+                                            }
+                                            if (body.compiler_error)
+                                            {
+                                                outputChannel.appendLine('🚫compiler_error: ');
+                                                outputChannel.appendLine(body.compiler_error);
+                                            }
+                                            //body.compiler_message
+                                            //merged messages compiler_output and compiler_error
+                                            if (body.program_output)
+                                            {
+                                                outputChannel.appendLine('program_output: ');
+                                                outputChannel.appendLine(body.program_output);
+                                            }
+                                            if (body.program_error)
+                                            {
+                                                outputChannel.appendLine('program_error: ');
+                                                outputChannel.appendLine(body.program_error);
+                                            }
+                                            //body.program_message
+                                            //merged messages program_output and program_error
+                                            body.permlink && outputChannel.appendLine('🔗permlink: ' +body.permlink);
+                                            body.url && outputChannel.appendLine('🔗url: ' +body.url);
+
                                         }
                                         else
                                         {
