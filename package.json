@@ -24,27 +24,27 @@
     "contributes": {
         "commands": [{
             "command": "extension.openWandboxWeb",
-            "title": "Web",
+            "title": "Open Web Site",
             "category": "Wandbox"
         },{
             "command": "extension.getWandboxList",
-            "title": "List",
+            "title": "List Compilers",
             "category": "Wandbox"
         },{
             "command": "extension.showWandboxItem",
-            "title": "Show",
+            "title": "Show Compiler Info",
             "category": "Wandbox"
         },{
             "command": "extension.showWandboxListJson",
-            "title": "List Raw",
+            "title": "Show Raw JSON",
             "category": "Wandbox"
         },{
             "command": "extension.setWandboxFileOptions",
-            "title": "Set",
+            "title": "Set Complier",
             "category": "Wandbox"
         },{
             "command": "extension.resetWandboxFileOptions",
-            "title": "Reset",
+            "title": "Reset Options",
             "category": "Wandbox"
         },{
             "command": "extension.invokeWandbox",
