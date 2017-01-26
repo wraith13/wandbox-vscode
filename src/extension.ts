@@ -358,9 +358,33 @@ export function activate(context: vscode.ExtensionContext)
     var stripDirectory = (path : string) =>
     {
         return path
-            .split('¥').reverse()[0]
+            .split('\\').reverse()[0]
             .split('/').reverse()[0];
     };
+    var IsOpenFiles = (files : string[]) =>
+    {
+        var hasError = false;
+        files.forEach
+        (
+            file =>
+            {
+                var hit = false;
+                vscode.workspace.textDocuments.forEach
+                (
+                    document =>
+                    {
+                        hit = hit || file == stripDirectory(document.fileName);
+                    }
+                );
+                if (!hit)
+                {
+                    hasError = true;
+                    outputChannel.appendLine(`🚫 Not found file: ${file} ( If opened, show this file once. And keep to open it.)`);
+                }
+            }
+        );
+        return !hasError;
+    }
     var setSetting = (name : string, prompt: string) =>
     {
         makeSureOutputChannel();
@@ -379,32 +403,8 @@ export function activate(context: vscode.ExtensionContext)
                         fileSetting[fileName] = fileSetting[fileName] || { };
                         if ('additionals' == name)
                         {
-                            var hasError = false;
-                            var newFiles = [];
-                            value.split(',').forEach
-                            (
-                                file =>
-                                {
-                                    var hit = false;
-                                    vscode.workspace.textDocuments.forEach
-                                    (
-                                        document =>
-                                        {
-                                            hit = hit || file == stripDirectory(document.fileName);
-                                        }
-                                    )
-                                    if (hit)
-                                    {
-                                        newFiles.push(file);
-                                    }
-                                    else
-                                    {
-                                        hasError = true;
-                                        outputChannel.appendLine(`🚫 Not found file: ${file} ( If opened, show this file once. And keep to open it.)`);
-                                    }
-                                }
-                            );
-                            if (!hasError)
+                            var newFiles = value.split(',');
+                            if (IsOpenFiles(newFiles))
                             {
                                 fileSetting[fileName][name] = newFiles;
                                 outputChannel.appendLine(`Set ${name} "${newFiles.join('","')}" for "${fileName}"`);
@@ -546,6 +546,20 @@ export function activate(context: vscode.ExtensionContext)
                 activeTextEditor.document.languageId,
                 activeTextEditor.document.fileName
             );
+            var additionals : string[];
+            var options : string;
+            var stdIn : string;
+            var compilerOptionRaw : string;
+            var runtimeOptionRaw : string;
+            var setting = fileSetting[activeTextEditor.document.fileName];
+            if (setting)
+            {
+                additionals = setting.additionals;
+                options = setting.options;
+                stdIn = setting.stdIn;
+                compilerOptionRaw = setting.compilerOptionRaw;
+                runtimeOptionRaw = setting.runtimeOptionRaw;
+            }
 
             if (compilerName)
             {
@@ -554,11 +568,64 @@ export function activate(context: vscode.ExtensionContext)
                 {
                     compiler: compilerName
                 };
+                if (additionals)
+                {
+                    if (!IsOpenFiles(additionals))
+                    {
+                        return;
+                    }
+                    //  ログ表示用のダミー。実際にPOSTするデータはこの後で再設定。
+                    json['codes'] = additionals.join(',');
+                }
+                if (options)
+                {
+                    json['runtime-option-raw'] = options;
+                }
+                if (stdIn)
+                {
+                    json['stdin'] = stdIn;
+                }
+                if (compilerOptionRaw)
+                {
+                    json['compiler-option-raw'] = compilerOptionRaw;
+                }
+                if (runtimeOptionRaw)
+                {
+                    json['runtime-option-raw'] = runtimeOptionRaw;
+                }
                 if (args && args.share)
                 {
                     json['save'] = true;
                 }
                 outputChannel.appendLine(JSON.stringify(json, null, 4));
+                if (additionals)
+                {
+                    json['codes'] = [];
+                    additionals.forEach
+                    (
+                        filename =>
+                        {
+                            var code : string;
+                            vscode.workspace.textDocuments.forEach
+                            (
+                                document =>
+                                {
+                                    if (filename == stripDirectory(document.fileName))
+                                    {
+                                        code = document.getText();
+                                    }
+                                }
+                            );
+                            json['codes'].push
+                            (
+                                {
+                                    'file': filename,
+                                    'code': code
+                                }
+                            );
+                        }
+                    );
+                }
                 json['code'] = activeTextEditor.document.getText();
                 json['from'] = extentionName;
                 var startAt = new Date();

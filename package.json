@@ -54,7 +54,7 @@
             "category": "Wandbox"
         },{
             "command": "extension.setWandboxFileCompiler",
-            "title": "Set Complier",
+            "title": "Set Compiler",
             "category": "Wandbox"
         },{
             "command": "extension.setWandboxFileAdditionals",
@@ -70,7 +70,7 @@
             "category": "Wandbox"
         },{
             "command": "extension.setWandboxFileCompilerOptionRaw",
-            "title": "Set Complier Option Raw",
+            "title": "Set Compiler Option Raw",
             "category": "Wandbox"
         },{
             "command": "extension.setWandboxFileRuntimeOptionRaw",
