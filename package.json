@@ -16,6 +16,7 @@
         "onCommand:extension.showWandboxItem",
         "onCommand:extension.showWandboxListJson",
         "onCommand:extension.setWandboxFileCompiler",
+        "onCommand:extension.setWandboxFileAdditionals",
         "onCommand:extension.setWandboxFileStdIn",
         "onCommand:extension.setWandboxFileOptions",
         "onCommand:extension.setWandboxFileStdIn",
@@ -47,6 +48,10 @@
         },{
             "command": "extension.setWandboxFileCompiler",
             "title": "Set Complier",
+            "category": "Wandbox"
+        },{
+            "command": "extension.setWandboxFileAdditionals",
+            "title": "Set Additional Files",
             "category": "Wandbox"
         },{
             "command": "extension.setWandboxFileStdIn",

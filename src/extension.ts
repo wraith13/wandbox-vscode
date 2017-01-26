@@ -8,6 +8,7 @@ import * as request from 'request';
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext)
 {
+    const extentionName = "wandbox-vscode";
     var languageMapping =
     [
         //  Windows Bat
@@ -189,14 +190,14 @@ export function activate(context: vscode.ExtensionContext)
     var bowWow = () =>
     {
         outputChannel.show();
-        outputChannel.appendLine('🐾 Bow-wow! ' + new Date().toString());
+        outputChannel.appendLine(`🐾 Bow-wow! ${new Date().toString()}`);
     };
     var getList = (callback : (string) => void) =>
     {
-        outputChannel.appendLine('HTTP GET http://melpon.org/wandbox/api/list.json?from=wandbox-vscode');
+        outputChannel.appendLine(`HTTP GET http://melpon.org/wandbox/api/list.json?from=${extentionName}`);
         request.get
         (
-            'http://melpon.org/wandbox/api/list.json?from=wandbox-vscode',
+            `http://melpon.org/wandbox/api/list.json?from=${extentionName}`,
             function(error, response, body)
             {
                 if (!error && response.statusCode == 200)
@@ -206,11 +207,11 @@ export function activate(context: vscode.ExtensionContext)
                 else
                 if (response.statusCode)
                 {
-                    outputChannel.appendLine('statusCode: ' +response.statusCode);
+                    outputChannel.appendLine(`statusCode: ${response.statusCode}`);
                 }
                 else
                 {
-                    outputChannel.appendLine('error: ' +error);
+                    outputChannel.appendLine(`error: ${error}`);
                 }
             }
         );
@@ -230,7 +231,7 @@ export function activate(context: vscode.ExtensionContext)
 
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "wandbox-vscode" is now active!');
+    console.log(`Congratulations, your extension "${extentionName}" is now active!`);
 
     context.subscriptions.push
     (
@@ -242,7 +243,7 @@ export function activate(context: vscode.ExtensionContext)
                 vscode.commands.executeCommand
                 (
                     'vscode.open',
-                    vscode.Uri.parse('http://melpon.org/wandbox/?from=wandbox-vscode')
+                    vscode.Uri.parse(`http://melpon.org/wandbox/?from=${extentionName}`)
                 );
             }
         )
@@ -266,7 +267,7 @@ export function activate(context: vscode.ExtensionContext)
                             outputChannel.appendLine('compiler\tlanguage');
                             list.forEach
                             (
-                                item => outputChannel.appendLine(item.name +'\t' +item.language)
+                                item => outputChannel.appendLine(`${item.name}\t${item.language}`)
                             )
                         }
                     }
@@ -370,22 +371,57 @@ export function activate(context: vscode.ExtensionContext)
                     if (value)
                     {
                         fileSetting[fileName] = fileSetting[fileName] || { };
-                        if (null)
+                        if ('additionals' == name)
+                        {
+                            var hasError = false;
+                            var newFiles = [];
+                            value.split(',').forEach
+                            (
+                                file =>
+                                {
+                                    var hit = false;
+                                    vscode.workspace.textDocuments.forEach
+                                    (
+                                        document =>
+                                        {
+                                            console.log(document.fileName);
+                                            hit = hit || file == document.fileName;
+                                        }
+                                    )
+                                    if (hit)
+                                    {
+                                        newFiles.push(file);
+                                    }
+                                    else
+                                    {
+                                        hasError = true;
+                                        outputChannel.appendLine(`🚫 Not found file: ${file}`);
+                                    }
+                                }
+                            );
+                            if (!hasError)
+                            {
+                                fileSetting[fileName][name] = newFiles;
+                                outputChannel.appendLine(`Set ${name} "${newFiles.join('","')}" for "${fileName}"`);
+                            }
+                        }
+                        else
+                        if (name)
                         {
                             fileSetting[fileName][name] = value;
-                            outputChannel.appendLine('Set ' +name +' "' +value+'" for "' +fileName +'"');
+                            outputChannel.appendLine(`Set ${name} "${value}" for "${fileName}"`);
                         }
                         else
                         {
                             try
                             {
                                 fileSetting[fileName] = JSON.parse(value);
-                                outputChannel.appendLine('Set settings for "' +fileName +'"');
+                                outputChannel.appendLine(`Set settings for "${fileName}"`);
                                 outputChannel.appendLine(JSON.stringify(fileSetting[fileName], null, 4));
                             }
                             catch(Err)
                             {
-                                outputChannel.appendLine('🚫 ' +Err);
+                                outputChannel.appendLine(`🚫 ${Err}`);
                             }
                         }
                     }
@@ -408,7 +444,15 @@ export function activate(context: vscode.ExtensionContext)
             'extension.setWandboxFileCompiler',
             () => setSetting('compilerName', 'Enter compiler name')
         )
-    );    
+    );
+    context.subscriptions.push
+    (
+        vscode.commands.registerCommand
+        (
+            'extension.setWandboxFileAdditionals',
+            () => setSetting('additionals', 'Enter file names')
+        )
+    );
     context.subscriptions.push
     (
         vscode.commands.registerCommand
@@ -416,7 +460,7 @@ export function activate(context: vscode.ExtensionContext)
             'extension.setWandboxFileStdIn',
             () => setSetting('stdIn', 'Enter stdin text ( When you want to user multiline text, Use [Wandbox: Set Settings JSON] command. )')
         )
-    );    
+    );
     context.subscriptions.push
     (
         vscode.commands.registerCommand
@@ -424,7 +468,7 @@ export function activate(context: vscode.ExtensionContext)
             'extension.setWandboxFileOptions',
             () => setSetting('options', 'Enter compiler option ( You can see compiler option list by [Wandbox: Show Compier Info] )')
         )
-    );    
+    );
     context.subscriptions.push
     (
         vscode.commands.registerCommand
@@ -432,7 +476,7 @@ export function activate(context: vscode.ExtensionContext)
             'extension.setWandboxFileCompilerOptionRaw',
             () => setSetting('compilerOptionRaw', 'Enter compiler option raw')
         )
-    );    
+    );
     context.subscriptions.push
     (
         vscode.commands.registerCommand
@@ -440,7 +484,7 @@ export function activate(context: vscode.ExtensionContext)
             'extension.setWandboxFileRuntimeOptionRaw',
             () => setSetting('runtimeOptionRaw', 'Enter runtime option raw')
         )
-    );    
+    );
     context.subscriptions.push
     (
         vscode.commands.registerCommand
@@ -448,7 +492,7 @@ export function activate(context: vscode.ExtensionContext)
             'extension.setWandboxFileSettingJson',
             () => setSetting(null, 'Enter settings JSON')
         )
-    );    
+    );
     context.subscriptions.push
     (
         vscode.commands.registerCommand
@@ -466,11 +510,11 @@ export function activate(context: vscode.ExtensionContext)
                     if (fileSetting[fileName])
                     {
                         delete fileSetting[fileName];
-                        outputChannel.appendLine('Reset settings for "' +fileName +'"');
+                        outputChannel.appendLine(`Reset settings for "${fileName}"`);
                     }
                     else
                     {
-                        outputChannel.appendLine('⚠️ Not found settings for "' +fileName +'"');
+                        outputChannel.appendLine(`⚠️ Not found settings for "${fileName}"`);
                     }
                 }
                 else
@@ -511,7 +555,7 @@ export function activate(context: vscode.ExtensionContext)
                 }
                 outputChannel.appendLine(JSON.stringify(json, null, 4));
                 json['code'] = activeTextEditor.document.getText();
-                json['from'] = 'wandbox-vscode';
+                json['from'] = extentionName;
                 var startAt = new Date();
                 request
                 (
@@ -521,7 +565,7 @@ export function activate(context: vscode.ExtensionContext)
                         headers:
                         {
                             //'Content-Type': 'application/json',
-                            'User-Agent': 'wandbox-vscode'
+                            'User-Agent': extentionName
                         },
                         json: json
                     },
@@ -530,12 +574,12 @@ export function activate(context: vscode.ExtensionContext)
                         var endAt = new Date();
                         if (response.statusCode)
                         {
-                            outputChannel.appendLine('HTTP statusCode: ' +response.statusCode);
+                            outputChannel.appendLine(`HTTP statusCode: ${response.statusCode}`);
                         }
                         if (!error && response.statusCode == 200)
                         {
-                            body.status && outputChannel.appendLine('status: ' +body.status);
-                            body.signal && outputChannel.appendLine('🚦 signal: ' +body.signal);
+                            body.status && outputChannel.appendLine(`status: ${body.status}`);
+                            body.signal && outputChannel.appendLine(`🚦 signal: ${body.signal}`);
                             if (body.compiler_output)
                             {
                                 outputChannel.appendLine('compiler_output: ');
@@ -560,16 +604,16 @@ export function activate(context: vscode.ExtensionContext)
                             }
                             //body.program_message
                             //merged messages program_output and program_error
-                            //body.permlink && outputChannel.appendLine('🔗 permlink: ' +body.permlink);
-                            body.url && outputChannel.appendLine('🔗 url: ' +body.url);
+                            //body.permlink && outputChannel.appendLine(`🔗 permlink: ${body.permlink}`);
+                            body.url && outputChannel.appendLine(`🔗 url: ${body.url}`);
 
                         }
                         else
                         {
                             outputChannel.appendLine(body);
-                            outputChannel.appendLine('error: ' +error);
+                            outputChannel.appendLine(`🚫 error: ${error}`);
                         }
-                        outputChannel.appendLine('🏁 time: ' +(endAt.getTime() -startAt.getTime()) /1000 +' s');
+                        outputChannel.appendLine(`🏁 time: ${(endAt.getTime() -startAt.getTime()) /1000} s`);
                     }
                 );
             }
