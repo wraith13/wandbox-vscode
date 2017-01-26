@@ -15,8 +15,14 @@
         "onCommand:extension.getWandboxList",
         "onCommand:extension.showWandboxItem",
         "onCommand:extension.showWandboxListJson",
+        "onCommand:extension.setWandboxFileCompiler",
+        "onCommand:extension.setWandboxFileStdIn",
         "onCommand:extension.setWandboxFileOptions",
-        "onCommand:extension.resetWandboxFileOptions",
+        "onCommand:extension.setWandboxFileStdIn",
+        "onCommand:extension.setWandboxFileCompilerOptionRaw",
+        "onCommand:extension.setWandboxFileRuntimeOptionRaw",
+        "onCommand:extension.setWandboxFileSettingJson",
+        "onCommand:extension.resetWandboxFileSettings",
         "onCommand:extension.invokeWandbox",
         "onCommand:extension.shareWandbox"
     ],
@@ -39,12 +45,32 @@
             "title": "Show Raw JSON",
             "category": "Wandbox"
         },{
-            "command": "extension.setWandboxFileOptions",
+            "command": "extension.setWandboxFileCompiler",
             "title": "Set Complier",
             "category": "Wandbox"
         },{
-            "command": "extension.resetWandboxFileOptions",
-            "title": "Reset Options",
+            "command": "extension.setWandboxFileStdIn",
+            "title": "Set StdIn",
+            "category": "Wandbox"
+        },{
+            "command": "extension.setWandboxFileOptions",
+            "title": "Set Options",
+            "category": "Wandbox"
+        },{
+            "command": "extension.setWandboxFileCompilerOptionRaw",
+            "title": "Set Complier Option Raw",
+            "category": "Wandbox"
+        },{
+            "command": "extension.setWandboxFileRuntimeOptionRaw",
+            "title": "Set Runtime Option Raw",
+            "category": "Wandbox"
+        },{
+            "command": "extension.setWandboxFileSettingJson",
+            "title": "Set Settings JSON",
+            "category": "Wandbox"
+        },{
+            "command": "extension.resetWandboxFileSettings",
+            "title": "Reset Settings",
             "category": "Wandbox"
         },{
             "command": "extension.invokeWandbox",

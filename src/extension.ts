@@ -354,49 +354,106 @@ export function activate(context: vscode.ExtensionContext)
             }
         )
     );
+    var setSetting = (name : string, prompt: string) =>
+    {
+        makeSureOutputChannel();
+        bowWow();
+
+        var activeTextEditor = vscode.window.activeTextEditor;
+        if (null !== activeTextEditor)
+        {
+            var fileName = activeTextEditor.document.fileName;
+            vscode.window.showInputBox({ prompt:prompt }).then
+            (
+                value =>
+                {
+                    if (value)
+                    {
+                        fileSetting[fileName] = fileSetting[fileName] || { };
+                        if (null)
+                        {
+                            fileSetting[fileName][name] = value;
+                            outputChannel.appendLine('Set ' +name +' "' +value+'" for "' +fileName +'"');
+                        }
+                        else
+                        {
+                            try
+                            {
+                                fileSetting[fileName] = JSON.parse(value);
+                                outputChannel.appendLine('Set settings for "' +fileName +'"');
+                                outputChannel.appendLine(JSON.stringify(fileSetting[fileName], null, 4));
+                            }
+                            catch(Err)
+                            {
+                                outputChannel.appendLine('🚫 ' +Err);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        fileSetting[fileName][name] = null;
+                    }
+                }
+            );
+        }
+        else
+        {
+            outputChannel.appendLine('🚫 No active text editor!');
+        }
+    };
     context.subscriptions.push
     (
         vscode.commands.registerCommand
         (
-            'extension.setWandboxFileOptions',
-            () =>
-            {
-                makeSureOutputChannel();
-                bowWow();
-
-                var activeTextEditor = vscode.window.activeTextEditor;
-                if (null !== activeTextEditor)
-                {
-                    var fileName = activeTextEditor.document.fileName;
-                    vscode.window.showInputBox({ prompt:'Enter compiler name' }).then
-                    (
-                        compilerName =>
-                        {
-                            if (compilerName)
-                            {
-                                fileSetting[fileName] = fileSetting[fileName] || { };
-                                fileSetting[fileName].compilerName = compilerName;
-                                outputChannel.appendLine('Set compiler "' +compilerName+'" for "' +fileName +'"');
-                            }
-                            else
-                            {
-                                outputChannel.appendLine('👉 You can see compilers list by [Wandbox: List Compilers] command.');
-                            }
-                        }
-                    );
-                }
-                else
-                {
-                    outputChannel.appendLine('🚫 No active text editor!');
-                }
-            }
+            'extension.setWandboxFileCompiler',
+            () => setSetting('compilerName', 'Enter compiler name')
         )
     );    
     context.subscriptions.push
     (
         vscode.commands.registerCommand
         (
-            'extension.resetWandboxFileOptions',
+            'extension.setWandboxFileStdIn',
+            () => setSetting('stdIn', 'Enter stdin text ( When you want to user multiline text, Use [Wandbox: Set Settings JSON] command. )')
+        )
+    );    
+    context.subscriptions.push
+    (
+        vscode.commands.registerCommand
+        (
+            'extension.setWandboxFileOptions',
+            () => setSetting('options', 'Enter compiler option ( You can see compiler option list by [Wandbox: Show Compier Info] )')
+        )
+    );    
+    context.subscriptions.push
+    (
+        vscode.commands.registerCommand
+        (
+            'extension.setWandboxFileCompilerOptionRaw',
+            () => setSetting('compilerOptionRaw', 'Enter compiler option raw')
+        )
+    );    
+    context.subscriptions.push
+    (
+        vscode.commands.registerCommand
+        (
+            'extension.setWandboxFileRuntimeOptionRaw',
+            () => setSetting('runtimeOptionRaw', 'Enter runtime option raw')
+        )
+    );    
+    context.subscriptions.push
+    (
+        vscode.commands.registerCommand
+        (
+            'extension.setWandboxFileSettingJson',
+            () => setSetting(null, 'Enter settings JSON')
+        )
+    );    
+    context.subscriptions.push
+    (
+        vscode.commands.registerCommand
+        (
+            'extension.resetWandboxFileSettings',
             () =>
             {
                 makeSureOutputChannel();
@@ -409,11 +466,11 @@ export function activate(context: vscode.ExtensionContext)
                     if (fileSetting[fileName])
                     {
                         delete fileSetting[fileName];
-                        outputChannel.appendLine('Reset setting for "' +fileName +'"');
+                        outputChannel.appendLine('Reset settings for "' +fileName +'"');
                     }
                     else
                     {
-                        outputChannel.appendLine('⚠️ Not found setting for "' +fileName +'"');
+                        outputChannel.appendLine('⚠️ Not found settings for "' +fileName +'"');
                     }
                 }
                 else
