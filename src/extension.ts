@@ -455,6 +455,7 @@ export function activate(context: vscode.ExtensionContext)
                 outputChannel.appendLine(JSON.stringify(json, null, 4));
                 json['code'] = activeTextEditor.document.getText();
                 json['from'] = 'wandbox-vscode';
+                var startAt = new Date();
                 request
                 (
                     {
@@ -469,6 +470,7 @@ export function activate(context: vscode.ExtensionContext)
                     },
                     function(error, response, body)
                     {
+                        var endAt = new Date();
                         if (response.statusCode)
                         {
                             outputChannel.appendLine('HTTP statusCode: ' +response.statusCode);
@@ -510,6 +512,7 @@ export function activate(context: vscode.ExtensionContext)
                             outputChannel.appendLine(body);
                             outputChannel.appendLine('error: ' +error);
                         }
+                        outputChannel.appendLine('🏁 time: ' +(endAt.getTime() -startAt.getTime()) /1000 +' s');
                     }
                 );
             }
