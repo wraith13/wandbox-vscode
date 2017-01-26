@@ -380,7 +380,7 @@ export function activate(context: vscode.ExtensionContext)
                             }
                             else
                             {
-                                outputChannel.appendLine('👉 You can see compilers list by [Wandbox: List] command.');
+                                outputChannel.appendLine('👉 You can see compilers list by [Wandbox: List Compilers] command.');
                             }
                         }
                     );
@@ -516,8 +516,8 @@ export function activate(context: vscode.ExtensionContext)
             else
             {
                 outputChannel.appendLine('🚫 Unknown language!');
-                outputChannel.appendLine('👉 You can use set a compiler by [Wandbox: Set] command.');
-                outputChannel.appendLine('👉 You can see compilers list by [Wandbox: List] command.');
+                outputChannel.appendLine('👉 You can use set a compiler by [Wandbox: Set Compiler] command.');
+                outputChannel.appendLine('👉 You can see compilers list by [Wandbox: List Compilers] command.');
             }
         }
         else
