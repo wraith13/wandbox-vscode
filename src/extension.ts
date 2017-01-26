@@ -355,6 +355,12 @@ export function activate(context: vscode.ExtensionContext)
             }
         )
     );
+    var stripDirectory = (path : string) =>
+    {
+        return path
+            .split('¥').reverse()[0]
+            .split('/').reverse()[0];
+    };
     var setSetting = (name : string, prompt: string) =>
     {
         makeSureOutputChannel();
@@ -384,8 +390,7 @@ export function activate(context: vscode.ExtensionContext)
                                     (
                                         document =>
                                         {
-                                            console.log(document.fileName);
-                                            hit = hit || file == document.fileName;
+                                            hit = hit || file == stripDirectory(document.fileName);
                                         }
                                     )
                                     if (hit)
@@ -395,7 +400,7 @@ export function activate(context: vscode.ExtensionContext)
                                     else
                                     {
                                         hasError = true;
-                                        outputChannel.appendLine(`🚫 Not found file: ${file}`);
+                                        outputChannel.appendLine(`🚫 Not found file: ${file} ( If opened, show this file once. And keep to open it.)`);
                                     }
                                 }
                             );
@@ -450,7 +455,7 @@ export function activate(context: vscode.ExtensionContext)
         vscode.commands.registerCommand
         (
             'extension.setWandboxFileAdditionals',
-            () => setSetting('additionals', 'Enter file names')
+            () => setSetting('additionals', 'Enter file names ( just file names without directory )')
         )
     );
     context.subscriptions.push
