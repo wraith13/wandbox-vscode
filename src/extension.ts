@@ -139,7 +139,7 @@ export function activate(context: vscode.ExtensionContext)
         var setting = fileSetting[fileName];
         if (setting)
         {
-            hit = setting.compilerName;
+            hit = setting.compiler;
         }
         if (!hit)
         {
@@ -447,7 +447,7 @@ export function activate(context: vscode.ExtensionContext)
         vscode.commands.registerCommand
         (
             'extension.setWandboxFileCompiler',
-            () => setSetting('compilerName', 'Enter compiler name')
+            () => setSetting('compiler', 'Enter compiler name')
         )
     );
     context.subscriptions.push
@@ -455,7 +455,7 @@ export function activate(context: vscode.ExtensionContext)
         vscode.commands.registerCommand
         (
             'extension.setWandboxFileAdditionals',
-            () => setSetting('additionals', 'Enter file names ( just file names without directory )')
+            () => setSetting('codes', 'Enter file names ( just file names without directory )')
         )
     );
     context.subscriptions.push
@@ -463,7 +463,7 @@ export function activate(context: vscode.ExtensionContext)
         vscode.commands.registerCommand
         (
             'extension.setWandboxFileStdIn',
-            () => setSetting('stdIn', 'Enter stdin text ( When you want to user multiline text, Use [Wandbox: Set Settings JSON] command. )')
+            () => setSetting('stdin', 'Enter stdin text ( When you want to user multiline text, Use [Wandbox: Set Settings JSON] command. )')
         )
     );
     context.subscriptions.push
@@ -479,7 +479,7 @@ export function activate(context: vscode.ExtensionContext)
         vscode.commands.registerCommand
         (
             'extension.setWandboxFileCompilerOptionRaw',
-            () => setSetting('compilerOptionRaw', 'Enter compiler option raw')
+            () => setSetting('compiler-option-raw', 'Enter compiler option raw')
         )
     );
     context.subscriptions.push
@@ -487,7 +487,7 @@ export function activate(context: vscode.ExtensionContext)
         vscode.commands.registerCommand
         (
             'extension.setWandboxFileRuntimeOptionRaw',
-            () => setSetting('runtimeOptionRaw', 'Enter runtime option raw')
+            () => setSetting('runtime-option-raw', 'Enter runtime option raw')
         )
     );
     context.subscriptions.push
@@ -554,11 +554,11 @@ export function activate(context: vscode.ExtensionContext)
             var setting = fileSetting[activeTextEditor.document.fileName];
             if (setting)
             {
-                additionals = setting.additionals;
-                options = setting.options;
-                stdIn = setting.stdIn;
-                compilerOptionRaw = setting.compilerOptionRaw;
-                runtimeOptionRaw = setting.runtimeOptionRaw;
+                additionals = setting['codes'];
+                options = setting['options'];
+                stdIn = setting['stdin'];
+                compilerOptionRaw = setting['compiler-option-raw'];
+                runtimeOptionRaw = setting['runtime-option-raw'];
             }
 
             if (compilerName)
@@ -579,7 +579,7 @@ export function activate(context: vscode.ExtensionContext)
                 }
                 if (options)
                 {
-                    json['runtime-option-raw'] = options;
+                    json['options'] = options;
                 }
                 if (stdIn)
                 {
