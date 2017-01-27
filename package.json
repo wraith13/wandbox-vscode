@@ -53,7 +53,7 @@
                         //  C++
                         "cpp": "clang-head",
                         //  C#
-                        "csharp": "mcs-head",
+                        "csharp": "mono-head",
                         //  CSS
                         "css": null,
                         //  Diff
@@ -139,6 +139,7 @@
                         "cpp": "clang-head",
                         "cxx": "clang-head",
                         "c": "clang-3.3-c",
+                        "cs": "mono-head",
                         "d": "dmd-head",
                         "rill": "rill-head",
                         "hs": "ghc-head",
