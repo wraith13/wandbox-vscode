@@ -9,129 +9,6 @@ import * as request from 'request';
 export function activate(context: vscode.ExtensionContext)
 {
     const extentionName = "wandbox-vscode";
-    var languageMapping =
-    [
-        //  Windows Bat
-        { vscode:'bat', wandbox:null },
-        //  Clojure
-        { vscode:'clojure', wandbox:null },
-        //  Coffeescript
-        { vscode:'coffeescript', wandbox:'coffee-script-head' },
-        //  C
-        { vscode:'c', wandbox:'clang-3.3-c' },
-        //  C++
-        { vscode:'cpp', wandbox:'clang-head' },
-        //  C#
-        { vscode:'csharp', wandbox:'mcs-head' },
-        //  CSS
-        { vscode:'css', wandbox:null },
-        //  Diff
-        { vscode:'diff', wandbox:null },
-        //  Dockerfile
-        { vscode:'dockerfile', wandbox:null },
-        //  F#
-        { vscode:'fsharp', wandbox:null },
-        //  Git
-        { vscode:'git-commit', wandbox:null },
-        { vscode:'git-rebase', wandbox:null },
-        //  Go
-        { vscode:'go', wandbox:null },
-        //  Groovy
-        { vscode:'groovy', wandbox:'groovy-2.2.1' },
-        //  Handlebars
-        { vscode:'handlebars', wandbox:null },
-        //  HTML
-        { vscode:'html', wandbox:null },
-        //  Ini
-        { vscode:'ini', wandbox:null },
-        //  Java
-        { vscode:'java', wandbox:'java8-openjdk' },
-        //  JavaScript
-        { vscode:'javascript', wandbox:'node-head' },
-        //  JSON
-        { vscode:'json', wandbox:null },
-        //  Less
-        { vscode:'less', wandbox:null },
-        //  Lua
-        { vscode:'lua', wandbox:'lua-5.3.0' },
-        //  Makefile
-        { vscode:'makefile', wandbox:null },
-        //  Markdown
-        { vscode:'markdown', wandbox:null },
-        //  Objective-C
-        { vscode:'objective-c', wandbox:null },
-        //  Perl
-        { vscode:'perl', wandbox:'perl-head' },
-        { vscode:'perl6', wandbox:null },
-        //  PHP
-        { vscode:'php', wandbox:'php-head' },
-        //  Powershell
-        { vscode:'powershell', wandbox:null },
-        //  Pug
-        { vscode:'jade', wandbox:null },
-        //  Python
-        { vscode:'python', wandbox:'python-head	' },
-        //  R
-        { vscode:'r', wandbox:null },
-        //  Razor (cshtml)
-        { vscode:'razor', wandbox:null },
-        //  Ruby
-        { vscode:'ruby', wandbox:'ruby-head' },
-        //  Rust
-        { vscode:'rust', wandbox:'rust-head' },
-        //  Sass
-        { vscode:'scss', wandbox:null }, // (syntax using curly brackets)
-        { vscode:'sass', wandbox:null }, // (indented syntax)
-        //  ShaderLab
-        { vscode:'shaderlab', wandbox:null },
-        //  Shell Script (Bash)
-        { vscode:'shellscript', wandbox:'bash' },
-        //  SQL
-        { vscode:'sql', wandbox:'sqlite-head' },
-        //  Swift
-        { vscode:'swift', wandbox:'swift-2.2' },
-        //  TypeScript
-        { vscode:'typescript', wandbox:null },
-        //  Visual Basic
-        { vscode:'vb', wandbox:null },
-        //  XML
-        { vscode:'xml', wandbox:null },
-        //  XSL
-        { vscode:'xsl', wandbox:null },
-        //  YAML
-        { vscode:'yaml', wandbox:null },
-    ];
-    var extensionMapping =
-    [
-        { extension:'cpp', wandbox:'clang-head' },
-        { extension:'cxx', wandbox:'clang-head' },
-        { extension:'c', wandbox:'clang-3.3-c' },
-        { extension:'d', wandbox:'dmd-head' },
-        { extension:'rill', wandbox:'rill-head' },
-        { extension:'hs', wandbox:'ghc-head' },
-        { extension:'pl', wandbox:'perl-head' },
-        { extension:'py', wandbox:'python-head' },
-        { extension:'rb', wandbox:'ruby-head' },
-        { extension:'php', wandbox:'php-head' },
-        { extension:'erl', wandbox:'erlang-head' },
-        { extension:'ex', wandbox:'elixir-head' },
-        { extension:'exs', wandbox:'elixir-head' },
-        { extension:'js', wandbox:'node-head' },
-        { extension:'coffee', wandbox:'coffee-script-head' },
-        { extension:'sql', wandbox:'sqlite-head' },
-        { extension:'scala', wandbox:'scala-2.12.x' },
-        { extension:'lua', wandbox:'lua-5.3.0' },
-        { extension:'rs', wandbox:'rust-head' },
-        { extension:'vim', wandbox:'vim-7.4.1714' },
-        { extension:'swift', wandbox:'swift-2.2' },
-        { extension:'sh', wandbox:'bash' },
-        { extension:'lazy', wandbox:'lazyk' },
-        { extension:'lisp', wandbox:'clisp-2.49.0' },
-        { extension:'pas', wandbox:'fpc-2.6.2' },
-        { extension:'java', wandbox:'java8-openjdk' },
-        { extension:'groovy', wandbox:'groovy-2.2.1' },
-        { extension:'gvy', wandbox:'groovy-2.2.1' },
-    ];
     var fileSetting = [ ];
     var getWandboxCompilerName = (vscodeLang :string, fileName :string) :string =>
     {
@@ -141,18 +18,9 @@ export function activate(context: vscode.ExtensionContext)
         {
             hit = setting.compiler;
         }
-        if (!hit)
+        if (!hit && vscodeLang)
         {
-            vscodeLang && languageMapping.forEach
-            (
-                item =>
-                {
-                    if (item.vscode == vscodeLang)
-                    {
-                        hit = item.wandbox;
-                    }
-                }
-            );
+            hit = vscode.workspace.getConfiguration("wandbox.languageCompilerMapping")[vscodeLang];
         }
         if (!hit && fileName)
         {
@@ -160,16 +28,7 @@ export function activate(context: vscode.ExtensionContext)
             if (2 <= elements.length)
             {
                 var extension = elements[elements.length -1];
-                extensionMapping.forEach
-                (
-                    item =>
-                    {
-                        if (item.extension == extension)
-                        {
-                            hit = item.wandbox;
-                        }
-                    }
-                );
+                hit = vscode.workspace.getConfiguration("wandbox.extensionCompilerMapping")[extension];
             }
         }
         return hit;

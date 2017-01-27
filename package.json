@@ -36,6 +36,138 @@
     ],
     "main": "./out/src/extension",
     "contributes": {
+        "configuration": {
+            "title": "Wandbox configuration",
+            "properties": {
+                "wandbox.languageCompilerMapping": {
+                    "type": "object",
+                    "default": {
+                        //  Windows Bat
+                        "bat": null,
+                        //  Clojure
+                        "clojure": null,
+                        //  Coffeescript
+                        "coffeescript": "coffee-script-head",
+                        //  C
+                        "c": "clang-3.3-c",
+                        //  C++
+                        "cpp": "clang-head",
+                        //  C#
+                        "csharp": "mcs-head",
+                        //  CSS
+                        "css": null,
+                        //  Diff
+                        "diff": null,
+                        //  Dockerfile
+                        "dockerfile": null,
+                        //  F#
+                        "fsharp": null,
+                        //  Git
+                        "git-commit": null,
+                        "git-rebase" :null,
+                        //  Go
+                        "go": null,
+                        //  Groovy
+                        "groovy": "groovy-2.2.1",
+                        //  Handlebars
+                        "handlebars": null,
+                        //  HTML
+                        "html": null,
+                        //  Ini
+                        "ini": null,
+                        //  Java
+                        "java": "java8-openjdk",
+                        //  JavaScript
+                        "javascript": "node-head",
+                        //  JSON
+                        "json": null,
+                        //  Less
+                        "less": null,
+                        //  Lua
+                        "lua": "lua-5.3.0",
+                        //  Makefile
+                        "makefile": null,
+                        //  Markdown
+                        "markdown": null,
+                        //  Objective-C
+                        "objective-c": null,
+                        //  Perl
+                        "perl": "perl-head",
+                        "perl6": null,
+                        //  PHP
+                        "php": "php-head",
+                        //  Powershell
+                        "powershell": null,
+                        //  Pug
+                        "jade": null,
+                        //  Python
+                        "python": "python-head",
+                        //  R
+                        "r": null,
+                        //  Razor (cshtml)
+                        "razor": null,
+                        //  Ruby
+                        "ruby": "ruby-head",
+                        //  Rust
+                        "rust": "rust-head",
+                        //  Sass
+                        "scss": null, // (syntax using curly brackets)
+                        "sass": null, // (indented syntax)
+                        //  ShaderLab
+                        "shaderlab": null,
+                        //  Shell Script (Bash)
+                        "shellscript": "bash",
+                        //  SQL
+                        "sql": "sqlite-head",
+                        //  Swift
+                        "swift": "swift-2.2",
+                        //  TypeScript
+                        "typescript": null,
+                        //  Visual Basic
+                        "vb": null,
+                        //  XML
+                        "xml": null,
+                        //  XSL
+                        "xsl": null,
+                        //  YAML
+                        "yaml": null
+                    }
+                },
+                "wandbox.extensionCompilerMapping": {
+                    "type": "object",
+                    "default": {
+                        "cpp": "clang-head",
+                        "cxx": "clang-head",
+                        "c": "clang-3.3-c",
+                        "d": "dmd-head",
+                        "rill": "rill-head",
+                        "hs": "ghc-head",
+                        "pl": "perl-head",
+                        "py": "python-head",
+                        "rb": "ruby-head",
+                        "php": "php-head",
+                        "erl": "erlang-head",
+                        "ex": "elixir-head",
+                        "exs": "elixir-head",
+                        "js": "node-head",
+                        "coffee": "coffee-script-head",
+                        "sql": "sqlite-head",
+                        "scala": "scala-2.12.x",
+                        "lua": "lua-5.3.0",
+                        "rs": "rust-head",
+                        "vim": "vim-7.4.1714",
+                        "swift": "swift-2.2",
+                        "sh": "bash",
+                        "lazy":"lazyk",
+                        "lisp":"clisp-2.49.0",
+                        "pas":"fpc-2.6.2",
+                        "java": "java8-openjdk",
+                        "groovy": "groovy-2.2.1",
+                        "gvy": "groovy-2.2.1"
+                    }
+                }
+            }
+        },
         "commands": [{
             "command": "extension.openWandboxWeb",
             "title": "Open Web Site",
