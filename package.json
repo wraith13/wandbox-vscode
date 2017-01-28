@@ -131,7 +131,8 @@
                         "xsl": null,
                         //  YAML
                         "yaml": null
-                    }
+                    },
+                    "description": "set compiler by language"
                 },
                 "wandbox.extensionCompilerMapping": {
                     "type": "object",
@@ -165,7 +166,29 @@
                         "java": "java8-openjdk",
                         "groovy": "groovy-2.2.1",
                         "gvy": "groovy-2.2.1"
-                    }
+                    },
+                    "description": "set compiler by file extension"
+                },
+                "wandbox.options": {
+                    "type": "object",
+                    "default": {
+                        "compiler(example)":"option1,option2"
+                    },
+                    "description": "set options by compiler"
+                },
+                "wandbox.compilerOptionRaw": {
+                    "type": "object",
+                    "default": {
+                        "compiler(example)": "raw compile option text"
+                    },
+                    "description": "set raw option by compiler"
+                },
+                "wandbox.runtimeOptionRaw": {
+                    "type": "object",
+                    "default": {
+                        "compiler(example)": "raw runtime option text"
+                    },
+                    "description": "set raw runtime option by compiler"
                 }
             }
         },

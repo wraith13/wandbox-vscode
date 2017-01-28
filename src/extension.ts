@@ -406,18 +406,27 @@ export function activate(context: vscode.ExtensionContext)
                 activeTextEditor.document.fileName
             );
             var additionals : string[];
-            var options : string;
+            var options : string = vscode.workspace.getConfiguration("wandbox.options")[compilerName];
             var stdIn : string;
-            var compilerOptionRaw : string;
-            var runtimeOptionRaw : string;
+            var compilerOptionRaw : string = vscode.workspace.getConfiguration("wandbox.compilerOptionRaw")[compilerName];
+            var runtimeOptionRaw : string = vscode.workspace.getConfiguration("wandbox.runtimeOptionRaw")[compilerName];
             var setting = fileSetting[activeTextEditor.document.fileName];
             if (setting)
             {
                 additionals = setting['codes'];
-                options = setting['options'];
+                if (undefined !== setting['options'])
+                {
+                    options = setting['options'];
+                }
                 stdIn = setting['stdin'];
-                compilerOptionRaw = setting['compiler-option-raw'];
-                runtimeOptionRaw = setting['runtime-option-raw'];
+                if (undefined !== setting['compiler-option-raw'])
+                {
+                    compilerOptionRaw = setting['compiler-option-raw'];
+                }
+                if (undefined !== setting['runtime-option-raw'])
+                {
+                    runtimeOptionRaw = setting['runtime-option-raw'];
+                }
             }
 
             if (compilerName)
