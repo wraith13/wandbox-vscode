@@ -96,7 +96,7 @@ export function activate(context: vscode.ExtensionContext)
     (
         vscode.commands.registerCommand
         (
-            'extension.openWandboxWeb',
+            'extension.showWandboxWeb',
             () =>
             {
                 vscode.commands.executeCommand
@@ -111,7 +111,7 @@ export function activate(context: vscode.ExtensionContext)
     (
         vscode.commands.registerCommand
         (
-            'extension.getWandboxList',
+            'extension.showWandboxCompiers',
             () =>
             {
                 makeSureOutputChannel();

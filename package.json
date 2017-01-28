@@ -18,8 +18,8 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.openWandboxWeb",
-        "onCommand:extension.getWandboxList",
+        "onCommand:extension.showWandboxWeb",
+        "onCommand:extension.showWandboxCompiers",
         "onCommand:extension.showWandboxItem",
         "onCommand:extension.showWandboxListJson",
         "onCommand:extension.setWandboxFileCompiler",
@@ -193,12 +193,12 @@
             }
         },
         "commands": [{
-            "command": "extension.openWandboxWeb",
-            "title": "Open Web Site",
+            "command": "extension.showWandboxWeb",
+            "title": "Show Web Site",
             "category": "Wandbox"
         },{
-            "command": "extension.getWandboxList",
-            "title": "List Compilers",
+            "command": "extension.showWandboxCompiers",
+            "title": "Show Compilers",
             "category": "Wandbox"
         },{
             "command": "extension.showWandboxItem",
@@ -238,7 +238,7 @@
             "category": "Wandbox"
         },{
             "command": "extension.resetWandboxFileSettings",
-            "title": "Reset Settings",
+            "title": "Reset Settings(args :any[])",
             "category": "Wandbox"
         },{
             "command": "extension.invokeWandbox",
