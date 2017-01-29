@@ -10,9 +10,39 @@ export function activate(context: vscode.ExtensionContext)
 {
     const extentionName = "wandbox-vscode";
     var fileSetting = { };
-    var getConfiguration = (key :string) : any =>
+    var showJson = (titile : string, json : any) =>
     {
-        return vscode.workspace.getConfiguration("wandbox")[key];
+        var provider = vscode.workspace.registerTextDocumentContentProvider
+        (
+            'wandbox-vscode-json',
+            new class implements vscode.TextDocumentContentProvider
+            {
+                provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken)
+                    : string | Thenable<string>
+                {
+                    return JSON.stringify(json, null, 4);
+                }
+            }
+        );
+        vscode.workspace.openTextDocument
+        (
+            vscode.Uri.parse(`wandbox-vscode-json://wandbox-vscode/${titile}.json`)
+        )
+        .then
+        (
+            (value: vscode.TextDocument) =>
+            {
+                vscode.window.showTextDocument(value);
+                provider.dispose();
+            }
+        );
+    }
+    var getConfiguration = (key ?: string) : any =>
+    {
+        var configuration = vscode.workspace.getConfiguration("wandbox");
+        return key ?
+            configuration[key]:
+            configuration;
     }
     var getCurrentFilename = () : string =>
     {
@@ -134,6 +164,21 @@ export function activate(context: vscode.ExtensionContext)
     (
         vscode.commands.registerCommand
         (
+            'extension.showWandboxSettings',
+            () => showJson
+            (
+                "setting",
+                {
+                    "basicSetting": getConfiguration(),
+                    "fileSetting": fileSetting
+                }
+            )
+        )
+    );
+    context.subscriptions.push
+    (
+        vscode.commands.registerCommand
+        (
             'extension.showWandboxWeb',
             () =>
             {
@@ -220,35 +265,11 @@ export function activate(context: vscode.ExtensionContext)
 
                 getList
                 (
-                    body =>
-                    {
-                        var key = getWandboxServerUrl();
-                        list[key] = JSON.parse(body);
-                        var provider = vscode.workspace.registerTextDocumentContentProvider
-                        (
-                            'wandbox-list-json',
-                            new class implements vscode.TextDocumentContentProvider
-                            {
-                                provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken)
-                                    : string | Thenable<string>
-                                {
-                                    return JSON.stringify(list[key], null, 4);
-                                }
-                            }
-                        );
-                        vscode.workspace.openTextDocument
-                        (
-                            vscode.Uri.parse('wandbox-list-json://melpon.org/wandbox-api-list.json')
-                        )
-                        .then
-                        (
-                            (value: vscode.TextDocument) =>
-                            {
-                                vscode.window.showTextDocument(value);
-                                provider.dispose();
-                            }
-                        );
-                    }
+                    body => showJson
+                    (
+                        "list",
+                        list[getWandboxServerUrl()] = JSON.parse(body)
+                    )
                 );
             }
         )

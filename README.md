@@ -26,6 +26,7 @@ For example if there is an image subfolder under your extension project workspac
 ### Wandbox: Show Compiler Info
 ### Wandbox: Show Raw JSON
 ### Wandbox: Show Web Site
+### Wandbox: Show Settings
 
 ## Setting Commands
 
@@ -41,7 +42,6 @@ Effect of all setting commands expires with next Visual Studio Code process.
 ### Wandbox: Set Runtime Option Raw
 ### Wandbox: Set Settings JSON
 ### Wandbox: Reset Settings
-
 
 
 ## Extension Settings
