@@ -10,6 +10,10 @@ export function activate(context: vscode.ExtensionContext)
 {
     const extentionName = "wandbox-vscode";
     var fileSetting = { };
+    var deepCopy = (source : any) : any =>
+    {
+        return JSON.parse(JSON.stringify(source));
+    }
     var showJson = (titile : string, json : any) =>
     {
         var provider = vscode.workspace.registerTextDocumentContentProvider
@@ -206,10 +210,15 @@ export function activate(context: vscode.ExtensionContext)
                     {
                         if (list)
                         {
-                            outputChannel.appendLine('compiler\tlanguage');
+                            outputChannel.appendLine('compiler\tdetails');
                             list.forEach
                             (
-                                item => outputChannel.appendLine(`${item.name}\t${item.language}`)
+                                item =>
+                                {
+                                    var displayItem = deepCopy(item);
+                                    delete displayItem.switches;
+                                    outputChannel.appendLine(`${item.name}\t${JSON.stringify(displayItem)}`);
+                                }
                             )
                         }
                     }
