@@ -42,94 +42,51 @@
                 "wandbox.languageCompilerMapping": {
                     "type": "object",
                     "default": {
-                        //  Windows Bat
                         "bat": null,
-                        //  Clojure
                         "clojure": null,
-                        //  Coffeescript
                         "coffeescript": "coffee-script-head",
-                        //  C
                         "c": "clang-3.3-c",
-                        //  C++
                         "cpp": "clang-head",
-                        //  C#
                         "csharp": "mono-head",
-                        //  CSS
                         "css": null,
-                        //  Diff
                         "diff": null,
-                        //  Dockerfile
                         "dockerfile": null,
-                        //  F#
                         "fsharp": null,
-                        //  Git
                         "git-commit": null,
                         "git-rebase" :null,
-                        //  Go
                         "go": null,
-                        //  Groovy
                         "groovy": "groovy-2.2.1",
-                        //  Handlebars
                         "handlebars": null,
-                        //  HTML
                         "html": null,
-                        //  Ini
                         "ini": null,
-                        //  Java
                         "java": "java8-openjdk",
-                        //  JavaScript
                         "javascript": "node-head",
-                        //  JSON
                         "json": null,
-                        //  Less
                         "less": null,
-                        //  Lua
                         "lua": "lua-5.3.0",
-                        //  Makefile
                         "makefile": null,
-                        //  Markdown
                         "markdown": null,
-                        //  Objective-C
                         "objective-c": null,
-                        //  Perl
                         "perl": "perl-head",
                         "perl6": null,
-                        //  PHP
                         "php": "php-head",
-                        //  Powershell
                         "powershell": null,
-                        //  Pug
                         "jade": null,
-                        //  Python
                         "python": "python-head",
-                        //  R
                         "r": null,
-                        //  Razor (cshtml)
                         "razor": null,
-                        //  Ruby
                         "ruby": "ruby-head",
-                        //  Rust
                         "rust": "rust-head",
-                        //  Sass
-                        "scss": null, // (syntax using curly brackets)
-                        "sass": null, // (indented syntax)
-                        //  ShaderLab
+                        "scss": null,
+                        "sass": null,
                         "shaderlab": null,
-                        //  Shell Script (Bash)
                         "shellscript": "bash",
-                        //  SQL
                         "sql": "sqlite-head",
-                        //  Swift
                         "swift": "swift-2.2",
-                        //  TypeScript
                         "typescript": null,
-                        //  Visual Basic
                         "vb": null,
-                        //  XML
                         "xml": null,
-                        //  XSL
                         "xsl": null,
-                        //  YAML
                         "yaml": null
                     },
                     "description": "set compiler by language"
