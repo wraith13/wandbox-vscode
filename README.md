@@ -1,6 +1,9 @@
-# wandbox-vscode README
+# wandbox-vscode
 
-This is the README for your extension "wandbox-vscode". After writing up a brief description, we recommend including the following sections.
+[Wandbox](http://melpon.org/wandbox)([GitHub](https://github.com/melpon/wandbox/)) is a social compilation service. This extension is Wandbox front-end for Visual Studio Code.
+
+> Wandbox is provided from [@melpon](https://github.com/melpon)( 🐕 dog) as a personal voluntary service.
+> For keep this service, please do not put a high load on this service.
 
 ## Features
 
@@ -12,40 +15,66 @@ For example if there is an image subfolder under your extension project workspac
 
 > Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
 
-## Requirements
+## Main Commands
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+### Wandbox: Run
+### Wandbox: Share
+
+## Show Commands
+
+### Wandbox: Show Compilers
+### Wandbox: Show Compiler Info
+### Wandbox: Show Raw JSON
+### Wandbox: Show Web Site
+
+## Setting Commands
+
+Target of all setting commands is a current document.
+Effect of all setting commands expires with next Visual Studio Code process.
+
+### Wandbox: Set Compiler
+### Wandbox: Set Additional Files
+### Wandbox: Set StdIn
+### Wandbox: Set Options
+### Wandbox: Set Compiler Option Raw
+### Wandbox: Set Runtime Option Raw
+### Wandbox: Set Settings JSON
+### Wandbox: Reset Settings
+
+
 
 ## Extension Settings
+
+<!--
 
 Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
 
 For example:
 
+-->
+
 This extension contributes the following settings:
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
+* `wandbox.defaultSerer`: default wandbox server url
+* `wandbox.languageCompilerMapping`: set compiler by language
+* `wandbox.extensionCompilerMapping`: set compiler by file extension
+* `wandbox.options`: set options by compiler
+* `wandbox.compilerOptionRaw`: set raw option by compiler
+* `wandbox.runtimeOptionRaw`: set raw runtime option by compiler
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
-
 ### 1.0.0
 
-Initial release of ...
+Initial release of wandbox-vscode.
 
-### 1.0.1
+## Acknowledgments
 
-Fixed issue #.
+Thanks [@melpon](https://github.com/melpon)( 🐕 dog) and [@kikairoya](https://github.com/kikairoya)( 🐂 bull) for awesome compilation service!
 
-### 1.1.0
+Thanks [@rhysd](https://github.com/rhysd)( 🐕 dog) for your support in TypeScript!
 
-Added features X, Y, and Z.
+<!--
 
 -----------------------------------------------------------------------------------------------------------
 
@@ -64,28 +93,4 @@ Added features X, Y, and Z.
 
 **Enjoy!**
 
------------------------------------------------------------------------------------------------------------
-
-# バージョン採番ルール
-
-## バージョン表記のフォーマット: A.BB.CCC
-
-## メジャーバージョン番号(A):
-明らかな非互換の変更が行われた際にインクリメント。
-桁数は不定。
-
-## マイナーバージョン番号(BB):
-機能追加や上位互換と判断できる仕様変更が行われた際にインクリメント。
-桁数は2桁固定。
-
-## ビルド番号(CCC):
-バグフィックスや仕様変更というほどでもない微細な修正が行われた際にインクリ
-メント。
-桁数は3桁固定。
-
-## 細則
-* 各番号は0始まりとする。
-* 固定桁に足りない場合は先頭を0埋めする。
-* 番号が固定桁で足りなくなった場合は、上位の番号をインクリメントする。
-* 上位の番号がインクリメントされた場合、下位の番号は0にリセットする。
-
+-->
