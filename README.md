@@ -32,6 +32,7 @@ For example if there is an image subfolder under your extension project workspac
 Target of all setting commands is a current document.
 Effect of all setting commands expires with next Visual Studio Code process.
 
+### Wandbox: Set Server
 ### Wandbox: Set Compiler
 ### Wandbox: Set Additional Files
 ### Wandbox: Set StdIn

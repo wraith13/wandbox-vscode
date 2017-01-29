@@ -9,29 +9,65 @@ import * as request from 'request';
 export function activate(context: vscode.ExtensionContext)
 {
     const extentionName = "wandbox-vscode";
-    var fileSetting = [ ];
+    var fileSetting = { };
+    var getConfiguration = (key :string) : any =>
+    {
+        return vscode.workspace.getConfiguration("wandbox")[key];
+    }
+    var getCurrentFilename = () : string =>
+    {
+        var result : string;
+        var activeTextEditor = vscode.window.activeTextEditor;
+        if (null !== activeTextEditor)
+        {
+            result = activeTextEditor.document.fileName;
+        }
+        if (!result)
+        {
+            result = "wandbox-vscode:default";
+        }
+        return result;
+    }
+    var getWandboxServerUrl = () :string =>
+    {
+        var result : string;
+        var setting = fileSetting[getCurrentFilename()];
+        if (setting)
+        {
+            result = setting.server;
+        }
+        if (!result)
+        {
+            result = getConfiguration("defaultServer");
+        }
+        if (result.endsWith("/"))
+        {
+            result = result.substr(0, result.length -1);
+        }
+        return result;
+    };
     var getWandboxCompilerName = (vscodeLang :string, fileName :string) :string =>
     {
-        var hit : string;
+        var result : string;
         var setting = fileSetting[fileName];
         if (setting)
         {
-            hit = setting.compiler;
+            result = setting.compiler;
         }
-        if (!hit && vscodeLang)
+        if (!result && vscodeLang)
         {
-            hit = vscode.workspace.getConfiguration("wandbox.languageCompilerMapping")[vscodeLang];
+            result = getConfiguration("languageCompilerMapping")[vscodeLang];
         }
-        if (!hit && fileName)
+        if (!result && fileName)
         {
             var elements = fileName.split('.');
             if (2 <= elements.length)
             {
                 var extension = elements[elements.length -1];
-                hit = vscode.workspace.getConfiguration("wandbox.extensionCompilerMapping")[extension];
+                result = getConfiguration("extensionCompilerMapping")[extension];
             }
         }
-        return hit;
+        return result;
     };
     var outputChannel :vscode.OutputChannel;
     var makeSureOutputChannel = () =>
@@ -53,10 +89,11 @@ export function activate(context: vscode.ExtensionContext)
     };
     var getList = (callback : (string) => void) =>
     {
-        outputChannel.appendLine(`HTTP GET http://melpon.org/wandbox/api/list.json?from=${extentionName}`);
+        var requestUrl = getWandboxServerUrl() +`/api/list.json?from=${extentionName}`;
+        outputChannel.appendLine(`HTTP GET ${requestUrl}`);
         request.get
         (
-            `http://melpon.org/wandbox/api/list.json?from=${extentionName}`,
+            requestUrl,
             function(error, response, body)
             {
                 if (!error && response.statusCode == 200)
@@ -75,16 +112,17 @@ export function activate(context: vscode.ExtensionContext)
             }
         );
     };
-    var list : any[];
+    var list : {[name : string] : any[] } = { };
     var makeSureList = (callback : (list :any[]) => void) =>
     {
-        if (!list)
+        var key = getWandboxServerUrl();
+        if (!list[key])
         {
-            getList(body => callback(list = JSON.parse(body)));
+            getList(body => callback(list[key] = JSON.parse(body)));
         }
         else
         {
-            callback(list);
+            callback(list[key]);
         }
     };
 
@@ -102,7 +140,7 @@ export function activate(context: vscode.ExtensionContext)
                 vscode.commands.executeCommand
                 (
                     'vscode.open',
-                    vscode.Uri.parse(`http://melpon.org/wandbox/?from=${extentionName}`)
+                    vscode.Uri.parse(getWandboxServerUrl() +`/?from=${extentionName}`)
                 );
             }
         )
@@ -184,7 +222,8 @@ export function activate(context: vscode.ExtensionContext)
                 (
                     body =>
                     {
-                        list = JSON.parse(body);
+                        var key = getWandboxServerUrl();
+                        list[key] = JSON.parse(body);
                         var provider = vscode.workspace.registerTextDocumentContentProvider
                         (
                             'wandbox-list-json',
@@ -193,7 +232,7 @@ export function activate(context: vscode.ExtensionContext)
                                 provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken)
                                     : string | Thenable<string>
                                 {
-                                    return JSON.stringify(list, null, 4);
+                                    return JSON.stringify(list[key], null, 4);
                                 }
                             }
                         );
@@ -305,6 +344,14 @@ export function activate(context: vscode.ExtensionContext)
     (
         vscode.commands.registerCommand
         (
+            'extension.setWandboxFileServer',
+            () => setSetting('server', 'Enter server url')
+        )
+    );
+    context.subscriptions.push
+    (
+        vscode.commands.registerCommand
+        (
             'extension.setWandboxFileCompiler',
             () => setSetting('compiler', 'Enter compiler name')
         )
@@ -406,10 +453,10 @@ export function activate(context: vscode.ExtensionContext)
                 activeTextEditor.document.fileName
             );
             var additionals : string[];
-            var options : string = vscode.workspace.getConfiguration("wandbox.options")[compilerName];
+            var options : string = getConfiguration("options")[compilerName];
             var stdIn : string;
-            var compilerOptionRaw : string = vscode.workspace.getConfiguration("wandbox.compilerOptionRaw")[compilerName];
-            var runtimeOptionRaw : string = vscode.workspace.getConfiguration("wandbox.runtimeOptionRaw")[compilerName];
+            var compilerOptionRaw : string = getConfiguration("compilerOptionRaw")[compilerName];
+            var runtimeOptionRaw : string = getConfiguration("runtimeOptionRaw")[compilerName];
             var setting = fileSetting[activeTextEditor.document.fileName];
             if (setting)
             {
@@ -431,7 +478,8 @@ export function activate(context: vscode.ExtensionContext)
 
             if (compilerName)
             {
-                outputChannel.appendLine('HTTP POST http://melpon.org/wandbox/api/compile.json');
+                var requestUrl = getWandboxServerUrl() +`/api/compile.json`;
+                outputChannel.appendLine(`HTTP POST ${requestUrl}`);
                 var json =
                 {
                     compiler: compilerName
@@ -500,7 +548,7 @@ export function activate(context: vscode.ExtensionContext)
                 request
                 (
                     {
-                        url: 'http://melpon.org/wandbox/api/compile.json',
+                        url: requestUrl,
                         method: 'POST',
                         headers:
                         {
