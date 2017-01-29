@@ -23,6 +23,7 @@ For example if there is an image subfolder under your extension project workspac
 ## Show Commands
 
 ### Wandbox: Show Compilers
+### Wandbox: Show Options
 ### Wandbox: Show Compiler Info
 ### Wandbox: Show Raw JSON
 ### Wandbox: Show Web Site

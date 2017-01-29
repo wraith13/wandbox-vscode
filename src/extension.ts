@@ -257,6 +257,96 @@ export function activate(context: vscode.ExtensionContext)
     (
         vscode.commands.registerCommand
         (
+            'extension.showWandboxOptions',
+            () =>
+            {
+                makeSureOutputChannel();
+                bowWow();
+
+                var activeTextEditor = vscode.window.activeTextEditor;
+                if (activeTextEditor)
+                {
+                    var compilerName = getWandboxCompilerName
+                    (
+                        activeTextEditor.document.languageId,
+                        activeTextEditor.document.fileName
+                    );
+                    if (compilerName)
+                    {
+                        makeSureList
+                        (
+                            list =>
+                            {
+                                var hit :any;
+                                list && list.forEach
+                                (
+                                    item =>
+                                    {
+                                        if (compilerName == item.name)
+                                        {
+                                            hit = item;
+                                        }
+                                    }
+                                );
+
+                                if (!hit)
+                                {
+                                    outputChannel.appendLine('🚫 Unknown compiler!');
+                                    outputChannel.appendLine('👉 You can use set a compiler by [Wandbox: Set Compiler] command.');
+                                    outputChannel.appendLine('👉 You can see compilers list by [Wandbox: Show Compilers] command.');
+                                }
+                                else
+                                {
+                                    if (!hit.switches || 0 == hit.switches.length)
+                                    {
+                                        outputChannel.appendLine('this compiler has no options');
+                                    }
+                                    else
+                                    {
+                                        outputChannel.appendLine('option\tdetails');
+                                        hit.switches.forEach
+                                        (
+                                            item =>
+                                            {
+                                                if (item.options)
+                                                {
+                                                    item.options.forEach
+                                                    (
+                                                        item =>
+                                                        {
+                                                            outputChannel.appendLine(`${item.name}\t${JSON.stringify(item)}`);
+                                                        }
+                                                    )
+                                                }
+                                                else
+                                                {
+                                                    outputChannel.appendLine(`${item.name}\t${JSON.stringify(item)}`);
+                                                }
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                        )
+                    }
+                    else
+                    {
+                        outputChannel.appendLine('🚫 Unknown language!');
+                        outputChannel.appendLine('👉 You can use set a compiler by [Wandbox: Set Compiler] command.');
+                        outputChannel.appendLine('👉 You can see compilers list by [Wandbox: Show Compilers] command.');
+                    }
+                }
+                else
+                {
+                    outputChannel.appendLine('🚫 No active text editor!');
+                }
+            }
+        )
+    );
+    context.subscriptions.push
+    (
+        vscode.commands.registerCommand
+        (
             'extension.showWandboxListJson',
             () =>
             {
@@ -630,7 +720,7 @@ export function activate(context: vscode.ExtensionContext)
             {
                 outputChannel.appendLine('🚫 Unknown language!');
                 outputChannel.appendLine('👉 You can use set a compiler by [Wandbox: Set Compiler] command.');
-                outputChannel.appendLine('👉 You can see compilers list by [Wandbox: List Compilers] command.');
+                outputChannel.appendLine('👉 You can see compilers list by [Wandbox: Show Compilers] command.');
             }
         }
         else

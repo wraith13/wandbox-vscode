@@ -21,6 +21,7 @@
         "onCommand:extension.showWandboxWeb",
         "onCommand:extension.showWandboxCompiers",
         "onCommand:extension.showWandboxItem",
+        "onCommand:extension.showWandboxOptions",
         "onCommand:extension.showWandboxListJson",
         "onCommand:extension.showWandboxSettings",
         "onCommand:extension.setWandboxFileServer",
@@ -171,6 +172,10 @@
         },{
             "command": "extension.showWandboxItem",
             "title": "Show Compiler Info",
+            "category": "Wandbox"
+        },{
+            "command": "extension.showWandboxOptions",
+            "title": "Show Options",
             "category": "Wandbox"
         },{
             "command": "extension.showWandboxListJson",
