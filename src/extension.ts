@@ -230,42 +230,6 @@ export function activate(context: vscode.ExtensionContext)
     (
         vscode.commands.registerCommand
         (
-            'extension.showWandboxItem',
-            () =>
-            {
-                makeSureOutputChannel();
-                bowWow();
-
-                vscode.window.showInputBox()
-                .then
-                (
-                    name =>
-                    makeSureList
-                    (
-                        list =>
-                        {
-                            var hit :any;
-                            list && list.forEach
-                            (
-                                item =>
-                                {
-                                    if (name == item.name)
-                                    {
-                                        hit = item;
-                                    }
-                                }
-                            );
-                            hit && outputChannel.appendLine(JSON.stringify(hit, null, 4));
-                        }
-                    )
-                )
-            }
-        )
-    );
-    context.subscriptions.push
-    (
-        vscode.commands.registerCommand
-        (
             'extension.showWandboxOptions',
             () =>
             {

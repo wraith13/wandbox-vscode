@@ -20,7 +20,6 @@
     "activationEvents": [
         "onCommand:extension.showWandboxWeb",
         "onCommand:extension.showWandboxCompiers",
-        "onCommand:extension.showWandboxItem",
         "onCommand:extension.showWandboxOptions",
         "onCommand:extension.showWandboxListJson",
         "onCommand:extension.showWandboxSettings",
@@ -168,10 +167,6 @@
         },{
             "command": "extension.showWandboxCompiers",
             "title": "Show Compilers",
-            "category": "Wandbox"
-        },{
-            "command": "extension.showWandboxItem",
-            "title": "Show Compiler Info",
             "category": "Wandbox"
         },{
             "command": "extension.showWandboxOptions",
