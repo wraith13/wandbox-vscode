@@ -395,8 +395,15 @@ export function activate(context: vscode.ExtensionContext)
                         else
                         if (name)
                         {
-                            fileSetting[fileName][name] = value;
-                            outputChannel.appendLine(`Set ${name} "${value}" for "${fileName}"`);
+                            try
+                            {
+                                fileSetting[fileName][name] = JSON.parse(`"${value}"`);
+                                outputChannel.appendLine(`Set ${name} "${value}" for "${fileName}"`);
+                            }
+                            catch(Err)
+                            {
+                                outputChannel.appendLine(`🚫 ${Err}`);
+                            }
                         }
                         else
                         {
