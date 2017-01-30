@@ -36,7 +36,7 @@ Effect of all setting commands expires with next Visual Studio Code process.
 > For keep this service, please do not put a high load on this service.
 
 * `Wandbox: Set Compiler` : set a compiler 
-* `Wandbox: Set Additional Files` : set .....
+* `Wandbox: Set Additional Files` : set additional source files
 * `Wandbox: Set StdIn` : set stdin text
 * `Wandbox: Set Options` : set compiler options
 * `Wandbox: Set Compiler Option Raw` : set raw compiler option
