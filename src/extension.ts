@@ -684,7 +684,18 @@ export function activate(context: vscode.ExtensionContext)
                             //body.program_message
                             //merged messages program_output and program_error
                             //body.permlink && outputChannel.appendLine(`🔗 permlink: ${body.permlink}`);
-                            body.url && outputChannel.appendLine(`🔗 url: ${body.url}`);
+                            if (body.url)
+                            {
+                                outputChannel.appendLine(`🔗 url: ${body.url}`);
+                                if (getConfiguration("autoOpenShareUrl"))
+                                {
+                                    vscode.commands.executeCommand
+                                    (
+                                        'vscode.open',
+                                        vscode.Uri.parse(body.url)
+                                    );
+                                }
+                            }
 
                         }
                         else

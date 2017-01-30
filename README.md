@@ -7,14 +7,6 @@
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
 ## Main Commands
 
 ### Wandbox: Run
@@ -34,6 +26,11 @@ Target of all setting commands is a current document.
 Effect of all setting commands expires with next Visual Studio Code process.
 
 ### Wandbox: Set Server
+
+> You can use http://wandbox.fetus.jp/ . This Wandbox server has a wide variety of PHP compilers.
+> This Wandbox server is provided from [@fetus-hina](https://github.com/fetus-hina) as a personal voluntary service.
+> For keep this service, please do not put a high load on this service.
+
 ### Wandbox: Set Compiler
 ### Wandbox: Set Additional Files
 ### Wandbox: Set StdIn
@@ -57,6 +54,7 @@ For example:
 This extension contributes the following settings:
 
 * `wandbox.defaultSerer`: default wandbox server url
+* `wandbox.autoOpenShareUrl`: when make a share url, auto open it
 * `wandbox.languageCompilerMapping`: set compiler by language
 * `wandbox.extensionCompilerMapping`: set compiler by file extension
 * `wandbox.options`: set options by compiler

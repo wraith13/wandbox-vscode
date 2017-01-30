@@ -46,6 +46,11 @@
                     "default": "http://melpon.org/wandbox/",
                     "description": "default wandbox server url"
                 },
+                "wandbox.autoOpenShareUrl": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "when make a share url, auto open it"
+                },
                 "wandbox.languageCompilerMapping": {
                     "type": "object",
                     "default": {
