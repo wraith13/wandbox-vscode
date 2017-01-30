@@ -7,49 +7,45 @@
 
 ## Features
 
+wandbox-vscode provide several commands in the Command Palette.
+
 ## Main Commands
 
-### Wandbox: Run
-### Wandbox: Share
+* `Wandbox: Run` : run a current document on wandbox
+* `Wandbox: Share` : make a share url
+
+> You can disable to auto open share url by `wandbox.autoOpenShareUrl` setting.
 
 ## Show Commands
 
-### Wandbox: Show Compilers
-### Wandbox: Show Options
-### Wandbox: Show Raw JSON
-### Wandbox: Show Web Site
-### Wandbox: Show Settings
+* `Wandbox: Show Compilers` : show available compilers list on wandbox
+* `Wandbox: Show Options` : show options of a current compiler
+* `Wandbox: Show Raw JSON` : show a wandbox specs as raw JSON
+* `Wandbox: Show Web Site` : open wandbox web site
+* `Wandbox: Show Settings` : show all wandbox-vscode settings
 
 ## Setting Commands
 
 Target of all setting commands is a current document.
 Effect of all setting commands expires with next Visual Studio Code process.
 
-### Wandbox: Set Server
+* `Wandbox: Set Server` : set a wandbox server url
 
-> You can use http://wandbox.fetus.jp/ . This Wandbox server has a wide variety of PHP compilers.
+> You can use `http://wandbox.fetus.jp/` . This Wandbox server has a wide variety of PHP compilers.
 > This Wandbox server is provided from [@fetus-hina](https://github.com/fetus-hina) as a personal voluntary service.
 > For keep this service, please do not put a high load on this service.
 
-### Wandbox: Set Compiler
-### Wandbox: Set Additional Files
-### Wandbox: Set StdIn
-### Wandbox: Set Options
-### Wandbox: Set Compiler Option Raw
-### Wandbox: Set Runtime Option Raw
-### Wandbox: Set Settings JSON
-### Wandbox: Reset Settings
+* `Wandbox: Set Compiler` : set a compiler 
+* `Wandbox: Set Additional Files` : set .....
+* `Wandbox: Set StdIn` : set stdin text
+* `Wandbox: Set Options` : set compiler options
+* `Wandbox: Set Compiler Option Raw` : set raw compiler option
+* `Wandbox: Set Runtime Option Raw` : set raw runtime option
+* `Wandbox: Set Settings JSON` : set all temporary settings by JSON
+* `Wandbox: Reset Settings` : reset all temporary settings
 
 
 ## Extension Settings
-
-<!--
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
--->
 
 This extension contributes the following settings:
 
@@ -67,29 +63,20 @@ This extension contributes the following settings:
 
 Initial release of wandbox-vscode.
 
+## "Wandbox has not my favorite compiler!"
+
+No probrem! You can pull request to [wandbox](https://github.com/melpon/wandbox/)!
+
+## Support
+
+[GitHub Issues](https://github.com/wraith13/wandbox-vscode/issues)
+
+## License
+
+[Boost Software License](https://github.com/wraith13/wandbox-vscode/blob/master/LICENSE_1_0.txt)
+
 ## Acknowledgments
 
 Thanks [@melpon](https://github.com/melpon)( 🐕 dog) and [@kikairoya](https://github.com/kikairoya)( 🐂 bull) for awesome compilation service!
 
 Thanks [@rhysd](https://github.com/rhysd)( 🐕 dog) for your support in TypeScript!
-
-<!--
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on OSX or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on OSX or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (OSX) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
-
--->
