@@ -8,6 +8,10 @@
     "engines": {
         "vscode": "^1.5.0"
     },
+    "galleryBanner": {
+        "color": "#d6e685",
+        "theme": "light"
+    },
     "bugs": {
         "url": "https://github.com/wraith13/wandbox-vscode/issues"
     },
