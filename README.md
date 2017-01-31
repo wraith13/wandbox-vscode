@@ -31,7 +31,7 @@ Effect of all setting commands expires with next Visual Studio Code process.
 
 * `Wandbox: Set Server` : set a wandbox server url
 
-> You can use `http://wandbox.fetus.jp/` . This Wandbox server has a wide variety of PHP compilers.
+> You can use [`http://wandbox.fetus.jp/`](http://wandbox.fetus.jp/) . This Wandbox server has a wide variety of PHP compilers.
 > This Wandbox server is provided from [@fetus-hina](https://github.com/fetus-hina) as a personal voluntary service.
 > For keep this service, please do not put a high load on this service.
 
