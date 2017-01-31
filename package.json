@@ -2,20 +2,58 @@
     "name": "wandbox-vscode",
     "displayName": "wandbox-vscode",
     "description": "wandbox invoker for VSCode",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "publisher": "wraith13",
+    "license": "LICENSE_1_0.txt",
     "engines": {
         "vscode": "^1.5.0"
     },
     "bugs": {
         "url": "https://github.com/wraith13/wandbox-vscode/issues"
     },
+    "homepage": "https://github.com/wraith13/wandbox-vscode/blob/master/README.md",
     "repository": {
         "type": "git",
         "url": "https://github.com/wraith13/wandbox-vscode.git"
     },
     "categories": [
         "Other"
+    ],
+    "keywords": [
+        "wandbox",
+        "compile",
+        "run",
+        "C++",
+        "C#",
+        "D",
+        "Rill",
+        "Jaskell",
+        "Perl",
+        "Python",
+        "Ruby",
+        "Php",
+        "Erlang",
+        "Elixir",
+        "JavaScript",
+        "CoffeeScript",
+        "SQL",
+        "Scala",
+        "Lua",
+        "Rust",
+        "VimScript",
+        "Swift",
+        "bash",
+        "Lazy K",
+        "Lisp",
+        "Pascal",
+        "Java",
+        "Groovy",
+        "gcc",
+        "clang",
+        "mono",
+        "ghc",
+        "node.js",
+        "SQLite"
     ],
     "activationEvents": [
         "onCommand:extension.showWandboxWeb",
