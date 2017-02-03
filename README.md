@@ -59,7 +59,11 @@ This extension contributes the following settings:
 
 ## Release Notes
 
-### 1.0.0
+### 1.0.1 - 2017-02-03
+#### Fixed
+- DOC: http://wandbox.fetus.jp/ → https://wandbox.fetus.jp/
+
+### 1.0.0 - 2017-02-03
 
 Initial release of wandbox-vscode.
 
