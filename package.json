@@ -2,6 +2,7 @@
     "name": "wandbox-vscode",
     "displayName": "wandbox-vscode",
     "description": "wandbox invoker for VSCode",
+    "icon": "images/wandhex.128.png",
     "version": "1.0.0",
     "publisher": "wraith13",
     "license": "LICENSE_1_0.txt",

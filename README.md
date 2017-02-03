@@ -80,3 +80,5 @@ No probrem! You can pull request to [wandbox](https://github.com/melpon/wandbox/
 Thanks [@melpon](https://github.com/melpon)( 🐕 dog) and [@kikairoya](https://github.com/kikairoya)( 🐂 bull) for awesome compilation service!
 
 Thanks [@rhysd](https://github.com/rhysd)( 🐕 dog) for your support in TypeScript!
+
+Thanks [@chomado](https://github.com/chomado)( 👧 girl) for a great extension icon!
