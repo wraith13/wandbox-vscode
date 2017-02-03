@@ -13,7 +13,7 @@ export function activate(context: vscode.ExtensionContext)
     var deepCopy = (source : any) : any =>
     {
         return JSON.parse(JSON.stringify(source));
-    }
+    };
     var showJson = (titile : string, json : any) =>
     {
         var provider = vscode.workspace.registerTextDocumentContentProvider
@@ -40,14 +40,14 @@ export function activate(context: vscode.ExtensionContext)
                 provider.dispose();
             }
         );
-    }
+    };
     var getConfiguration = (key ?: string) : any =>
     {
         var configuration = vscode.workspace.getConfiguration("wandbox");
         return key ?
             configuration[key]:
             configuration;
-    }
+    };
     var getCurrentFilename = () : string =>
     {
         var result : string;
@@ -61,7 +61,7 @@ export function activate(context: vscode.ExtensionContext)
             result = "wandbox-vscode:default";
         }
         return result;
-    }
+    };
     var getWandboxServerUrl = () :string =>
     {
         var result : string;
@@ -219,7 +219,7 @@ export function activate(context: vscode.ExtensionContext)
                                     delete displayItem.switches;
                                     outputChannel.appendLine(`${item.name}\t${JSON.stringify(displayItem)}`);
                                 }
-                            )
+                            );
                         }
                     }
                 );
@@ -289,18 +289,18 @@ export function activate(context: vscode.ExtensionContext)
                                                         {
                                                             outputChannel.appendLine(`${item.name}\t${JSON.stringify(item)}`);
                                                         }
-                                                    )
+                                                    );
                                                 }
                                                 else
                                                 {
                                                     outputChannel.appendLine(`${item.name}\t${JSON.stringify(item)}`);
                                                 }
                                             }
-                                        )
+                                        );
                                     }
                                 }
                             }
-                        )
+                        );
                     }
                     else
                     {
@@ -366,7 +366,7 @@ export function activate(context: vscode.ExtensionContext)
             }
         );
         return !hasError;
-    }
+    };
     var setSetting = (name : string, prompt: string) =>
     {
         makeSureOutputChannel();
@@ -534,10 +534,6 @@ export function activate(context: vscode.ExtensionContext)
         var activeTextEditor = vscode.window.activeTextEditor;
         if (null !== activeTextEditor)
         {
-            activeTextEditor.document
-            //outputChannel.appendLine('fileName: ' +activeTextEditor.document.fileName);
-            //outputChannel.appendLine('text: ' +activeTextEditor.document.getText());
-            //outputChannel.appendLine('languageId: ' +activeTextEditor.document.languageId);
             var compilerName = getWandboxCompilerName
             (
                 activeTextEditor.document.languageId,
@@ -718,7 +714,7 @@ export function activate(context: vscode.ExtensionContext)
         {
             outputChannel.appendLine('🚫 No active text editor!');
         }
-    }
+    };
     context.subscriptions.push
     (
         vscode.commands.registerCommand
