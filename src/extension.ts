@@ -251,16 +251,19 @@ export function activate(context: vscode.ExtensionContext)
                             list =>
                             {
                                 var hit :any;
-                                list && list.forEach
-                                (
-                                    item =>
-                                    {
-                                        if (compilerName == item.name)
+                                if (list)
+                                {
+                                    list.forEach
+                                    (
+                                        item =>
                                         {
-                                            hit = item;
+                                            if (compilerName == item.name)
+                                            {
+                                                hit = item;
+                                            }
                                         }
-                                    }
-                                );
+                                    );
+                                }
 
                                 if (!hit)
                                 {
@@ -653,8 +656,14 @@ export function activate(context: vscode.ExtensionContext)
                         }
                         if (!error && response.statusCode == 200)
                         {
-                            body.status && outputChannel.appendLine(`status: ${body.status}`);
-                            body.signal && outputChannel.appendLine(`🚦 signal: ${body.signal}`);
+                            if (body.status)
+                            {
+                                outputChannel.appendLine(`status: ${body.status}`);
+                            }
+                            if (body.signal)
+                            {
+                                outputChannel.appendLine(`🚦 signal: ${body.signal}`);
+                            }
                             if (body.compiler_output)
                             {
                                 outputChannel.appendLine('compiler_output: ');
