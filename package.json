@@ -1,7 +1,7 @@
 {
     "name": "wandbox-vscode",
     "displayName": "wandbox-vscode",
-    "description": "wandbox invoker for VSCode",
+    "description": "wandbox(compile & run service) client for VSCode",
     "icon": "images/wandhex.128.png",
     "version": "1.0.1",
     "publisher": "wraith13",
