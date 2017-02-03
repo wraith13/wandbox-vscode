@@ -130,7 +130,7 @@ export function activate(context: vscode.ExtensionContext)
             requestUrl,
             function(error, response, body)
             {
-                if (!error && response.statusCode == 200)
+                if (!error && response.statusCode === 200)
                 {
                     callback(body);
                 }
@@ -257,7 +257,7 @@ export function activate(context: vscode.ExtensionContext)
                                     (
                                         item =>
                                         {
-                                            if (compilerName == item.name)
+                                            if (compilerName === item.name)
                                             {
                                                 hit = item;
                                             }
@@ -273,7 +273,7 @@ export function activate(context: vscode.ExtensionContext)
                                 }
                                 else
                                 {
-                                    if (!hit.switches || 0 == hit.switches.length)
+                                    if (!hit.switches || 0 === hit.switches.length)
                                     {
                                         outputChannel.appendLine('this compiler has no options');
                                     }
@@ -358,7 +358,7 @@ export function activate(context: vscode.ExtensionContext)
                 (
                     document =>
                     {
-                        hit = hit || file == stripDirectory(document.fileName);
+                        hit = hit || file === stripDirectory(document.fileName);
                     }
                 );
                 if (!hit)
@@ -386,7 +386,7 @@ export function activate(context: vscode.ExtensionContext)
                     if (value)
                     {
                         fileSetting[fileName] = fileSetting[fileName] || { };
-                        if ('additionals' == name)
+                        if ('additionals' === name)
                         {
                             var newFiles = value.split(',');
                             if (IsOpenFiles(newFiles))
@@ -616,7 +616,7 @@ export function activate(context: vscode.ExtensionContext)
                             (
                                 document =>
                                 {
-                                    if (filename == stripDirectory(document.fileName))
+                                    if (filename === stripDirectory(document.fileName))
                                     {
                                         code = document.getText();
                                     }
@@ -654,7 +654,7 @@ export function activate(context: vscode.ExtensionContext)
                         {
                             outputChannel.appendLine(`HTTP statusCode: ${response.statusCode}`);
                         }
-                        if (!error && response.statusCode == 200)
+                        if (!error && response.statusCode === 200)
                         {
                             if (body.status)
                             {
