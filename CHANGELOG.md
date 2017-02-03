@@ -3,6 +3,10 @@ All notable changes to the "wandbox-vscode" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 1.0.0 - 2017-02-03
+### Added
+- Initial release of wandbox-vscode.
+
 ## [Unreleased]
 
 ## 0.0.0 - 2017-01-21
