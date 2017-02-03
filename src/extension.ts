@@ -21,7 +21,7 @@ export function activate(context: vscode.ExtensionContext)
             'wandbox-vscode-json',
             new class implements vscode.TextDocumentContentProvider
             {
-                provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken)
+                provideTextDocumentContent(_uri: vscode.Uri, _token: vscode.CancellationToken)
                     : string | Thenable<string>
                 {
                     return JSON.stringify(json, null, 4);
