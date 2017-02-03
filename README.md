@@ -31,7 +31,7 @@ Effect of all setting commands expires with next Visual Studio Code process.
 
 * `Wandbox: Set Server` : set a wandbox server url
 
-> You can use [`http://wandbox.fetus.jp/`](http://wandbox.fetus.jp/) . This Wandbox server has a wide variety of PHP compilers.
+> You can use [`https://wandbox.fetus.jp/`](https://wandbox.fetus.jp/) . This Wandbox server has a wide variety of PHP compilers.
 > This Wandbox server is provided from [@fetus-hina](https://github.com/fetus-hina) as a personal voluntary service.
 > For keep this service, please do not put a high load on this service.
 
@@ -78,6 +78,8 @@ No probrem! You can pull request to [wandbox](https://github.com/melpon/wandbox/
 ## Acknowledgments
 
 Thanks [@melpon](https://github.com/melpon)( 🐕 dog) and [@kikairoya](https://github.com/kikairoya)( 🐂 bull) for awesome compilation service!
+
+Thanks [@fetus-hina](https://github.com/fetus-hina)( 👶 baby) for a PHP specialized wandbox service!
 
 Thanks [@rhysd](https://github.com/rhysd)( 🐕 dog) for your support in TypeScript!
 
