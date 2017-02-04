@@ -3,7 +3,7 @@
     "displayName": "wandbox-vscode",
     "description": "wandbox(compile & run service) client for VSCode",
     "icon": "images/wandhex.128.png",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "publisher": "wraith13",
     "license": "LICENSE_1_0.txt",
     "engines": {
