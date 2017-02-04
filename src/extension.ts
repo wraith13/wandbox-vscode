@@ -14,6 +14,19 @@ export function activate(context: vscode.ExtensionContext)
     {
         return JSON.parse(JSON.stringify(source));
     };
+    var getActiveDocument = () :vscode.TextDocument =>
+    {
+        var activeTextEditor = vscode.window.activeTextEditor;
+        if (null !== activeTextEditor && undefined !== activeTextEditor)
+        {
+            var document = activeTextEditor.document;
+            if (null !== document && undefined !== document)
+            {
+                return document;
+            }
+        }
+        return null;
+    }
     var showJson = (titile : string, json : any) =>
     {
         var provider = vscode.workspace.registerTextDocumentContentProvider
@@ -51,10 +64,10 @@ export function activate(context: vscode.ExtensionContext)
     var getCurrentFilename = () : string =>
     {
         var result : string;
-        var activeTextEditor = vscode.window.activeTextEditor;
-        if (null !== activeTextEditor)
+        var document = getActiveDocument();
+        if (null !== document)
         {
-            result = activeTextEditor.document.fileName;
+            result = document.fileName;
         }
         if (!result)
         {
@@ -232,13 +245,13 @@ export function activate(context: vscode.ExtensionContext)
                 makeSureOutputChannel();
                 bowWow();
 
-                var activeTextEditor = vscode.window.activeTextEditor;
-                if (activeTextEditor)
+                var document = getActiveDocument();
+                if (null !== document)
                 {
                     var compilerName = getWandboxCompilerName
                     (
-                        activeTextEditor.document.languageId,
-                        activeTextEditor.document.fileName
+                        document.languageId,
+                        document.fileName
                     );
                     if (compilerName)
                     {
@@ -371,10 +384,10 @@ export function activate(context: vscode.ExtensionContext)
         makeSureOutputChannel();
         bowWow();
 
-        var activeTextEditor = vscode.window.activeTextEditor;
-        if (null !== activeTextEditor)
+        var document = getActiveDocument();
+        if (null !== document)
         {
-            var fileName = activeTextEditor.document.fileName;
+            var fileName = document.fileName;
             vscode.window.showInputBox({ prompt:prompt }).then
             (
                 value =>
@@ -504,10 +517,10 @@ export function activate(context: vscode.ExtensionContext)
                 makeSureOutputChannel();
                 bowWow();
 
-                var activeTextEditor = vscode.window.activeTextEditor;
-                if (null !== activeTextEditor)
+                var document = getActiveDocument();
+                if (null !== document)
                 {
-                    var fileName = activeTextEditor.document.fileName;
+                    var fileName = document.fileName;
                     if (fileSetting[fileName])
                     {
                         delete fileSetting[fileName];
@@ -530,20 +543,20 @@ export function activate(context: vscode.ExtensionContext)
         makeSureOutputChannel();
         bowWow();
 
-        var activeTextEditor = vscode.window.activeTextEditor;
-        if (null !== activeTextEditor)
+        var document = getActiveDocument();
+        if (null !== document)
         {
             var compilerName = getWandboxCompilerName
             (
-                activeTextEditor.document.languageId,
-                activeTextEditor.document.fileName
+                document.languageId,
+                document.fileName
             );
             var additionals : string[];
             var options : string = getConfiguration("options")[compilerName];
             var stdIn : string;
             var compilerOptionRaw : string = getConfiguration("compilerOptionRaw")[compilerName];
             var runtimeOptionRaw : string = getConfiguration("runtimeOptionRaw")[compilerName];
-            var setting = fileSetting[activeTextEditor.document.fileName];
+            var setting = fileSetting[document.fileName];
             if (setting)
             {
                 additionals = setting['codes'];
@@ -628,7 +641,7 @@ export function activate(context: vscode.ExtensionContext)
                         }
                     );
                 }
-                json['code'] = activeTextEditor.document.getText();
+                json['code'] = document.getText();
                 json['from'] = extentionName;
                 var startAt = new Date();
                 request
