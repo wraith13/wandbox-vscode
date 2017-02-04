@@ -61,6 +61,11 @@ This extension contributes the following settings:
 
 ## Release Notes
 
+### 1.0.2 - 2017-02-04
+#### Changed
+- default C compiler clang-3.3-c → clang-head-c
+- DOC: description for search in marketplace.
+
 ### 1.0.1 - 2017-02-03
 #### Fixed
 - DOC: http://wandbox.fetus.jp/ → https://wandbox.fetus.jp/
