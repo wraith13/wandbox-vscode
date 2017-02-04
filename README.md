@@ -5,6 +5,8 @@
 > Wandbox is provided from [@melpon](https://github.com/melpon)( 🐕 dog) as a personal voluntary service.
 > For keep this service, please do not put a high load on this service.
 
+* [wandbox-vscode in Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=wraith13.wandbox-vscode)
+
 ## Features
 
 wandbox-vscode provide several commands in the Command Palette.
