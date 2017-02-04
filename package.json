@@ -228,7 +228,7 @@
             "category": "Wandbox"
         },{
             "command": "extension.resetWandboxFileSettings",
-            "title": "Reset Settings(args :any[])",
+            "title": "Reset Settings",
             "category": "Wandbox"
         },{
             "command": "extension.invokeWandbox",
