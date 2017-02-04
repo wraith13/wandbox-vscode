@@ -70,7 +70,7 @@
                         "bat": null,
                         "clojure": null,
                         "coffeescript": "coffee-script-head",
-                        "c": "clang-3.3-c",
+                        "c": "clang-head-c",
                         "cpp": "clang-head",
                         "csharp": "mono-head",
                         "css": null,
@@ -121,7 +121,7 @@
                     "default": {
                         "cpp": "clang-head",
                         "cxx": "clang-head",
-                        "c": "clang-3.3-c",
+                        "c": "clang-head-c",
                         "cs": "mono-head",
                         "d": "dmd-head",
                         "rill": "rill-head",
