@@ -68,26 +68,8 @@ This extension contributes the following settings:
 
 ## Release Notes
 
-### 1.0.3 - 2017-02-04
-#### Fixed
-- Fixed crash some command when show a extension detail.
-- Reset Settings command: Remove the trash at the end of the title.
+see ChangLog on [marketplace](https://marketplace.visualstudio.com/items/wraith13.wandbox-vscode/changelog) or [github](https://github.com/wraith13/wandbox-vscode/blob/master/CHANGELOG.md)
 
-#### Changed
-- DOC: Added available languages in Features section at README
-
-### 1.0.2 - 2017-02-04
-#### Changed
-- default C compiler clang-3.3-c → clang-head-c
-- DOC: description for search in marketplace.
-
-### 1.0.1 - 2017-02-03
-#### Fixed
-- DOC: http://wandbox.fetus.jp/ → https://wandbox.fetus.jp/
-
-### 1.0.0 - 2017-02-03
-
-Initial release of wandbox-vscode.
 
 ## "Wandbox has not my favorite compiler!"
 
