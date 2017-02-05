@@ -27,6 +27,9 @@ Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, 
 * `Wandbox: Show Compilers` : show available compilers list on wandbox
 * `Wandbox: Show Options` : show options of a current compiler
 * `Wandbox: Show Raw JSON` : show a wandbox specs as raw JSON
+
+> see [Wandbox API Reference](https://github.com/melpon/wandbox/blob/master/kennel2/API.rst)
+
 * `Wandbox: Show Web Site` : open wandbox web site
 * `Wandbox: Show Settings` : show all wandbox-vscode settings
 
@@ -61,9 +64,6 @@ This extension contributes the following settings:
 * `wandbox.extensionCompilerMapping`: set compiler by file extension
 * `wandbox.options`: set options by compiler
 * `wandbox.compilerOptionRaw`: set raw option by compiler
-
-> see [Wandbox API Reference](https://github.com/melpon/wandbox/blob/master/kennel2/API.rst)
-
 * `wandbox.runtimeOptionRaw`: set raw runtime option by compiler
 
 ## Release Notes
