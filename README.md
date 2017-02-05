@@ -61,6 +61,9 @@ This extension contributes the following settings:
 * `wandbox.extensionCompilerMapping`: set compiler by file extension
 * `wandbox.options`: set options by compiler
 * `wandbox.compilerOptionRaw`: set raw option by compiler
+
+> see [Wandbox API Reference](https://github.com/melpon/wandbox/blob/master/kennel2/API.rst)
+
 * `wandbox.runtimeOptionRaw`: set raw runtime option by compiler
 
 ## Release Notes
