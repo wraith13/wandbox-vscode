@@ -219,14 +219,35 @@ export function activate(context: vscode.ExtensionContext)
                     {
                         if (list)
                         {
-                            outputChannel.appendLine('compiler\tdetails');
+                            var languageNames :string[] = [];
+                            list.forEach(item => languageNames.push(item.language));
+                            languageNames = languageNames.filter((value, i, self) => self.indexOf(value) === i);
+                            languageNames.sort();
+                            var languages = {};
+                            languageNames.forEach(item => languages[item] = languages[item] || []);
                             list.forEach
                             (
                                 item =>
                                 {
                                     var displayItem = deepCopy(item);
                                     delete displayItem.switches;
-                                    outputChannel.appendLine(`${item.name}\t${JSON.stringify(displayItem)}`);
+                                    languages[displayItem.language].push(displayItem);
+                                }
+                            );
+                            languageNames.forEach
+                            (
+                                language =>
+                                {
+                                    outputChannel.appendLine(`📚 ${language}`);
+                                    languages[language].forEach
+                                    (
+                                        item =>
+                                        {
+                                            var displayItem = deepCopy(item);
+                                            delete displayItem.switches;
+                                            outputChannel.appendLine(`${item.name}\t${JSON.stringify(displayItem)}`);
+                                        }
+                                    );
                                 }
                             );
                         }
