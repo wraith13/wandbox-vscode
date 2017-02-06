@@ -58,7 +58,7 @@ Effect of all setting commands expires with next Visual Studio Code process.
 
 This extension contributes the following settings:
 
-* `wandbox.defaultSerer`: default wandbox server url
+* `wandbox.defaultServer`: default wandbox server url
 * `wandbox.autoOpenShareUrl`: when make a share url, auto open it
 * `wandbox.languageCompilerMapping`: set compiler by language
 * `wandbox.extensionCompilerMapping`: set compiler by file extension
