@@ -6,8 +6,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## 1.0.5 - 2017-02-07
 ### Added
 - wandbox.outputChannelName setting
+
 ### Changed
 - optimize output when wandbox server return error.
+
 ### Fixed
 - DOC:(typo) wandbox → Wandbox (in description)
 - DOC:(typo) wandbox.defaultSerer → wandbox.defaultServer (in README)
