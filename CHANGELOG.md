@@ -3,6 +3,15 @@ All notable changes to the "wandbox-vscode" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 1.0.5 - 2017-02-07
+### Added
+- wandbox.outputChannelName setting
+### Changed
+- optimize output when wandbox server return error.
+### Fixed
+- DOC:(typo) wandbox → Wandbox (in description)
+- DOC:(typo) wandbox.defaultSerer → wandbox.defaultServer (in README)
+
 ## 1.0.4 - 2017-02-05
 ### Changed
 - Show Compilers command: grouping Compilers by language.
