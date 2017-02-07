@@ -31,23 +31,22 @@
         "share"
     ],
     "activationEvents": [
-        "onCommand:extension.showWandboxWeb",
+        "onCommand:extension.invokeWandbox",
+        "onCommand:extension.shareWandbox",
         "onCommand:extension.showWandboxCompiers",
         "onCommand:extension.showWandboxOptions",
         "onCommand:extension.showWandboxListJson",
+        "onCommand:extension.showWandboxWeb",
         "onCommand:extension.showWandboxSettings",
         "onCommand:extension.setWandboxFileServer",
         "onCommand:extension.setWandboxFileCompiler",
         "onCommand:extension.setWandboxFileAdditionals",
         "onCommand:extension.setWandboxFileStdIn",
         "onCommand:extension.setWandboxFileOptions",
-        "onCommand:extension.setWandboxFileStdIn",
         "onCommand:extension.setWandboxFileCompilerOptionRaw",
         "onCommand:extension.setWandboxFileRuntimeOptionRaw",
         "onCommand:extension.setWandboxFileSettingJson",
-        "onCommand:extension.resetWandboxFileSettings",
-        "onCommand:extension.invokeWandbox",
-        "onCommand:extension.shareWandbox"
+        "onCommand:extension.resetWandboxFileSettings"
     ],
     "main": "./out/src/extension",
     "contributes": {
@@ -175,12 +174,12 @@
             }
         },
         "commands": [{
-            "command": "extension.showWandboxSettings",
-            "title": "Show Settings",
+            "command": "extension.invokeWandbox",
+            "title": "Run",
             "category": "Wandbox"
         },{
-            "command": "extension.showWandboxWeb",
-            "title": "Show Web Site",
+            "command": "extension.shareWandbox",
+            "title": "Share",
             "category": "Wandbox"
         },{
             "command": "extension.showWandboxCompiers",
@@ -193,6 +192,14 @@
         },{
             "command": "extension.showWandboxListJson",
             "title": "Show Raw JSON",
+            "category": "Wandbox"
+        },{
+            "command": "extension.showWandboxWeb",
+            "title": "Show Web Site",
+            "category": "Wandbox"
+        },{
+            "command": "extension.showWandboxSettings",
+            "title": "Show Settings",
             "category": "Wandbox"
         },{
             "command": "extension.setWandboxFileServer",
@@ -229,14 +236,6 @@
         },{
             "command": "extension.resetWandboxFileSettings",
             "title": "Reset Settings",
-            "category": "Wandbox"
-        },{
-            "command": "extension.invokeWandbox",
-            "title": "Run",
-            "category": "Wandbox"
-        },{
-            "command": "extension.shareWandbox",
-            "title": "Share",
             "category": "Wandbox"
         }]
     },
