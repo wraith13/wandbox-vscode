@@ -17,7 +17,7 @@ Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, 
 
 ## Main Commands
 
-* `Wandbox: Run` : run a current document on wandbox
+* `Wandbox: Run` : run a current document on wandbox ( default keybinding: [Shift]+[F5] )
 * `Wandbox: Share` : make a share url
 
 > You can disable to auto open share url by `wandbox.autoOpenShareUrl` setting.
