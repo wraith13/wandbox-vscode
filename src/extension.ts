@@ -735,8 +735,14 @@ export function activate(context: vscode.ExtensionContext)
                         }
                         else
                         {
-                            outputChannel.appendLine(body);
-                            outputChannel.appendLine(`🚫 error: ${error}`);
+                            if (body)
+                            {
+                                outputChannel.appendLine(body);
+                            }
+                            if (error)
+                            {
+                                outputChannel.appendLine(`🚫 error: ${error}`);
+                            }
                         }
                         outputChannel.appendLine(`🏁 time: ${(endAt.getTime() -startAt.getTime()) /1000} s`);
                     }
