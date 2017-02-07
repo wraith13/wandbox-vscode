@@ -121,7 +121,10 @@ export function activate(context: vscode.ExtensionContext)
     {
         if (!outputChannel)
         {
-            outputChannel = vscode.window.createOutputChannel('Wandbox');
+            outputChannel = vscode.window.createOutputChannel
+            (
+                getConfiguration("outputChannelName")
+            );
         }
         else
         {

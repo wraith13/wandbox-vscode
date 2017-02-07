@@ -60,6 +60,7 @@ This extension contributes the following settings:
 
 * `wandbox.defaultServer`: default wandbox server url
 * `wandbox.autoOpenShareUrl`: when make a share url, auto open it
+* `wandbox.outputChannelName`: output channel name
 * `wandbox.languageCompilerMapping`: set compiler by language
 * `wandbox.extensionCompilerMapping`: set compiler by file extension
 * `wandbox.options`: set options by compiler

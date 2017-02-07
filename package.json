@@ -63,6 +63,11 @@
                     "default": true,
                     "description": "when make a share url, auto open it"
                 },
+                "wandbox.outputChannelName": {
+                    "type": "string",
+                    "default": "Wandbox",
+                    "description": "output channel name"
+                },
                 "wandbox.languageCompilerMapping": {
                     "type": "object",
                     "default": {
