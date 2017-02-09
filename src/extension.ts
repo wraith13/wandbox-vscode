@@ -26,7 +26,7 @@ export function activate(context: vscode.ExtensionContext)
             }
         }
         return null;
-    }
+    };
     var showJson = (titile : string, json : any) =>
     {
         var provider = vscode.workspace.registerTextDocumentContentProvider
@@ -41,9 +41,17 @@ export function activate(context: vscode.ExtensionContext)
                 }
             }
         );
+        var date = new Date(); // 結果がキャッシュされようにする為
+        var stamp = date.getFullYear().toString()
+            +("0" +(date.getMonth() +1).toString()).slice(-2)
+            +("0" +date.getDate().toString()).slice(-2)
+            +"-"
+            +("0" +date.getHours().toString()).slice(-2)
+            +("0" +date.getMinutes().toString()).slice(-2)
+            +("0" +date.getSeconds().toString()).slice(-2);
         vscode.workspace.openTextDocument
         (
-            vscode.Uri.parse(`wandbox-vscode-json://wandbox-vscode/${titile}.json`)
+            vscode.Uri.parse(`wandbox-vscode-json://wandbox-vscode/${stamp}/${titile}.json`)
         )
         .then
         (
