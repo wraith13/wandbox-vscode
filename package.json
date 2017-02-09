@@ -242,11 +242,6 @@
             "command": "extension.resetWandboxFileSettings",
             "title": "Reset Settings",
             "category": "Wandbox"
-        }],
-        "keybindings":[{
-            "command": "extension.invokeWandbox",
-            "key": "shift+f5",
-            "when": "editorFocus"
         }]
     },
     "scripts": {
