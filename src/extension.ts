@@ -779,6 +779,17 @@ export function activate(context: vscode.ExtensionContext)
             () => invokeWandbox({ share: true })
         )
     );
+
+    vscode.workspace.onDidCloseTextDocument
+    (
+        (document : vscode.TextDocument) =>
+        {
+            if (document.isUntitled && fileSetting[document.fileName])
+            {
+                delete fileSetting[document.fileName];
+            }
+        }
+    );
 }
 
 // this method is called when your extension is deactivated
