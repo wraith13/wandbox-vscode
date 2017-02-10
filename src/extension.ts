@@ -850,69 +850,114 @@ export function activate(context: vscode.ExtensionContext)
                         fileExtension = fileExtension.substr(1);
                     }
 
-                    var helloFilePath = `${vscode.extensions.getExtension("wraith13.wandbox-vscode").extensionPath}/hellos/hello.${fileExtension}`;
-                    var files : string[];
-                    files = getConfiguration("helloWolrdFiles");
-                    files.forEach
-                    (
-                        (item : string ) =>
-                        {
-                            var parts = item.split(".");
-                            if (parts[parts.length -1] === fileExtension)
+                    var extensionPath = vscode.extensions.getExtension("wraith13.wandbox-vscode").extensionPath;
+                    var userFiles : string[];
+                    userFiles = getConfiguration("helloWolrdFiles");
+                    if (fileExtension)
+                    {
+                        var helloFilePath = `${extensionPath}/hellos/hello.${fileExtension}`;
+                        userFiles.forEach
+                        (
+                            (i : string ) =>
                             {
-                                helloFilePath = item;
+                                var parts = i.split(".");
+                                if (parts[parts.length -1] === fileExtension)
+                                {
+                                    helloFilePath = i;
+                                }
                             }
-                        }
-                    );
-                    //console.log(`✨️ Open a hello world as a new file. ( Source is "${helloFilePath}" )`);
-                    outputChannel.appendLine(`✨️ Open a [Hello, world!] as a new file.`);
-                    fs.exists
-                    (
-                        helloFilePath,
-                        (exists : boolean) =>
-                        {
-                            if (exists)
+                        );
+                        //console.log(`✨️ Open a hello world as a new file. ( Source is "${helloFilePath}" )`);
+                        outputChannel.appendLine(`✨️ Open a [Hello, world!] as a new file.`);
+                        fs.exists
+                        (
+                            helloFilePath,
+                            (exists : boolean) =>
                             {
-                                fs.readFile
-                                (
-                                    helloFilePath, (err : NodeJS.ErrnoException, data : Buffer) =>
-                                    {
-                                        if (err)
+                                if (exists)
+                                {
+                                    fs.readFile
+                                    (
+                                        helloFilePath, (err : NodeJS.ErrnoException, data : Buffer) =>
                                         {
-                                            outputChannel.appendLine("🚫 " + err.message);
+                                            if (err)
+                                            {
+                                                outputChannel.appendLine("🚫 " + err.message);
+                                            }
+                                            else
+                                            {
+                                                newDocument.text = data.toString();
+                                                newDocument.fileExtension = fileExtension;
+
+                                                //  ドキュメント上は vscode.workspace.openTextDocument() で language を指定して新規ファイルオープン
+                                                //  できることになってるっぽいんだけど、実際にそういうことができないので代わりに workbench.action.files.newUntitledFile
+                                                //  を使っている。 untitled: を使ったやり方は保存予定の実パスを指定する必要があり、ここの目的には沿わない。
+
+                                                //  language を指定して新規ファイルオープンできるようになったらその方法での実装に切り替えることを検討すること。
+
+                                                vscode.commands.executeCommand("workbench.action.files.newUntitledFile")
+                                                .then
+                                                (
+                                                    (_value :{} ) =>
+                                                    {
+                                                        //  ここでは新規オープンされた document 周りの情報がなにも取得できないのでなにもできない。
+                                                        //  なので　vscode.window.onDidChangeActiveTextEditor　で処理している。
+                                                    }
+                                                );
+                                    
+                                            }
                                         }
-                                        else
-                                        {
-                                            newDocument.text = data.toString();
-                                            newDocument.fileExtension = fileExtension;
-
-                                            //  ドキュメント上は vscode.workspace.openTextDocument() で language を指定して新規ファイルオープン
-                                            //  できることになってるっぽいんだけど、実際にそういうことができないので代わりに workbench.action.files.newUntitledFile
-                                            //  を使っている。 untitled: を使ったやり方は保存予定の実パスを指定する必要があり、ここの目的には沿わない。
-
-                                            //  language を指定して新規ファイルオープンできるようになったらその方法での実装に切り替えることを検討すること。
-
-                                            vscode.commands.executeCommand("workbench.action.files.newUntitledFile")
-                                            .then
-                                            (
-                                                (_value :{} ) =>
-                                                {
-                                                    //  ここでは新規オープンされた document 周りの情報がなにも取得できないのでなにもできない。
-                                                    //  なので　vscode.window.onDidChangeActiveTextEditor　で処理している。
-                                                }
-                                            );
-                                
-                                        }
-                                    }
-                                );
+                                    );
+                                }
+                                else
+                                {
+                                    outputChannel.appendLine("🚫 Unknown file extension!");
+                                    outputChannel.appendLine('👉 You can set hello world files by [wandbox.helloWolrdFiles] setting.');
+                                }
                             }
-                            else
+                        );
+                    } else {
+                        fs.readdir
+                        (
+                            `${extensionPath}/hellos`,
+                            (err : NodeJS.ErrnoException, files : string[]) =>
                             {
-                                outputChannel.appendLine("🚫 Unknown file extension!");
-                                outputChannel.appendLine('👉 You can set hello world files by [wandbox.helloWolrdFiles] setting.');
+                                if (err)
+                                {
+                                    outputChannel.appendLine("🚫 " + err.message);
+                                }
+                                else
+                                {
+                                    const hello = "hello.";
+                                    var fileExtensionList = [];
+                                    files.forEach
+                                    (
+                                        (i : string) => 
+                                        {
+                                            if (i.startsWith(hello))
+                                            {
+                                                fileExtensionList.push(i.substr(hello.length));
+                                            }
+                                        }
+                                    );
+                                    userFiles.forEach
+                                    (
+                                        (i : string ) =>
+                                        {
+                                            var parts = i.split(".");
+                                            fileExtensionList.push(parts[parts.length -1]);
+                                        }
+                                    );
+                                    
+                                    fileExtensionList = fileExtensionList.filter((value, i, self) => self.indexOf(value) === i);
+                                    fileExtensionList.sort();
+                                    
+                                    outputChannel.appendLine('Available hello world list ( file extensions ):');
+                                    outputChannel.appendLine(`${fileExtensionList.join(", ")}`);
+                                }
                             }
-                        }
-                    );
+                        );
+                    }
                 }
             )
         )
