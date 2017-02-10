@@ -310,7 +310,7 @@ export function activate(context: vscode.ExtensionContext)
                                 if (!hit)
                                 {
                                     outputChannel.appendLine('🚫 Unknown compiler!');
-                                    outputChannel.appendLine('👉 You can use set a compiler by [Wandbox: Set Compiler] command.');
+                                    outputChannel.appendLine('👉 You can set a compiler by [Wandbox: Set Compiler] command.');
                                     outputChannel.appendLine('👉 You can see compilers list by [Wandbox: Show Compilers] command.');
                                 }
                                 else
