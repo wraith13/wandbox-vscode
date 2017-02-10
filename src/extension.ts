@@ -864,7 +864,8 @@ export function activate(context: vscode.ExtensionContext)
                             }
                         }
                     );
-                    outputChannel.appendLine(`open ${helloFilePath}`);
+                    //console.log(`✨️ Open a hello world as a new file. ( Source is "${helloFilePath}" )`);
+                    outputChannel.appendLine(`✨️ Open a [Hello, world!] as a new file.`);
                     fs.exists
                     (
                         helloFilePath,
