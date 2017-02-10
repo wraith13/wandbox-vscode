@@ -33,6 +33,7 @@
     "activationEvents": [
         "onCommand:extension.invokeWandbox",
         "onCommand:extension.shareWandbox",
+        "onCommand:extension.helloWandbox",
         "onCommand:extension.showWandboxCompiers",
         "onCommand:extension.showWandboxOptions",
         "onCommand:extension.showWandboxListJson",
@@ -175,6 +176,11 @@
                         "compiler(example)": "raw runtime option text"
                     },
                     "description": "set raw runtime option by compiler"
+                },
+                "wandbox.helloWolrdFiles": {
+                    "type": "array",
+                    "default": [],
+                    "description": "set hello world files"
                 }
             }
         },
@@ -185,6 +191,10 @@
         },{
             "command": "extension.shareWandbox",
             "title": "Share",
+            "category": "Wandbox"
+        },{
+            "command": "extension.helloWandbox",
+            "title": "Hello",
             "category": "Wandbox"
         },{
             "command": "extension.showWandboxCompiers",

@@ -3,6 +3,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as request from 'request';
+import * as fs from 'fs';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -797,6 +798,123 @@ export function activate(context: vscode.ExtensionContext)
                 delete fileSetting[document.fileName];
             }
         }
+    );
+
+    var newDocument =
+    {
+        text: null,
+        fileExtension: null
+    };
+    vscode.window.onDidChangeActiveTextEditor
+    (
+        (textEditor : vscode.TextEditor) =>
+        {
+            if (textEditor.document.isUntitled && newDocument.text)
+            {
+                var activeTextEditor = vscode.window.activeTextEditor;
+                activeTextEditor.edit
+                (
+                    (editBuilder: vscode.TextEditorEdit) =>
+                    {
+                        editBuilder.insert(new vscode.Position(0,0), newDocument.text);
+                    }
+                );
+                var document = getActiveDocument();
+                var fileName = document.fileName;
+                var compiler = getConfiguration("extensionCompilerMapping")[newDocument.fileExtension];
+                if (compiler)
+                {
+                    fileSetting[fileName] = fileSetting[fileName] || { };
+                    fileSetting[fileName]['compiler'] = compiler;
+                }
+
+                newDocument.text = null;
+                newDocument.fileExtension = null;
+            }
+        }
+    );
+    context.subscriptions.push
+    (
+        vscode.commands.registerCommand
+        (
+            'extension.helloWandbox',
+            () => vscode.window.showInputBox({ prompt:"Enter file extension ( e.g.: sh, c, cpp, d ... )" }).then
+            (
+                fileExtension =>
+                {
+                    makeSureOutputChannel();
+                    bowWow();
+
+                    while(fileExtension.startsWith("."))
+                    {
+                        fileExtension = fileExtension.substr(1);
+                    }
+
+                    var helloFilePath = `${vscode.extensions.getExtension("wraith13.wandbox-vscode").extensionPath}/hellos/hello.${fileExtension}`;
+                    var files : string[];
+                    files = getConfiguration("helloWolrdFiles");
+                    files.forEach
+                    (
+                        (item : string ) =>
+                        {
+                            var parts = item.split(".");
+                            if (parts[parts.length -1] === fileExtension)
+                            {
+                                helloFilePath = item;
+                            }
+                        }
+                    );
+                    outputChannel.appendLine(`open ${helloFilePath}`);
+                    fs.exists
+                    (
+                        helloFilePath,
+                        (exists : boolean) =>
+                        {
+                            if (exists)
+                            {
+                                fs.readFile
+                                (
+                                    helloFilePath, (err : NodeJS.ErrnoException, data : Buffer) =>
+                                    {
+                                        if (err)
+                                        {
+                                            outputChannel.appendLine("🚫 " + err.message);
+                                        }
+                                        else
+                                        {
+                                            newDocument.text = data.toString();
+                                            newDocument.fileExtension = fileExtension;
+
+                                            //  ドキュメント上は vscode.workspace.openTextDocument() で language を指定して新規ファイルオープン
+                                            //  できることになってるっぽいんだけど、実際にそういうことができないので代わりに workbench.action.files.newUntitledFile
+                                            //  を使っている。 untitled: を使ったやり方は保存予定の実パスを指定する必要があり、ここの目的には沿わない。
+
+                                            //  language を指定して新規ファイルオープンできるようになったらその方法での実装に切り替えることを検討すること。
+
+                                            vscode.commands.executeCommand("workbench.action.files.newUntitledFile")
+                                            .then
+                                            (
+                                                (_value :{} ) =>
+                                                {
+                                                    //  ここでは新規オープンされた document 周りの情報がなにも取得できないのでなにもできない。
+                                                    //  なので　vscode.window.onDidChangeActiveTextEditor　で処理している。
+                                                }
+                                            );
+                                
+                                        }
+                                    }
+                                );
+                            }
+                            else
+                            {
+                                outputChannel.appendLine("🚫 Unknown file extension!");
+                                outputChannel.appendLine('👉 You can set hello world files by [wandbox.helloWolrdFiles] setting.');
+                            }
+                        }
+                    );
+                }
+            )
+        )
     );
 }
 

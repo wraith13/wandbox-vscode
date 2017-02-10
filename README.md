@@ -22,6 +22,8 @@ Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, 
 
 > You can disable to auto open share url by `wandbox.autoOpenShareUrl` setting.
 
+* `Wandbox: Hello` : open new "Hello, World!"
+
 ## Show Commands
 
 * `Wandbox: Show Compilers` : show available compilers list on wandbox
@@ -66,6 +68,7 @@ This extension contributes the following settings:
 * `wandbox.options`: set options by compiler
 * `wandbox.compilerOptionRaw`: set raw option by compiler
 * `wandbox.runtimeOptionRaw`: set raw runtime option by compiler
+* `wandbox.helloWolrdFiles`: set hello world files
 
 ## Release Notes
 
