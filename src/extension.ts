@@ -614,7 +614,8 @@ export function activate(context: vscode.ExtensionContext)
                 outputChannel.appendLine(`HTTP POST ${requestUrl}`);
                 var json =
                 {
-                    compiler: compilerName
+                    compiler: compilerName,
+                    code: document.fileName
                 };
                 if (additionals)
                 {
