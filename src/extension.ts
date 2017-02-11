@@ -646,7 +646,11 @@ export function activate(context: vscode.ExtensionContext)
                 {
                     json['save'] = true;
                 }
-                outputChannel.appendLine(JSON.stringify(json, null, 4));
+                var simplifyPostData = getConfiguration("simplifyPostData");
+                if (simplifyPostData)
+                {
+                    outputChannel.appendLine(JSON.stringify(json, null, 4));
+                }
                 if (additionals)
                 {
                     json['codes'] = [];
@@ -677,6 +681,10 @@ export function activate(context: vscode.ExtensionContext)
                 }
                 json['code'] = document.getText();
                 json['from'] = extentionName;
+                if (!simplifyPostData)
+                {
+                    outputChannel.appendLine(JSON.stringify(json, null, 4));
+                }
                 var startAt = new Date();
                 request
                 (

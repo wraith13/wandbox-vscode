@@ -59,6 +59,11 @@
                     "default": "http://melpon.org/wandbox/",
                     "description": "default wandbox server url"
                 },
+                "wandbox.simplifyPostData": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "simplify post data when showing"
+                },
                 "wandbox.autoOpenShareUrl": {
                     "type": "boolean",
                     "default": true,
