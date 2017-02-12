@@ -1,3 +1,4 @@
+
 % This file is a "Hello, world!" in CoffeeScript for wandbox-vscode.
 
 main(_) ->
