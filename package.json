@@ -90,7 +90,7 @@
                         "git-commit": null,
                         "git-rebase" :null,
                         "go": null,
-                        "groovy": "groovy-2.2.1",
+                        "groovy": "groovy-head",
                         "handlebars": null,
                         "html": null,
                         "ini": null,
@@ -156,8 +156,8 @@
                         "lisp":"clisp-2.49.0",
                         "pas":"fpc-2.6.2",
                         "java": "java8-openjdk",
-                        "groovy": "groovy-2.2.1",
-                        "gvy": "groovy-2.2.1"
+                        "groovy": "groovy-head",
+                        "gvy": "groovy-head"
                     },
                     "description": "set compiler by file extension"
                 },
