@@ -3,6 +3,24 @@ All notable changes to the "wandbox-vscode" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 1.1.0 - 2017-02-07
+### Added
+- Added Hello Command ( with wandbox.helloWolrdFiles setting ).
+- Added wandbox.simplifyPostData setting.
+
+### Changed
+- Update a compiler mapping table for current Wandbox.
+- Included a post file in the POST data on log.
+
+### Fixed
+- Fixed issue that zombie settings on untitled documents.
+- Fixed issue that showing old json cache.
+- Fixed issue that not showing license in marketplace.
+- DOC: Swift → Apple Swift (in description)
+
+### Removed
+- Removed unnecessary files from package.
+
 ## 1.0.5 - 2017-02-07
 ### Added
 - wandbox.outputChannelName setting
