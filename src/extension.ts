@@ -22,28 +22,53 @@ module WandboxVSCode
             .split('/').reverse()[0];
     }
 
-    var outputChannel :vscode.OutputChannel;
-
-    function makeSureOutputChannel() :vscode.OutputChannel
+    function getConfiguration(key ?: string) : any
     {
-        if (!outputChannel)
-        {
-            outputChannel = vscode.window.createOutputChannel
-            (
-                getConfiguration("outputChannelName")
-            );
-        }
-        else
-        {
-            outputChannel.appendLine('');
-        }
-        return outputChannel;
+        var configuration = vscode.workspace.getConfiguration("wandbox");
+        return key ?
+            configuration[key]:
+            configuration;
     }
 
-    function bowWow() : void
+    module OutputChannel
     {
-        outputChannel.show();
-        outputChannel.appendLine(`🐾 Bow-wow! ${new Date().toString()}`);
+        var outputChannel :vscode.OutputChannel;
+
+        export function makeSure() :vscode.OutputChannel
+        {
+            if (!outputChannel)
+            {
+                outputChannel = vscode.window.createOutputChannel
+                (
+                    getConfiguration("outputChannelName")
+                );
+            }
+            else
+            {
+                appendLine('');
+            }
+            return outputChannel;
+        }
+
+        export function bowWow() : void
+        {
+            show();
+            appendLine(`🐾 Bow-wow! ${new Date().toString()}`);
+        }
+
+        export function show() : void
+        {
+            outputChannel.show();
+        }
+        export function appendLine(value : string) : void
+        {
+            outputChannel.appendLine(value);
+        }
+
+        export function appendJson(value : any) : void
+        {
+            OutputChannel.appendLine(JSON.stringify(value, null, 4));
+        }
     }
 
     function IsOpenFiles(files : string[]) : boolean
@@ -64,7 +89,7 @@ module WandboxVSCode
                 if (!hit)
                 {
                     hasError = true;
-                    outputChannel.appendLine(`🚫 Not found file: ${file} ( If opened, show this file once. And keep to open it.)`);
+                    OutputChannel.appendLine(`🚫 Not found file: ${file} ( If opened, show this file once. And keep to open it.)`);
                 }
             }
         );
@@ -84,50 +109,6 @@ module WandboxVSCode
         }
         return null;
     };
-
-    function showJson(titile : string, json : any) : void
-    {
-        var provider = vscode.workspace.registerTextDocumentContentProvider
-        (
-            'wandbox-vscode-json',
-            new class implements vscode.TextDocumentContentProvider
-            {
-                provideTextDocumentContent(_uri: vscode.Uri, _token: vscode.CancellationToken)
-                    : string | Thenable<string>
-                {
-                    return JSON.stringify(json, null, 4);
-                }
-            }
-        );
-        var date = new Date(); // 結果がキャッシュされようにする為
-        var stamp = date.getFullYear().toString()
-            +("0" +(date.getMonth() +1).toString()).slice(-2)
-            +("0" +date.getDate().toString()).slice(-2)
-            +"-"
-            +("0" +date.getHours().toString()).slice(-2)
-            +("0" +date.getMinutes().toString()).slice(-2)
-            +("0" +date.getSeconds().toString()).slice(-2);
-        vscode.workspace.openTextDocument
-        (
-            vscode.Uri.parse(`wandbox-vscode-json://wandbox-vscode/${stamp}/${titile}.json`)
-        )
-        .then
-        (
-            (value: vscode.TextDocument) =>
-            {
-                vscode.window.showTextDocument(value);
-                provider.dispose();
-            }
-        );
-    }
-
-    function getConfiguration(key ?: string) : any
-    {
-        var configuration = vscode.workspace.getConfiguration("wandbox");
-        return key ?
-            configuration[key]:
-            configuration;
-    }
 
     function getCurrentFilename() : string
     {
@@ -187,10 +168,46 @@ module WandboxVSCode
         return result;
     }
 
+    function showJson(titile : string, json : any) : void
+    {
+        var provider = vscode.workspace.registerTextDocumentContentProvider
+        (
+            'wandbox-vscode-json',
+            new class implements vscode.TextDocumentContentProvider
+            {
+                provideTextDocumentContent(_uri: vscode.Uri, _token: vscode.CancellationToken)
+                    : string | Thenable<string>
+                {
+                    return JSON.stringify(json, null, 4);
+                }
+            }
+        );
+        var date = new Date(); // 結果がキャッシュされようにする為
+        var stamp = date.getFullYear().toString()
+            +("0" +(date.getMonth() +1).toString()).slice(-2)
+            +("0" +date.getDate().toString()).slice(-2)
+            +"-"
+            +("0" +date.getHours().toString()).slice(-2)
+            +("0" +date.getMinutes().toString()).slice(-2)
+            +("0" +date.getSeconds().toString()).slice(-2);
+        vscode.workspace.openTextDocument
+        (
+            vscode.Uri.parse(`wandbox-vscode-json://wandbox-vscode/${stamp}/${titile}.json`)
+        )
+        .then
+        (
+            (value: vscode.TextDocument) =>
+            {
+                vscode.window.showTextDocument(value);
+                provider.dispose();
+            }
+        );
+    }
+
     function getList(callback : (string) => void) : void
     {
         var requestUrl = getWandboxServerUrl() +`/api/list.json?from=${extentionName}`;
-        outputChannel.appendLine(`HTTP GET ${requestUrl}`);
+        OutputChannel.appendLine(`HTTP GET ${requestUrl}`);
         request.get
         (
             requestUrl,
@@ -203,11 +220,11 @@ module WandboxVSCode
                 else
                 if (response.statusCode)
                 {
-                    outputChannel.appendLine(`statusCode: ${response.statusCode}`);
+                    OutputChannel.appendLine(`statusCode: ${response.statusCode}`);
                 }
                 else
                 {
-                    outputChannel.appendLine(`error: ${error}`);
+                    OutputChannel.appendLine(`🚫 error: ${error}`);
                 }
             }
         );
@@ -251,8 +268,8 @@ module WandboxVSCode
 
     function showWandboxCompiers() : void
     {
-        makeSureOutputChannel();
-        bowWow();
+        OutputChannel.makeSure();
+        OutputChannel.bowWow();
 
         makeSureList
         (
@@ -279,14 +296,14 @@ module WandboxVSCode
                     (
                         language =>
                         {
-                            outputChannel.appendLine(`📚 ${language}`);
+                            OutputChannel.appendLine(`📚 ${language}`);
                             languages[language].forEach
                             (
                                 item =>
                                 {
                                     var displayItem = deepCopy(item);
                                     delete displayItem.switches;
-                                    outputChannel.appendLine(`${item.name}\t${JSON.stringify(displayItem)}`);
+                                    OutputChannel.appendLine(`${item.name}\t${JSON.stringify(displayItem)}`);
                                 }
                             );
                         }
@@ -298,8 +315,8 @@ module WandboxVSCode
 
     function showWandboxOptions() : void
     {
-        makeSureOutputChannel();
-        bowWow();
+        OutputChannel.makeSure();
+        OutputChannel.bowWow();
 
         var document = getActiveDocument();
         if (null !== document)
@@ -332,19 +349,19 @@ module WandboxVSCode
 
                         if (!hit)
                         {
-                            outputChannel.appendLine('🚫 Unknown compiler!');
-                            outputChannel.appendLine('👉 You can set a compiler by [Wandbox: Set Compiler] command.');
-                            outputChannel.appendLine('👉 You can see compilers list by [Wandbox: Show Compilers] command.');
+                            OutputChannel.appendLine('🚫 Unknown compiler!');
+                            OutputChannel.appendLine('👉 You can set a compiler by [Wandbox: Set Compiler] command.');
+                            OutputChannel.appendLine('👉 You can see compilers list by [Wandbox: Show Compilers] command.');
                         }
                         else
                         {
                             if (!hit.switches || 0 === hit.switches.length)
                             {
-                                outputChannel.appendLine('this compiler has no options');
+                                OutputChannel.appendLine('this compiler has no options');
                             }
                             else
                             {
-                                outputChannel.appendLine('option\tdetails');
+                                OutputChannel.appendLine('option\tdetails');
                                 hit.switches.forEach
                                 (
                                     item =>
@@ -355,13 +372,13 @@ module WandboxVSCode
                                             (
                                                 item =>
                                                 {
-                                                    outputChannel.appendLine(`${item.name}\t${JSON.stringify(item)}`);
+                                                    OutputChannel.appendLine(`${item.name}\t${JSON.stringify(item)}`);
                                                 }
                                             );
                                         }
                                         else
                                         {
-                                            outputChannel.appendLine(`${item.name}\t${JSON.stringify(item)}`);
+                                            OutputChannel.appendLine(`${item.name}\t${JSON.stringify(item)}`);
                                         }
                                     }
                                 );
@@ -372,21 +389,21 @@ module WandboxVSCode
             }
             else
             {
-                outputChannel.appendLine('🚫 Unknown language!');
-                outputChannel.appendLine('👉 You can use set a compiler by [Wandbox: Set Compiler] command.');
-                outputChannel.appendLine('👉 You can see compilers list by [Wandbox: Show Compilers] command.');
+                OutputChannel.appendLine('🚫 Unknown language!');
+                OutputChannel.appendLine('👉 You can use set a compiler by [Wandbox: Set Compiler] command.');
+                OutputChannel.appendLine('👉 You can see compilers list by [Wandbox: Show Compilers] command.');
             }
         }
         else
         {
-            outputChannel.appendLine('🚫 No active text editor!');
+            OutputChannel.appendLine('🚫 No active text editor!');
         }
     }
     
     function showWandboxListJson() : void
     {
-        makeSureOutputChannel();
-        bowWow();
+        OutputChannel.makeSure();
+        OutputChannel.bowWow();
 
         getList
         (
@@ -400,8 +417,8 @@ module WandboxVSCode
     
     function setSetting(name : string, prompt: string) : void
     {
-        makeSureOutputChannel();
-        bowWow();
+        OutputChannel.makeSure();
+        OutputChannel.bowWow();
 
         var document = getActiveDocument();
         if (null !== document)
@@ -420,7 +437,7 @@ module WandboxVSCode
                             if (IsOpenFiles(newFiles))
                             {
                                 fileSetting[fileName][name] = newFiles;
-                                outputChannel.appendLine(`Set ${name} "${newFiles.join('","')}" for "${fileName}"`);
+                                OutputChannel.appendLine(`Set ${name} "${newFiles.join('","')}" for "${fileName}"`);
                             }
                         }
                         else
@@ -429,11 +446,11 @@ module WandboxVSCode
                             try
                             {
                                 fileSetting[fileName][name] = JSON.parse(`"${value}"`);
-                                outputChannel.appendLine(`Set ${name} "${value}" for "${fileName}"`);
+                                OutputChannel.appendLine(`Set ${name} "${value}" for "${fileName}"`);
                             }
                             catch(Err)
                             {
-                                outputChannel.appendLine(`🚫 ${Err}`);
+                                OutputChannel.appendLine(`🚫 ${Err}`);
                             }
                         }
                         else
@@ -441,12 +458,12 @@ module WandboxVSCode
                             try
                             {
                                 fileSetting[fileName] = JSON.parse(value);
-                                outputChannel.appendLine(`Set settings for "${fileName}"`);
-                                outputChannel.appendLine(JSON.stringify(fileSetting[fileName], null, 4));
+                                OutputChannel.appendLine(`Set settings for "${fileName}"`);
+                                OutputChannel.appendJson(fileSetting[fileName]);
                             }
                             catch(Err)
                             {
-                                outputChannel.appendLine(`🚫 ${Err}`);
+                                OutputChannel.appendLine(`🚫 ${Err}`);
                             }
                         }
                     }
@@ -459,14 +476,14 @@ module WandboxVSCode
         }
         else
         {
-            outputChannel.appendLine('🚫 No active text editor!');
+            OutputChannel.appendLine('🚫 No active text editor!');
         }
     }
 
     function resetWandboxFileSettings() : void
     {
-        makeSureOutputChannel();
-        bowWow();
+        OutputChannel.makeSure();
+        OutputChannel.bowWow();
 
         var document = getActiveDocument();
         if (null !== document)
@@ -475,23 +492,23 @@ module WandboxVSCode
             if (fileSetting[fileName])
             {
                 delete fileSetting[fileName];
-                outputChannel.appendLine(`Reset settings for "${fileName}"`);
+                OutputChannel.appendLine(`Reset settings for "${fileName}"`);
             }
             else
             {
-                outputChannel.appendLine(`⚠️ Not found settings for "${fileName}"`);
+                OutputChannel.appendLine(`⚠️ Not found settings for "${fileName}"`);
             }
         }
         else
         {
-            outputChannel.appendLine('🚫 No active text editor!');
+            OutputChannel.appendLine('🚫 No active text editor!');
         }
     }
     
     function invokeWandbox(args ?: any) : void
     {
-        makeSureOutputChannel();
-        bowWow();
+        OutputChannel.makeSure();
+        OutputChannel.bowWow();
 
         var document = getActiveDocument();
         if (null !== document)
@@ -528,7 +545,7 @@ module WandboxVSCode
             if (compilerName)
             {
                 var requestUrl = getWandboxServerUrl() +`/api/compile.json`;
-                outputChannel.appendLine(`HTTP POST ${requestUrl}`);
+                OutputChannel.appendLine(`HTTP POST ${requestUrl}`);
                 var json =
                 {
                     compiler: compilerName,
@@ -566,7 +583,7 @@ module WandboxVSCode
                 var simplifyPostData = getConfiguration("simplifyPostData");
                 if (simplifyPostData)
                 {
-                    outputChannel.appendLine(JSON.stringify(json, null, 4));
+                    OutputChannel.appendJson(json);
                 }
                 if (additionals)
                 {
@@ -600,7 +617,7 @@ module WandboxVSCode
                 json['from'] = extentionName;
                 if (!simplifyPostData)
                 {
-                    outputChannel.appendLine(JSON.stringify(json, null, 4));
+                    OutputChannel.appendJson(json);
                 }
                 var startAt = new Date();
                 request
@@ -620,46 +637,46 @@ module WandboxVSCode
                         var endAt = new Date();
                         if (response.statusCode)
                         {
-                            outputChannel.appendLine(`HTTP statusCode: ${response.statusCode}`);
+                            OutputChannel.appendLine(`HTTP statusCode: ${response.statusCode}`);
                         }
                         if (!error && response.statusCode === 200)
                         {
                             if (body.status)
                             {
-                                outputChannel.appendLine(`status: ${body.status}`);
+                                OutputChannel.appendLine(`status: ${body.status}`);
                             }
                             if (body.signal)
                             {
-                                outputChannel.appendLine(`🚦 signal: ${body.signal}`);
+                                OutputChannel.appendLine(`🚦 signal: ${body.signal}`);
                             }
                             if (body.compiler_output)
                             {
-                                outputChannel.appendLine('compiler_output: ');
-                                outputChannel.appendLine(body.compiler_output);
+                                OutputChannel.appendLine('compiler_output: ');
+                                OutputChannel.appendLine(body.compiler_output);
                             }
                             if (body.compiler_error)
                             {
-                                outputChannel.appendLine('🚫 compiler_error: ');
-                                outputChannel.appendLine(body.compiler_error);
+                                OutputChannel.appendLine('🚫 compiler_error: ');
+                                OutputChannel.appendLine(body.compiler_error);
                             }
                             //body.compiler_message
                             //merged messages compiler_output and compiler_error
                             if (body.program_output)
                             {
-                                outputChannel.appendLine('program_output: ');
-                                outputChannel.appendLine(body.program_output);
+                                OutputChannel.appendLine('program_output: ');
+                                OutputChannel.appendLine(body.program_output);
                             }
                             if (body.program_error)
                             {
-                                outputChannel.appendLine('🚫 program_error: ');
-                                outputChannel.appendLine(body.program_error);
+                                OutputChannel.appendLine('🚫 program_error: ');
+                                OutputChannel.appendLine(body.program_error);
                             }
                             //body.program_message
                             //merged messages program_output and program_error
                             //body.permlink && outputChannel.appendLine(`🔗 permlink: ${body.permlink}`);
                             if (body.url)
                             {
-                                outputChannel.appendLine(`🔗 url: ${body.url}`);
+                                OutputChannel.appendLine(`🔗 url: ${body.url}`);
                                 if (getConfiguration("autoOpenShareUrl"))
                                 {
                                     vscode.commands.executeCommand
@@ -675,27 +692,27 @@ module WandboxVSCode
                         {
                             if (body)
                             {
-                                outputChannel.appendLine(body);
+                                OutputChannel.appendLine(body);
                             }
                             if (error)
                             {
-                                outputChannel.appendLine(`🚫 error: ${error}`);
+                                OutputChannel.appendLine(`🚫 error: ${error}`);
                             }
                         }
-                        outputChannel.appendLine(`🏁 time: ${(endAt.getTime() -startAt.getTime()) /1000} s`);
+                        OutputChannel.appendLine(`🏁 time: ${(endAt.getTime() -startAt.getTime()) /1000} s`);
                     }
                 );
             }
             else
             {
-                outputChannel.appendLine('🚫 Unknown language!');
-                outputChannel.appendLine('👉 You can use set a compiler by [Wandbox: Set Compiler] command.');
-                outputChannel.appendLine('👉 You can see compilers list by [Wandbox: Show Compilers] command.');
+                OutputChannel.appendLine('🚫 Unknown language!');
+                OutputChannel.appendLine('👉 You can use set a compiler by [Wandbox: Set Compiler] command.');
+                OutputChannel.appendLine('👉 You can see compilers list by [Wandbox: Show Compilers] command.');
             }
         }
         else
         {
-            outputChannel.appendLine('🚫 No active text editor!');
+            OutputChannel.appendLine('🚫 No active text editor!');
         }
     }
     
@@ -711,8 +728,8 @@ module WandboxVSCode
         (
             fileExtension =>
             {
-                makeSureOutputChannel();
-                bowWow();
+                OutputChannel.makeSure();
+                OutputChannel.bowWow();
 
                 while(fileExtension.startsWith("."))
                 {
@@ -737,7 +754,7 @@ module WandboxVSCode
                         }
                     );
                     //console.log(`✨️ Open a hello world as a new file. ( Source is "${helloFilePath}" )`);
-                    outputChannel.appendLine(`✨️ Open a [Hello, world!] as a new file.`);
+                    OutputChannel.appendLine(`✨️ Open a [Hello, world!] as a new file.`);
                     fs.exists
                     (
                         helloFilePath,
@@ -751,7 +768,7 @@ module WandboxVSCode
                                     {
                                         if (err)
                                         {
-                                            outputChannel.appendLine("🚫 " + err.message);
+                                            OutputChannel.appendLine("🚫 " + err.message);
                                         }
                                         else
                                         {
@@ -780,8 +797,8 @@ module WandboxVSCode
                             }
                             else
                             {
-                                outputChannel.appendLine("🚫 Unknown file extension!");
-                                outputChannel.appendLine('👉 You can set hello world files by [wandbox.helloWolrdFiles] setting.');
+                                OutputChannel.appendLine("🚫 Unknown file extension!");
+                                OutputChannel.appendLine('👉 You can set hello world files by [wandbox.helloWolrdFiles] setting.');
                             }
                         }
                     );
@@ -795,7 +812,7 @@ module WandboxVSCode
                         {
                             if (err)
                             {
-                                outputChannel.appendLine("🚫 " + err.message);
+                                OutputChannel.appendLine("🚫 " + err.message);
                             }
                             else
                             {
@@ -823,8 +840,8 @@ module WandboxVSCode
                                 fileExtensionList = fileExtensionList.filter((value, i, self) => self.indexOf(value) === i);
                                 fileExtensionList.sort();
                                 
-                                outputChannel.appendLine('Available hello world list ( file extensions ):');
-                                outputChannel.appendLine(`${fileExtensionList.join(", ")}`);
+                                OutputChannel.appendLine('Available hello world list ( file extensions ):');
+                                OutputChannel.appendLine(`${fileExtensionList.join(", ")}`);
                             }
                         }
                     );
