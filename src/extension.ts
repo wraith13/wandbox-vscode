@@ -5,17 +5,73 @@ import * as vscode from 'vscode';
 import * as request from 'request';
 import * as fs from 'fs';
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext)
+module WandboxVSCode
 {
     const extentionName = "wandbox-vscode";
     var fileSetting = { };
-    var deepCopy = (source : any) : any =>
+
+    function deepCopy(source : any) : any
     {
         return JSON.parse(JSON.stringify(source));
-    };
-    var getActiveDocument = () :vscode.TextDocument =>
+    }
+
+    function stripDirectory(path : string) : string
+    {
+        return path
+            .split('\\').reverse()[0]
+            .split('/').reverse()[0];
+    }
+
+    var outputChannel :vscode.OutputChannel;
+
+    function makeSureOutputChannel() :vscode.OutputChannel
+    {
+        if (!outputChannel)
+        {
+            outputChannel = vscode.window.createOutputChannel
+            (
+                getConfiguration("outputChannelName")
+            );
+        }
+        else
+        {
+            outputChannel.appendLine('');
+        }
+        return outputChannel;
+    }
+
+    function bowWow() : void
+    {
+        outputChannel.show();
+        outputChannel.appendLine(`🐾 Bow-wow! ${new Date().toString()}`);
+    }
+
+    function IsOpenFiles(files : string[]) : boolean
+    {
+        var hasError = false;
+        files.forEach
+        (
+            file =>
+            {
+                var hit = false;
+                vscode.workspace.textDocuments.forEach
+                (
+                    document =>
+                    {
+                        hit = hit || file === stripDirectory(document.fileName);
+                    }
+                );
+                if (!hit)
+                {
+                    hasError = true;
+                    outputChannel.appendLine(`🚫 Not found file: ${file} ( If opened, show this file once. And keep to open it.)`);
+                }
+            }
+        );
+        return !hasError;
+    }
+
+    function getActiveDocument() :vscode.TextDocument
     {
         var activeTextEditor = vscode.window.activeTextEditor;
         if (null !== activeTextEditor && undefined !== activeTextEditor)
@@ -28,7 +84,8 @@ export function activate(context: vscode.ExtensionContext)
         }
         return null;
     };
-    var showJson = (titile : string, json : any) =>
+
+    function showJson(titile : string, json : any) : void
     {
         var provider = vscode.workspace.registerTextDocumentContentProvider
         (
@@ -62,15 +119,17 @@ export function activate(context: vscode.ExtensionContext)
                 provider.dispose();
             }
         );
-    };
-    var getConfiguration = (key ?: string) : any =>
+    }
+
+    function getConfiguration(key ?: string) : any
     {
         var configuration = vscode.workspace.getConfiguration("wandbox");
         return key ?
             configuration[key]:
             configuration;
-    };
-    var getCurrentFilename = () : string =>
+    }
+
+    function getCurrentFilename() : string
     {
         var result : string;
         var document = getActiveDocument();
@@ -83,8 +142,9 @@ export function activate(context: vscode.ExtensionContext)
             result = "wandbox-vscode:default";
         }
         return result;
-    };
-    var getWandboxServerUrl = () :string =>
+    }
+
+    function getWandboxServerUrl() :string
     {
         var result : string;
         var setting = fileSetting[getCurrentFilename()];
@@ -101,8 +161,9 @@ export function activate(context: vscode.ExtensionContext)
             result = result.substr(0, result.length -1);
         }
         return result;
-    };
-    var getWandboxCompilerName = (vscodeLang :string, fileName :string) :string =>
+    }
+
+    function getWandboxCompilerName(vscodeLang :string, fileName :string) :string
     {
         var result : string;
         var setting = fileSetting[fileName];
@@ -124,29 +185,9 @@ export function activate(context: vscode.ExtensionContext)
             }
         }
         return result;
-    };
-    var outputChannel :vscode.OutputChannel;
-    var makeSureOutputChannel = () =>
-    {
-        if (!outputChannel)
-        {
-            outputChannel = vscode.window.createOutputChannel
-            (
-                getConfiguration("outputChannelName")
-            );
-        }
-        else
-        {
-            outputChannel.appendLine('');
-        }
-        return outputChannel;
-    };
-    var bowWow = () =>
-    {
-        outputChannel.show();
-        outputChannel.appendLine(`🐾 Bow-wow! ${new Date().toString()}`);
-    };
-    var getList = (callback : (string) => void) =>
+    }
+
+    function getList(callback : (string) => void) : void
     {
         var requestUrl = getWandboxServerUrl() +`/api/list.json?from=${extentionName}`;
         outputChannel.appendLine(`HTTP GET ${requestUrl}`);
@@ -170,9 +211,11 @@ export function activate(context: vscode.ExtensionContext)
                 }
             }
         );
-    };
+    }
+
     var list : {[name : string] : any[] } = { };
-    var makeSureList = (callback : (list :any[]) => void) =>
+
+    function makeSureList(callback : (list :any[]) => void) : void
     {
         var key = getWandboxServerUrl();
         if (!list[key])
@@ -183,236 +226,179 @@ export function activate(context: vscode.ExtensionContext)
         {
             callback(list[key]);
         }
-    };
+    }
 
-    context.subscriptions.push
-    (
-        vscode.commands.registerCommand
+    function showWandboxSettings() : void
+    {
+        showJson
         (
-            'extension.showWandboxSettings',
-            () => showJson
-            (
-                "setting",
-                {
-                    "basicSetting": getConfiguration(),
-                    "fileSetting": fileSetting
-                }
-            )
-        )
-    );
-    context.subscriptions.push
-    (
-        vscode.commands.registerCommand
-        (
-            'extension.showWandboxWeb',
-            () =>
+            "setting",
             {
-                vscode.commands.executeCommand
-                (
-                    'vscode.open',
-                    vscode.Uri.parse(getWandboxServerUrl() +`/?from=${extentionName}`)
-                );
+                "basicSetting": getConfiguration(),
+                "fileSetting": fileSetting
             }
-        )
-    );
-    context.subscriptions.push
-    (
-        vscode.commands.registerCommand
-        (
-            'extension.showWandboxCompiers',
-            () =>
-            {
-                makeSureOutputChannel();
-                bowWow();
+        );
+    }
 
-                makeSureList
-                (
-                    list =>
-                    {
-                        if (list)
+    function showWandboxWeb() : void
+    {
+        vscode.commands.executeCommand
+        (
+            'vscode.open',
+            vscode.Uri.parse(getWandboxServerUrl() +`/?from=${extentionName}`)
+        );
+    }
+
+    function showWandboxCompiers() : void
+    {
+        makeSureOutputChannel();
+        bowWow();
+
+        makeSureList
+        (
+            list =>
+            {
+                if (list)
+                {
+                    var languageNames :string[] = [];
+                    list.forEach(item => languageNames.push(item.language));
+                    languageNames = languageNames.filter((value, i, self) => self.indexOf(value) === i);
+                    languageNames.sort();
+                    var languages = {};
+                    languageNames.forEach(item => languages[item] = languages[item] || []);
+                    list.forEach
+                    (
+                        item =>
                         {
-                            var languageNames :string[] = [];
-                            list.forEach(item => languageNames.push(item.language));
-                            languageNames = languageNames.filter((value, i, self) => self.indexOf(value) === i);
-                            languageNames.sort();
-                            var languages = {};
-                            languageNames.forEach(item => languages[item] = languages[item] || []);
-                            list.forEach
+                            var displayItem = deepCopy(item);
+                            delete displayItem.switches;
+                            languages[displayItem.language].push(displayItem);
+                        }
+                    );
+                    languageNames.forEach
+                    (
+                        language =>
+                        {
+                            outputChannel.appendLine(`📚 ${language}`);
+                            languages[language].forEach
                             (
                                 item =>
                                 {
                                     var displayItem = deepCopy(item);
                                     delete displayItem.switches;
-                                    languages[displayItem.language].push(displayItem);
+                                    outputChannel.appendLine(`${item.name}\t${JSON.stringify(displayItem)}`);
                                 }
                             );
-                            languageNames.forEach
+                        }
+                    );
+                }
+            }
+        );
+    }
+
+    function showWandboxOptions() : void
+    {
+        makeSureOutputChannel();
+        bowWow();
+
+        var document = getActiveDocument();
+        if (null !== document)
+        {
+            var compilerName = getWandboxCompilerName
+            (
+                document.languageId,
+                document.fileName
+            );
+            if (compilerName)
+            {
+                makeSureList
+                (
+                    list =>
+                    {
+                        var hit :any;
+                        if (list)
+                        {
+                            list.forEach
                             (
-                                language =>
+                                item =>
                                 {
-                                    outputChannel.appendLine(`📚 ${language}`);
-                                    languages[language].forEach
-                                    (
-                                        item =>
-                                        {
-                                            var displayItem = deepCopy(item);
-                                            delete displayItem.switches;
-                                            outputChannel.appendLine(`${item.name}\t${JSON.stringify(displayItem)}`);
-                                        }
-                                    );
+                                    if (compilerName === item.name)
+                                    {
+                                        hit = item;
+                                    }
                                 }
                             );
+                        }
+
+                        if (!hit)
+                        {
+                            outputChannel.appendLine('🚫 Unknown compiler!');
+                            outputChannel.appendLine('👉 You can set a compiler by [Wandbox: Set Compiler] command.');
+                            outputChannel.appendLine('👉 You can see compilers list by [Wandbox: Show Compilers] command.');
+                        }
+                        else
+                        {
+                            if (!hit.switches || 0 === hit.switches.length)
+                            {
+                                outputChannel.appendLine('this compiler has no options');
+                            }
+                            else
+                            {
+                                outputChannel.appendLine('option\tdetails');
+                                hit.switches.forEach
+                                (
+                                    item =>
+                                    {
+                                        if (item.options)
+                                        {
+                                            item.options.forEach
+                                            (
+                                                item =>
+                                                {
+                                                    outputChannel.appendLine(`${item.name}\t${JSON.stringify(item)}`);
+                                                }
+                                            );
+                                        }
+                                        else
+                                        {
+                                            outputChannel.appendLine(`${item.name}\t${JSON.stringify(item)}`);
+                                        }
+                                    }
+                                );
+                            }
                         }
                     }
                 );
             }
-        )
-    );
-    context.subscriptions.push
-    (
-        vscode.commands.registerCommand
-        (
-            'extension.showWandboxOptions',
-            () =>
+            else
             {
-                makeSureOutputChannel();
-                bowWow();
-
-                var document = getActiveDocument();
-                if (null !== document)
-                {
-                    var compilerName = getWandboxCompilerName
-                    (
-                        document.languageId,
-                        document.fileName
-                    );
-                    if (compilerName)
-                    {
-                        makeSureList
-                        (
-                            list =>
-                            {
-                                var hit :any;
-                                if (list)
-                                {
-                                    list.forEach
-                                    (
-                                        item =>
-                                        {
-                                            if (compilerName === item.name)
-                                            {
-                                                hit = item;
-                                            }
-                                        }
-                                    );
-                                }
-
-                                if (!hit)
-                                {
-                                    outputChannel.appendLine('🚫 Unknown compiler!');
-                                    outputChannel.appendLine('👉 You can set a compiler by [Wandbox: Set Compiler] command.');
-                                    outputChannel.appendLine('👉 You can see compilers list by [Wandbox: Show Compilers] command.');
-                                }
-                                else
-                                {
-                                    if (!hit.switches || 0 === hit.switches.length)
-                                    {
-                                        outputChannel.appendLine('this compiler has no options');
-                                    }
-                                    else
-                                    {
-                                        outputChannel.appendLine('option\tdetails');
-                                        hit.switches.forEach
-                                        (
-                                            item =>
-                                            {
-                                                if (item.options)
-                                                {
-                                                    item.options.forEach
-                                                    (
-                                                        item =>
-                                                        {
-                                                            outputChannel.appendLine(`${item.name}\t${JSON.stringify(item)}`);
-                                                        }
-                                                    );
-                                                }
-                                                else
-                                                {
-                                                    outputChannel.appendLine(`${item.name}\t${JSON.stringify(item)}`);
-                                                }
-                                            }
-                                        );
-                                    }
-                                }
-                            }
-                        );
-                    }
-                    else
-                    {
-                        outputChannel.appendLine('🚫 Unknown language!');
-                        outputChannel.appendLine('👉 You can use set a compiler by [Wandbox: Set Compiler] command.');
-                        outputChannel.appendLine('👉 You can see compilers list by [Wandbox: Show Compilers] command.');
-                    }
-                }
-                else
-                {
-                    outputChannel.appendLine('🚫 No active text editor!');
-                }
+                outputChannel.appendLine('🚫 Unknown language!');
+                outputChannel.appendLine('👉 You can use set a compiler by [Wandbox: Set Compiler] command.');
+                outputChannel.appendLine('👉 You can see compilers list by [Wandbox: Show Compilers] command.');
             }
-        )
-    );
-    context.subscriptions.push
-    (
-        vscode.commands.registerCommand
-        (
-            'extension.showWandboxListJson',
-            () =>
-            {
-                makeSureOutputChannel();
-                bowWow();
-
-                getList
-                (
-                    body => showJson
-                    (
-                        "list",
-                        list[getWandboxServerUrl()] = JSON.parse(body)
-                    )
-                );
-            }
-        )
-    );
-    var stripDirectory = (path : string) =>
+        }
+        else
+        {
+            outputChannel.appendLine('🚫 No active text editor!');
+        }
+    }
+    
+    function showWandboxListJson() : void
     {
-        return path
-            .split('\\').reverse()[0]
-            .split('/').reverse()[0];
-    };
-    var IsOpenFiles = (files : string[]) =>
-    {
-        var hasError = false;
-        files.forEach
+        makeSureOutputChannel();
+        bowWow();
+
+        getList
         (
-            file =>
-            {
-                var hit = false;
-                vscode.workspace.textDocuments.forEach
-                (
-                    document =>
-                    {
-                        hit = hit || file === stripDirectory(document.fileName);
-                    }
-                );
-                if (!hit)
-                {
-                    hasError = true;
-                    outputChannel.appendLine(`🚫 Not found file: ${file} ( If opened, show this file once. And keep to open it.)`);
-                }
-            }
+            body => showJson
+            (
+                "list",
+                list[getWandboxServerUrl()] = JSON.parse(body)
+            )
         );
-        return !hasError;
-    };
-    var setSetting = (name : string, prompt: string) =>
+    }
+    
+    function setSetting(name : string, prompt: string) : void
     {
         makeSureOutputChannel();
         bowWow();
@@ -475,103 +461,34 @@ export function activate(context: vscode.ExtensionContext)
         {
             outputChannel.appendLine('🚫 No active text editor!');
         }
-    };
-    context.subscriptions.push
-    (
-        vscode.commands.registerCommand
-        (
-            'extension.setWandboxFileServer',
-            () => setSetting('server', 'Enter server url')
-        )
-    );
-    context.subscriptions.push
-    (
-        vscode.commands.registerCommand
-        (
-            'extension.setWandboxFileCompiler',
-            () => setSetting('compiler', 'Enter compiler name')
-        )
-    );
-    context.subscriptions.push
-    (
-        vscode.commands.registerCommand
-        (
-            'extension.setWandboxFileAdditionals',
-            () => setSetting('codes', 'Enter file names ( just file names without directory )')
-        )
-    );
-    context.subscriptions.push
-    (
-        vscode.commands.registerCommand
-        (
-            'extension.setWandboxFileStdIn',
-            () => setSetting('stdin', 'Enter stdin text ( When you want to user multiline text, Use [Wandbox: Set Settings JSON] command. )')
-        )
-    );
-    context.subscriptions.push
-    (
-        vscode.commands.registerCommand
-        (
-            'extension.setWandboxFileOptions',
-            () => setSetting('options', 'Enter compiler option ( You can see compiler option list by [Wandbox: Show Compier Info] )')
-        )
-    );
-    context.subscriptions.push
-    (
-        vscode.commands.registerCommand
-        (
-            'extension.setWandboxFileCompilerOptionRaw',
-            () => setSetting('compiler-option-raw', 'Enter compiler option raw')
-        )
-    );
-    context.subscriptions.push
-    (
-        vscode.commands.registerCommand
-        (
-            'extension.setWandboxFileRuntimeOptionRaw',
-            () => setSetting('runtime-option-raw', 'Enter runtime option raw')
-        )
-    );
-    context.subscriptions.push
-    (
-        vscode.commands.registerCommand
-        (
-            'extension.setWandboxFileSettingJson',
-            () => setSetting(null, 'Enter settings JSON')
-        )
-    );
-    context.subscriptions.push
-    (
-        vscode.commands.registerCommand
-        (
-            'extension.resetWandboxFileSettings',
-            () =>
-            {
-                makeSureOutputChannel();
-                bowWow();
+    }
 
-                var document = getActiveDocument();
-                if (null !== document)
-                {
-                    var fileName = document.fileName;
-                    if (fileSetting[fileName])
-                    {
-                        delete fileSetting[fileName];
-                        outputChannel.appendLine(`Reset settings for "${fileName}"`);
-                    }
-                    else
-                    {
-                        outputChannel.appendLine(`⚠️ Not found settings for "${fileName}"`);
-                    }
-                }
-                else
-                {
-                    outputChannel.appendLine('🚫 No active text editor!');
-                }
+    function resetWandboxFileSettings() : void
+    {
+        makeSureOutputChannel();
+        bowWow();
+
+        var document = getActiveDocument();
+        if (null !== document)
+        {
+            var fileName = document.fileName;
+            if (fileSetting[fileName])
+            {
+                delete fileSetting[fileName];
+                outputChannel.appendLine(`Reset settings for "${fileName}"`);
             }
-        )
-    );
-    var invokeWandbox = (args ?: any) =>
+            else
+            {
+                outputChannel.appendLine(`⚠️ Not found settings for "${fileName}"`);
+            }
+        }
+        else
+        {
+            outputChannel.appendLine('🚫 No active text editor!');
+        }
+    }
+    
+    function invokeWandbox(args ?: any) : void
     {
         makeSureOutputChannel();
         bowWow();
@@ -780,199 +697,277 @@ export function activate(context: vscode.ExtensionContext)
         {
             outputChannel.appendLine('🚫 No active text editor!');
         }
-    };
-    context.subscriptions.push
-    (
-        vscode.commands.registerCommand
-        (
-            'extension.invokeWandbox',
-            () => invokeWandbox()
-        )
-    );
-    context.subscriptions.push
-    (
-        vscode.commands.registerCommand
-        (
-            'extension.shareWandbox',
-            () => invokeWandbox({ share: true })
-        )
-    );
-
-    vscode.workspace.onDidCloseTextDocument
-    (
-        (document : vscode.TextDocument) =>
-        {
-            if (document.isUntitled && fileSetting[document.fileName])
-            {
-                delete fileSetting[document.fileName];
-            }
-        }
-    );
-
+    }
+    
     var newDocument =
     {
         text: null,
         fileExtension: null
     };
-    vscode.window.onDidChangeActiveTextEditor
-    (
-        (textEditor : vscode.TextEditor) =>
-        {
-            if (textEditor.document.isUntitled && newDocument.text)
-            {
-                var activeTextEditor = vscode.window.activeTextEditor;
-                activeTextEditor.edit
-                (
-                    (editBuilder: vscode.TextEditorEdit) =>
-                    {
-                        editBuilder.insert(new vscode.Position(0,0), newDocument.text);
-                    }
-                );
-                var document = getActiveDocument();
-                var fileName = document.fileName;
-                var compiler = getConfiguration("extensionCompilerMapping")[newDocument.fileExtension];
-                if (compiler)
-                {
-                    fileSetting[fileName] = fileSetting[fileName] || { };
-                    fileSetting[fileName]['compiler'] = compiler;
-                }
 
-                newDocument.text = null;
-                newDocument.fileExtension = null;
-            }
-        }
-    );
-    context.subscriptions.push
-    (
-        vscode.commands.registerCommand
+    function helloWandbox() : void
+    {
+        vscode.window.showInputBox({ prompt:"Enter file extension ( e.g.: sh, c, cpp, d ... )" }).then
         (
-            'extension.helloWandbox',
-            () => vscode.window.showInputBox({ prompt:"Enter file extension ( e.g.: sh, c, cpp, d ... )" }).then
-            (
-                fileExtension =>
+            fileExtension =>
+            {
+                makeSureOutputChannel();
+                bowWow();
+
+                while(fileExtension.startsWith("."))
                 {
-                    makeSureOutputChannel();
-                    bowWow();
-
-                    while(fileExtension.startsWith("."))
-                    {
-                        fileExtension = fileExtension.substr(1);
-                    }
-
-                    var extensionPath = vscode.extensions.getExtension("wraith13.wandbox-vscode").extensionPath;
-                    var userFiles : string[];
-                    userFiles = getConfiguration("helloWolrdFiles");
-                    if (fileExtension)
-                    {
-                        var helloFilePath = `${extensionPath}/hellos/hello.${fileExtension}`;
-                        userFiles.forEach
-                        (
-                            (i : string ) =>
-                            {
-                                var parts = i.split(".");
-                                if (parts[parts.length -1] === fileExtension)
-                                {
-                                    helloFilePath = i;
-                                }
-                            }
-                        );
-                        //console.log(`✨️ Open a hello world as a new file. ( Source is "${helloFilePath}" )`);
-                        outputChannel.appendLine(`✨️ Open a [Hello, world!] as a new file.`);
-                        fs.exists
-                        (
-                            helloFilePath,
-                            (exists : boolean) =>
-                            {
-                                if (exists)
-                                {
-                                    fs.readFile
-                                    (
-                                        helloFilePath, (err : NodeJS.ErrnoException, data : Buffer) =>
-                                        {
-                                            if (err)
-                                            {
-                                                outputChannel.appendLine("🚫 " + err.message);
-                                            }
-                                            else
-                                            {
-                                                newDocument.text = data.toString();
-                                                newDocument.fileExtension = fileExtension;
-
-                                                //  ドキュメント上は vscode.workspace.openTextDocument() で language を指定して新規ファイルオープン
-                                                //  できることになってるっぽいんだけど、実際にそういうことができないので代わりに workbench.action.files.newUntitledFile
-                                                //  を使っている。 untitled: を使ったやり方は保存予定の実パスを指定する必要があり、ここの目的には沿わない。
-
-                                                //  language を指定して新規ファイルオープンできるようになったらその方法での実装に切り替えることを検討すること。
-
-                                                vscode.commands.executeCommand("workbench.action.files.newUntitledFile")
-                                                .then
-                                                (
-                                                    (_value :{} ) =>
-                                                    {
-                                                        //  ここでは新規オープンされた document 周りの情報がなにも取得できないのでなにもできない。
-                                                        //  なので　vscode.window.onDidChangeActiveTextEditor　で処理している。
-                                                    }
-                                                );
-                                    
-                                            }
-                                        }
-                                    );
-                                }
-                                else
-                                {
-                                    outputChannel.appendLine("🚫 Unknown file extension!");
-                                    outputChannel.appendLine('👉 You can set hello world files by [wandbox.helloWolrdFiles] setting.');
-                                }
-                            }
-                        );
-                    } else {
-                        fs.readdir
-                        (
-                            `${extensionPath}/hellos`,
-                            (err : NodeJS.ErrnoException, files : string[]) =>
-                            {
-                                if (err)
-                                {
-                                    outputChannel.appendLine("🚫 " + err.message);
-                                }
-                                else
-                                {
-                                    const hello = "hello.";
-                                    var fileExtensionList = [];
-                                    files.forEach
-                                    (
-                                        (i : string) => 
-                                        {
-                                            if (i.startsWith(hello))
-                                            {
-                                                fileExtensionList.push(i.substr(hello.length));
-                                            }
-                                        }
-                                    );
-                                    userFiles.forEach
-                                    (
-                                        (i : string ) =>
-                                        {
-                                            var parts = i.split(".");
-                                            fileExtensionList.push(parts[parts.length -1]);
-                                        }
-                                    );
-                                    
-                                    fileExtensionList = fileExtensionList.filter((value, i, self) => self.indexOf(value) === i);
-                                    fileExtensionList.sort();
-                                    
-                                    outputChannel.appendLine('Available hello world list ( file extensions ):');
-                                    outputChannel.appendLine(`${fileExtensionList.join(", ")}`);
-                                }
-                            }
-                        );
-                    }
+                    fileExtension = fileExtension.substr(1);
                 }
+
+                var extensionPath = vscode.extensions.getExtension("wraith13.wandbox-vscode").extensionPath;
+                var userFiles : string[];
+                userFiles = getConfiguration("helloWolrdFiles");
+                if (fileExtension)
+                {
+                    var helloFilePath = `${extensionPath}/hellos/hello.${fileExtension}`;
+                    userFiles.forEach
+                    (
+                        (i : string ) =>
+                        {
+                            var parts = i.split(".");
+                            if (parts[parts.length -1] === fileExtension)
+                            {
+                                helloFilePath = i;
+                            }
+                        }
+                    );
+                    //console.log(`✨️ Open a hello world as a new file. ( Source is "${helloFilePath}" )`);
+                    outputChannel.appendLine(`✨️ Open a [Hello, world!] as a new file.`);
+                    fs.exists
+                    (
+                        helloFilePath,
+                        (exists : boolean) =>
+                        {
+                            if (exists)
+                            {
+                                fs.readFile
+                                (
+                                    helloFilePath, (err : NodeJS.ErrnoException, data : Buffer) =>
+                                    {
+                                        if (err)
+                                        {
+                                            outputChannel.appendLine("🚫 " + err.message);
+                                        }
+                                        else
+                                        {
+                                            newDocument.text = data.toString();
+                                            newDocument.fileExtension = fileExtension;
+
+                                            //  ドキュメント上は vscode.workspace.openTextDocument() で language を指定して新規ファイルオープン
+                                            //  できることになってるっぽいんだけど、実際にそういうことができないので代わりに workbench.action.files.newUntitledFile
+                                            //  を使っている。 untitled: を使ったやり方は保存予定の実パスを指定する必要があり、ここの目的には沿わない。
+
+                                            //  language を指定して新規ファイルオープンできるようになったらその方法での実装に切り替えることを検討すること。
+
+                                            vscode.commands.executeCommand("workbench.action.files.newUntitledFile")
+                                            .then
+                                            (
+                                                (_value :{} ) =>
+                                                {
+                                                    //  ここでは新規オープンされた document 周りの情報がなにも取得できないのでなにもできない。
+                                                    //  なので　vscode.window.onDidChangeActiveTextEditor　で処理している。
+                                                }
+                                            );
+                                
+                                        }
+                                    }
+                                );
+                            }
+                            else
+                            {
+                                outputChannel.appendLine("🚫 Unknown file extension!");
+                                outputChannel.appendLine('👉 You can set hello world files by [wandbox.helloWolrdFiles] setting.');
+                            }
+                        }
+                    );
+                }
+                else
+                {
+                    fs.readdir
+                    (
+                        `${extensionPath}/hellos`,
+                        (err : NodeJS.ErrnoException, files : string[]) =>
+                        {
+                            if (err)
+                            {
+                                outputChannel.appendLine("🚫 " + err.message);
+                            }
+                            else
+                            {
+                                const hello = "hello.";
+                                var fileExtensionList = [];
+                                files.forEach
+                                (
+                                    (i : string) => 
+                                    {
+                                        if (i.startsWith(hello))
+                                        {
+                                            fileExtensionList.push(i.substr(hello.length));
+                                        }
+                                    }
+                                );
+                                userFiles.forEach
+                                (
+                                    (i : string ) =>
+                                    {
+                                        var parts = i.split(".");
+                                        fileExtensionList.push(parts[parts.length -1]);
+                                    }
+                                );
+                                
+                                fileExtensionList = fileExtensionList.filter((value, i, self) => self.indexOf(value) === i);
+                                fileExtensionList.sort();
+                                
+                                outputChannel.appendLine('Available hello world list ( file extensions ):');
+                                outputChannel.appendLine(`${fileExtensionList.join(", ")}`);
+                            }
+                        }
+                    );
+                }
+            }
+        );
+    }
+    
+    export function registerCommand(context: vscode.ExtensionContext) : void
+    {
+        [
+            {
+                command: 'extension.showWandboxSettings',
+                callback: showWandboxSettings
+            },
+            {
+                command: 'extension.showWandboxWeb',
+                callback: showWandboxWeb
+            },
+            {
+                command: 'extension.showWandboxCompiers',
+                callback: showWandboxCompiers
+            },
+            {
+                command: 'extension.showWandboxOptions',
+                callback: showWandboxOptions
+            },
+            {
+                command: 'extension.showWandboxListJson',
+                callback: showWandboxListJson
+            },
+            {
+                command: 'extension.setWandboxFileServer',
+                callback: () => setSetting('server', 'Enter server url')
+            },
+            {
+                command: 'extension.setWandboxFileCompiler',
+                callback: () => setSetting('compiler', 'Enter compiler name')
+            },
+            {
+                command: 'extension.setWandboxFileAdditionals',
+                callback: () => setSetting('codes', 'Enter file names ( just file names without directory )')
+            },
+            {
+                command: 'extension.setWandboxFileStdIn',
+                callback: () => setSetting('stdin', 'Enter stdin text ( When you want to user multiline text, Use [Wandbox: Set Settings JSON] command. )')
+            },
+            {
+                command: 'extension.setWandboxFileOptions',
+                callback: () => setSetting('options', 'Enter compiler option ( You can see compiler option list by [Wandbox: Show Compier Info] )')
+            },
+            {
+                command: 'extension.setWandboxFileCompilerOptionRaw',
+                callback: () => setSetting('compiler-option-raw', 'Enter compiler option raw')
+            },
+            {
+                command: 'extension.setWandboxFileRuntimeOptionRaw',
+                callback: () => setSetting('runtime-option-raw', 'Enter runtime option raw')
+            },
+            {
+                command: 'extension.setWandboxFileSettingJson',
+                callback: () => setSetting(null, 'Enter settings JSON')
+            },
+            {
+                command: 'extension.resetWandboxFileSettings',
+                callback: resetWandboxFileSettings
+            },
+            {
+                command: 'extension.invokeWandbox',
+                callback: () => invokeWandbox()
+            },
+            {
+                command: 'extension.shareWandbox',
+                callback: () => invokeWandbox({ share: true })
+            },
+            {
+                command: 'extension.helloWandbox',
+                callback: helloWandbox
+            }
+        ]
+        .forEach
+        (
+            i =>
+            context.subscriptions.push
+            (
+                vscode.commands.registerCommand
+                (
+                    i.command,
+                    i.callback
+                )
             )
-        )
-    );
+        );
+
+        vscode.workspace.onDidCloseTextDocument
+        (
+            (document : vscode.TextDocument) =>
+            {
+                if (document.isUntitled && fileSetting[document.fileName])
+                {
+                    delete fileSetting[document.fileName];
+                }
+            }
+        );
+
+        vscode.window.onDidChangeActiveTextEditor
+        (
+            (textEditor : vscode.TextEditor) =>
+            {
+                if (textEditor.document.isUntitled && newDocument.text)
+                {
+                    var activeTextEditor = vscode.window.activeTextEditor;
+                    activeTextEditor.edit
+                    (
+                        (editBuilder: vscode.TextEditorEdit) =>
+                        {
+                            editBuilder.insert(new vscode.Position(0,0), newDocument.text);
+                        }
+                    );
+                    var document = getActiveDocument();
+                    var fileName = document.fileName;
+                    var compiler = getConfiguration("extensionCompilerMapping")[newDocument.fileExtension];
+                    if (compiler)
+                    {
+                        fileSetting[fileName] = fileSetting[fileName] || { };
+                        fileSetting[fileName]['compiler'] = compiler;
+                    }
+
+                    newDocument.text = null;
+                    newDocument.fileExtension = null;
+                }
+            }
+        );
+    }
+}
+
+// this method is called when your extension is activated
+// your extension is activated the very first time the command is executed
+export function activate(context: vscode.ExtensionContext)
+{
+    WandboxVSCode.registerCommand(context);
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {
+export function deactivate()
+{
 }
