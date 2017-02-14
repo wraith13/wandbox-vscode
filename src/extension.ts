@@ -106,18 +106,15 @@ module WandboxVSCode
                 requestUrl,
                 function(error, response, body)
                 {
-                    if (!error && response.statusCode === 200)
-                    {
-                        callback(list[getUrl()] = JSON.parse(body));
-                    }
-                    else
-                    if (response.statusCode)
-                    {
-                        OutputChannel.appendLine(`statusCode: ${response.statusCode}`);
-                    }
-                    else
+                    OutputChannel.appendLine(`statusCode: ${response.statusCode}`);
+                    if (error)
                     {
                         OutputChannel.appendLine(`🚫 error: ${error}`);
+                    }
+                    else
+                    if (response.statusCode === 200)
+                    {
+                        callback(list[getUrl()] = JSON.parse(body));
                     }
                 }
             );
@@ -138,10 +135,8 @@ module WandboxVSCode
             }
         }
 
-        export function compile(json : { }) : void
+        function buildCompileJson(json : { }) : { }
         {
-            var requestUrl = getUrl() +`/api/compile.json`;
-            OutputChannel.appendLine(`HTTP POST ${requestUrl}`);
             var document : vscode.TextDocument = json['code'];
             var additionals : string[];
             var setting = fileSetting[document.fileName];
@@ -195,6 +190,83 @@ module WandboxVSCode
             {
                 OutputChannel.appendJson(json);
             }
+            
+            return json;
+        }
+
+        function outputCompileResult(error, response, body) : void
+        {
+            if (response.statusCode)
+            {
+                OutputChannel.appendLine(`HTTP statusCode: ${response.statusCode}`);
+            }
+            if (!error && response.statusCode === 200)
+            {
+                if (body.status)
+                {
+                    OutputChannel.appendLine(`status: ${body.status}`);
+                }
+                if (body.signal)
+                {
+                    OutputChannel.appendLine(`🚦 signal: ${body.signal}`);
+                }
+                if (body.compiler_output)
+                {
+                    OutputChannel.appendLine('compiler_output: ');
+                    OutputChannel.appendLine(body.compiler_output);
+                }
+                if (body.compiler_error)
+                {
+                    OutputChannel.appendLine('🚫 compiler_error: ');
+                    OutputChannel.appendLine(body.compiler_error);
+                }
+                //body.compiler_message
+                //merged messages compiler_output and compiler_error
+                if (body.program_output)
+                {
+                    OutputChannel.appendLine('program_output: ');
+                    OutputChannel.appendLine(body.program_output);
+                }
+                if (body.program_error)
+                {
+                    OutputChannel.appendLine('🚫 program_error: ');
+                    OutputChannel.appendLine(body.program_error);
+                }
+                //body.program_message
+                //merged messages program_output and program_error
+                //body.permlink && outputChannel.appendLine(`🔗 permlink: ${body.permlink}`);
+                if (body.url)
+                {
+                    OutputChannel.appendLine(`🔗 url: ${body.url}`);
+                    if (getConfiguration("autoOpenShareUrl"))
+                    {
+                        vscode.commands.executeCommand
+                        (
+                            'vscode.open',
+                            vscode.Uri.parse(body.url)
+                        );
+                    }
+                }
+
+            }
+            else
+            {
+                if (body)
+                {
+                    OutputChannel.appendLine(body);
+                }
+                if (error)
+                {
+                    OutputChannel.appendLine(`🚫 error: ${error}`);
+                }
+            }
+        }
+
+        export function compile(json : { }) : void
+        {
+            var requestUrl = getUrl() +`/api/compile.json`;
+            OutputChannel.appendLine(`HTTP POST ${requestUrl}`);
+
             var startAt = new Date();
             request
             (
@@ -206,75 +278,12 @@ module WandboxVSCode
                         //'Content-Type': 'application/json',
                         'User-Agent': extentionName
                     },
-                    json: json
+                    json: buildCompileJson(json)
                 },
                 function(error, response, body)
                 {
                     var endAt = new Date();
-                    if (response.statusCode)
-                    {
-                        OutputChannel.appendLine(`HTTP statusCode: ${response.statusCode}`);
-                    }
-                    if (!error && response.statusCode === 200)
-                    {
-                        if (body.status)
-                        {
-                            OutputChannel.appendLine(`status: ${body.status}`);
-                        }
-                        if (body.signal)
-                        {
-                            OutputChannel.appendLine(`🚦 signal: ${body.signal}`);
-                        }
-                        if (body.compiler_output)
-                        {
-                            OutputChannel.appendLine('compiler_output: ');
-                            OutputChannel.appendLine(body.compiler_output);
-                        }
-                        if (body.compiler_error)
-                        {
-                            OutputChannel.appendLine('🚫 compiler_error: ');
-                            OutputChannel.appendLine(body.compiler_error);
-                        }
-                        //body.compiler_message
-                        //merged messages compiler_output and compiler_error
-                        if (body.program_output)
-                        {
-                            OutputChannel.appendLine('program_output: ');
-                            OutputChannel.appendLine(body.program_output);
-                        }
-                        if (body.program_error)
-                        {
-                            OutputChannel.appendLine('🚫 program_error: ');
-                            OutputChannel.appendLine(body.program_error);
-                        }
-                        //body.program_message
-                        //merged messages program_output and program_error
-                        //body.permlink && outputChannel.appendLine(`🔗 permlink: ${body.permlink}`);
-                        if (body.url)
-                        {
-                            OutputChannel.appendLine(`🔗 url: ${body.url}`);
-                            if (getConfiguration("autoOpenShareUrl"))
-                            {
-                                vscode.commands.executeCommand
-                                (
-                                    'vscode.open',
-                                    vscode.Uri.parse(body.url)
-                                );
-                            }
-                        }
-
-                    }
-                    else
-                    {
-                        if (body)
-                        {
-                            OutputChannel.appendLine(body);
-                        }
-                        if (error)
-                        {
-                            OutputChannel.appendLine(`🚫 error: ${error}`);
-                        }
-                    }
+                    outputCompileResult(error, response, body);
                     OutputChannel.appendLine(`🏁 time: ${(endAt.getTime() -startAt.getTime()) /1000} s`);
                 }
             );
