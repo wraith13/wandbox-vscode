@@ -71,6 +71,216 @@ module WandboxVSCode
         }
     }
 
+    module WandboxServer
+    {
+        function getUrl() :string
+        {
+            var result : string;
+            var setting = fileSetting[getCurrentFilename()];
+            if (setting)
+            {
+                result = setting.server;
+            }
+            if (!result)
+            {
+                result = getConfiguration("defaultServer");
+            }
+            if (result.endsWith("/"))
+            {
+                result = result.substr(0, result.length -1);
+            }
+            return result;
+        }
+
+        export function getWebUrl() :string
+        {
+            return getUrl() +`/?from=${extentionName}`;
+        }
+
+        export function getList(callback : (list :any[]) => void) : void
+        {
+            var requestUrl = getUrl() +`/api/list.json?from=${extentionName}`;
+            OutputChannel.appendLine(`HTTP GET ${requestUrl}`);
+            request.get
+            (
+                requestUrl,
+                function(error, response, body)
+                {
+                    if (!error && response.statusCode === 200)
+                    {
+                        callback(list[getUrl()] = JSON.parse(body));
+                    }
+                    else
+                    if (response.statusCode)
+                    {
+                        OutputChannel.appendLine(`statusCode: ${response.statusCode}`);
+                    }
+                    else
+                    {
+                        OutputChannel.appendLine(`🚫 error: ${error}`);
+                    }
+                }
+            );
+        }
+
+        var list : {[name : string] : any[] } = { };
+
+        export function makeSureList(callback : (list :any[]) => void) : void
+        {
+            var key = getUrl();
+            if (!list[key])
+            {
+                getList(body => callback(body));
+            }
+            else
+            {
+                callback(list[key]);
+            }
+        }
+
+        export function compile(json : { }) : void
+        {
+            var requestUrl = getUrl() +`/api/compile.json`;
+            OutputChannel.appendLine(`HTTP POST ${requestUrl}`);
+            var document : vscode.TextDocument = json['code'];
+            var additionals : string[];
+            var setting = fileSetting[document.fileName];
+            if (setting)
+            {
+                additionals = setting['codes'];
+            }
+            var simplifyPostData = getConfiguration("simplifyPostData");
+            if (simplifyPostData)
+            {
+                //  簡素化
+                json['code'] = document.fileName;
+                if (additionals)
+                {
+                    json['codes'] = additionals.join(',');
+                }
+
+                OutputChannel.appendJson(json);
+            }
+            if (additionals)
+            {
+                json['codes'] = [];
+                additionals.forEach
+                (
+                    filename =>
+                    {
+                        var code : string;
+                        vscode.workspace.textDocuments.forEach
+                        (
+                            document =>
+                            {
+                                if (filename === stripDirectory(document.fileName))
+                                {
+                                    code = document.getText();
+                                }
+                            }
+                        );
+                        json['codes'].push
+                        (
+                            {
+                                'file': filename,
+                                'code': code
+                            }
+                        );
+                    }
+                );
+            }
+            json['code'] = document.getText();
+            json['from'] = extentionName;
+            if (!simplifyPostData)
+            {
+                OutputChannel.appendJson(json);
+            }
+            var startAt = new Date();
+            request
+            (
+                {
+                    url: requestUrl,
+                    method: 'POST',
+                    headers:
+                    {
+                        //'Content-Type': 'application/json',
+                        'User-Agent': extentionName
+                    },
+                    json: json
+                },
+                function(error, response, body)
+                {
+                    var endAt = new Date();
+                    if (response.statusCode)
+                    {
+                        OutputChannel.appendLine(`HTTP statusCode: ${response.statusCode}`);
+                    }
+                    if (!error && response.statusCode === 200)
+                    {
+                        if (body.status)
+                        {
+                            OutputChannel.appendLine(`status: ${body.status}`);
+                        }
+                        if (body.signal)
+                        {
+                            OutputChannel.appendLine(`🚦 signal: ${body.signal}`);
+                        }
+                        if (body.compiler_output)
+                        {
+                            OutputChannel.appendLine('compiler_output: ');
+                            OutputChannel.appendLine(body.compiler_output);
+                        }
+                        if (body.compiler_error)
+                        {
+                            OutputChannel.appendLine('🚫 compiler_error: ');
+                            OutputChannel.appendLine(body.compiler_error);
+                        }
+                        //body.compiler_message
+                        //merged messages compiler_output and compiler_error
+                        if (body.program_output)
+                        {
+                            OutputChannel.appendLine('program_output: ');
+                            OutputChannel.appendLine(body.program_output);
+                        }
+                        if (body.program_error)
+                        {
+                            OutputChannel.appendLine('🚫 program_error: ');
+                            OutputChannel.appendLine(body.program_error);
+                        }
+                        //body.program_message
+                        //merged messages program_output and program_error
+                        //body.permlink && outputChannel.appendLine(`🔗 permlink: ${body.permlink}`);
+                        if (body.url)
+                        {
+                            OutputChannel.appendLine(`🔗 url: ${body.url}`);
+                            if (getConfiguration("autoOpenShareUrl"))
+                            {
+                                vscode.commands.executeCommand
+                                (
+                                    'vscode.open',
+                                    vscode.Uri.parse(body.url)
+                                );
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        if (body)
+                        {
+                            OutputChannel.appendLine(body);
+                        }
+                        if (error)
+                        {
+                            OutputChannel.appendLine(`🚫 error: ${error}`);
+                        }
+                    }
+                    OutputChannel.appendLine(`🏁 time: ${(endAt.getTime() -startAt.getTime()) /1000} s`);
+                }
+            );
+        }
+    }
+
     function IsOpenFiles(files : string[]) : boolean
     {
         var hasError = false;
@@ -121,25 +331,6 @@ module WandboxVSCode
         if (!result)
         {
             result = "wandbox-vscode:default";
-        }
-        return result;
-    }
-
-    function getWandboxServerUrl() :string
-    {
-        var result : string;
-        var setting = fileSetting[getCurrentFilename()];
-        if (setting)
-        {
-            result = setting.server;
-        }
-        if (!result)
-        {
-            result = getConfiguration("defaultServer");
-        }
-        if (result.endsWith("/"))
-        {
-            result = result.substr(0, result.length -1);
         }
         return result;
     }
@@ -204,47 +395,6 @@ module WandboxVSCode
         );
     }
 
-    function getList(callback : (string) => void) : void
-    {
-        var requestUrl = getWandboxServerUrl() +`/api/list.json?from=${extentionName}`;
-        OutputChannel.appendLine(`HTTP GET ${requestUrl}`);
-        request.get
-        (
-            requestUrl,
-            function(error, response, body)
-            {
-                if (!error && response.statusCode === 200)
-                {
-                    callback(body);
-                }
-                else
-                if (response.statusCode)
-                {
-                    OutputChannel.appendLine(`statusCode: ${response.statusCode}`);
-                }
-                else
-                {
-                    OutputChannel.appendLine(`🚫 error: ${error}`);
-                }
-            }
-        );
-    }
-
-    var list : {[name : string] : any[] } = { };
-
-    function makeSureList(callback : (list :any[]) => void) : void
-    {
-        var key = getWandboxServerUrl();
-        if (!list[key])
-        {
-            getList(body => callback(list[key] = JSON.parse(body)));
-        }
-        else
-        {
-            callback(list[key]);
-        }
-    }
-
     function showWandboxSettings() : void
     {
         showJson
@@ -262,7 +412,7 @@ module WandboxVSCode
         vscode.commands.executeCommand
         (
             'vscode.open',
-            vscode.Uri.parse(getWandboxServerUrl() +`/?from=${extentionName}`)
+            vscode.Uri.parse(WandboxServer.getWebUrl())
         );
     }
 
@@ -271,7 +421,7 @@ module WandboxVSCode
         OutputChannel.makeSure();
         OutputChannel.bowWow();
 
-        makeSureList
+        WandboxServer.makeSureList
         (
             list =>
             {
@@ -328,7 +478,7 @@ module WandboxVSCode
             );
             if (compilerName)
             {
-                makeSureList
+                WandboxServer.makeSureList
                 (
                     list =>
                     {
@@ -405,12 +555,12 @@ module WandboxVSCode
         OutputChannel.makeSure();
         OutputChannel.bowWow();
 
-        getList
+        WandboxServer.getList
         (
             body => showJson
             (
                 "list",
-                list[getWandboxServerUrl()] = JSON.parse(body)
+                body
             )
         );
     }
@@ -544,12 +694,10 @@ module WandboxVSCode
 
             if (compilerName)
             {
-                var requestUrl = getWandboxServerUrl() +`/api/compile.json`;
-                OutputChannel.appendLine(`HTTP POST ${requestUrl}`);
                 var json =
                 {
                     compiler: compilerName,
-                    code: document.fileName
+                    code: document
                 };
                 if (additionals)
                 {
@@ -580,128 +728,7 @@ module WandboxVSCode
                 {
                     json['save'] = true;
                 }
-                var simplifyPostData = getConfiguration("simplifyPostData");
-                if (simplifyPostData)
-                {
-                    OutputChannel.appendJson(json);
-                }
-                if (additionals)
-                {
-                    json['codes'] = [];
-                    additionals.forEach
-                    (
-                        filename =>
-                        {
-                            var code : string;
-                            vscode.workspace.textDocuments.forEach
-                            (
-                                document =>
-                                {
-                                    if (filename === stripDirectory(document.fileName))
-                                    {
-                                        code = document.getText();
-                                    }
-                                }
-                            );
-                            json['codes'].push
-                            (
-                                {
-                                    'file': filename,
-                                    'code': code
-                                }
-                            );
-                        }
-                    );
-                }
-                json['code'] = document.getText();
-                json['from'] = extentionName;
-                if (!simplifyPostData)
-                {
-                    OutputChannel.appendJson(json);
-                }
-                var startAt = new Date();
-                request
-                (
-                    {
-                        url: requestUrl,
-                        method: 'POST',
-                        headers:
-                        {
-                            //'Content-Type': 'application/json',
-                            'User-Agent': extentionName
-                        },
-                        json: json
-                    },
-                    function(error, response, body)
-                    {
-                        var endAt = new Date();
-                        if (response.statusCode)
-                        {
-                            OutputChannel.appendLine(`HTTP statusCode: ${response.statusCode}`);
-                        }
-                        if (!error && response.statusCode === 200)
-                        {
-                            if (body.status)
-                            {
-                                OutputChannel.appendLine(`status: ${body.status}`);
-                            }
-                            if (body.signal)
-                            {
-                                OutputChannel.appendLine(`🚦 signal: ${body.signal}`);
-                            }
-                            if (body.compiler_output)
-                            {
-                                OutputChannel.appendLine('compiler_output: ');
-                                OutputChannel.appendLine(body.compiler_output);
-                            }
-                            if (body.compiler_error)
-                            {
-                                OutputChannel.appendLine('🚫 compiler_error: ');
-                                OutputChannel.appendLine(body.compiler_error);
-                            }
-                            //body.compiler_message
-                            //merged messages compiler_output and compiler_error
-                            if (body.program_output)
-                            {
-                                OutputChannel.appendLine('program_output: ');
-                                OutputChannel.appendLine(body.program_output);
-                            }
-                            if (body.program_error)
-                            {
-                                OutputChannel.appendLine('🚫 program_error: ');
-                                OutputChannel.appendLine(body.program_error);
-                            }
-                            //body.program_message
-                            //merged messages program_output and program_error
-                            //body.permlink && outputChannel.appendLine(`🔗 permlink: ${body.permlink}`);
-                            if (body.url)
-                            {
-                                OutputChannel.appendLine(`🔗 url: ${body.url}`);
-                                if (getConfiguration("autoOpenShareUrl"))
-                                {
-                                    vscode.commands.executeCommand
-                                    (
-                                        'vscode.open',
-                                        vscode.Uri.parse(body.url)
-                                    );
-                                }
-                            }
-
-                        }
-                        else
-                        {
-                            if (body)
-                            {
-                                OutputChannel.appendLine(body);
-                            }
-                            if (error)
-                            {
-                                OutputChannel.appendLine(`🚫 error: ${error}`);
-                            }
-                        }
-                        OutputChannel.appendLine(`🏁 time: ${(endAt.getTime() -startAt.getTime()) /1000} s`);
-                    }
-                );
+                WandboxServer.compile(json);
             }
             else
             {
