@@ -383,7 +383,6 @@ module WandboxVSCode
         }
     }
 
-
     function getWandboxCompilerName(vscodeLang :string, fileName :string) :string
     {
         var result : string;
@@ -764,124 +763,138 @@ module WandboxVSCode
 
     function helloWandbox() : void
     {
-        vscode.window.showInputBox({ prompt:"Enter file extension ( e.g.: sh, c, cpp, d ... )" }).then
+        OutputChannel.makeSure();
+        OutputChannel.bowWow();
+
+        var extensionPath = vscode.extensions.getExtension("wraith13.wandbox-vscode").extensionPath;
+        var userFiles : string[];
+        userFiles = getConfiguration("helloWolrdFiles");
+        fs.readdir
         (
-            fileExtension =>
+            `${extensionPath}/hellos`,
+            (err : NodeJS.ErrnoException, files : string[]) =>
             {
-                OutputChannel.makeSure();
-                OutputChannel.bowWow();
-
-                while(fileExtension.startsWith("."))
+                if (err)
                 {
-                    fileExtension = fileExtension.substr(1);
+                    OutputChannel.appendLine("🚫 " + err.message);
                 }
-
-                var extensionPath = vscode.extensions.getExtension("wraith13.wandbox-vscode").extensionPath;
-                var userFiles : string[];
-                userFiles = getConfiguration("helloWolrdFiles");
-                if (fileExtension)
+                else
                 {
-                    var helloFilePath = `${extensionPath}/hellos/hello.${fileExtension}`;
+                    const hello = "hello.";
+                    var fileExtensionList = [];
+                    files.forEach
+                    (
+                        (i : string) => 
+                        {
+                            if (i.startsWith(hello))
+                            {
+                                fileExtensionList.push(i.substr(hello.length));
+                            }
+                        }
+                    );
                     userFiles.forEach
                     (
                         (i : string ) =>
                         {
                             var parts = i.split(".");
-                            if (parts[parts.length -1] === fileExtension)
-                            {
-                                helloFilePath = i;
-                            }
+                            fileExtensionList.push(parts[parts.length -1]);
                         }
                     );
-                    //console.log(`✨️ Open a hello world as a new file. ( Source is "${helloFilePath}" )`);
-                    OutputChannel.appendLine(`✨️ Open a [Hello, world!] as a new file.`);
-                    fs.exists
+                    
+                    fileExtensionList = fileExtensionList.filter((value, i, self) => self.indexOf(value) === i);
+                    fileExtensionList.sort();
+
+                    var fileExtensionQuickPickList : vscode.QuickPickItem[] = [];
+                    fileExtensionList.forEach
                     (
-                        helloFilePath,
-                        (exists : boolean) =>
+                        (i : string ) =>
                         {
-                            if (exists)
-                            {
-                                fs.readFile
-                                (
-                                    helloFilePath, (err : NodeJS.ErrnoException, data : Buffer) =>
-                                    {
-                                        if (err)
-                                        {
-                                            OutputChannel.appendLine("🚫 " + err.message);
-                                        }
-                                        else
-                                        {
-                                            newDocument.text = data.toString();
-                                            newDocument.fileExtension = fileExtension;
-
-                                            //  ドキュメント上は vscode.workspace.openTextDocument() で language を指定して新規ファイルオープン
-                                            //  できることになってるっぽいんだけど、実際にそういうことができないので代わりに workbench.action.files.newUntitledFile
-                                            //  を使っている。 untitled: を使ったやり方は保存予定の実パスを指定する必要があり、ここの目的には沿わない。
-
-                                            //  language を指定して新規ファイルオープンできるようになったらその方法での実装に切り替えることを検討すること。
-
-                                            vscode.commands.executeCommand("workbench.action.files.newUntitledFile")
-                                            .then
-                                            (
-                                                (_value :{} ) =>
-                                                {
-                                                    //  ここでは新規オープンされた document 周りの情報がなにも取得できないのでなにもできない。
-                                                    //  なので　vscode.window.onDidChangeActiveTextEditor　で処理している。
-                                                }
-                                            );
-                                
-                                        }
-                                    }
-                                );
-                            }
-                            else
-                            {
-                                OutputChannel.appendLine("🚫 Unknown file extension!");
-                                OutputChannel.appendLine('👉 You can set hello world files by [wandbox.helloWolrdFiles] setting.');
-                            }
+                            fileExtensionQuickPickList.push
+                            (
+                                {
+                                    "label": i,
+                                    "description": `${extensionPath}/hellos/hello.${i}`,
+                                    "detail": null
+                                }
+                            );
                         }
                     );
-                }
-                else
-                {
-                    fs.readdir
+                    vscode.window.showQuickPick
                     (
-                        `${extensionPath}/hellos`,
-                        (err : NodeJS.ErrnoException, files : string[]) =>
+                        fileExtensionQuickPickList,
                         {
-                            if (err)
+                            placeHolder: "Select a file extension"
+                        }
+                    )
+                    .then
+                    (
+                        function(select : vscode.QuickPickItem)
+                        {
+                            if (select)
                             {
-                                OutputChannel.appendLine("🚫 " + err.message);
-                            }
-                            else
-                            {
-                                const hello = "hello.";
-                                var fileExtensionList = [];
-                                files.forEach
-                                (
-                                    (i : string) => 
-                                    {
-                                        if (i.startsWith(hello))
-                                        {
-                                            fileExtensionList.push(i.substr(hello.length));
-                                        }
-                                    }
-                                );
+                                var fileExtension = select.label;
+                                var helloFilePath = `${extensionPath}/hellos/hello.${fileExtension}`;
                                 userFiles.forEach
                                 (
                                     (i : string ) =>
                                     {
                                         var parts = i.split(".");
-                                        fileExtensionList.push(parts[parts.length -1]);
+                                        if (parts[parts.length -1] === fileExtension)
+                                        {
+                                            helloFilePath = i;
+                                        }
                                     }
                                 );
-                                
-                                fileExtensionList = fileExtensionList.filter((value, i, self) => self.indexOf(value) === i);
-                                fileExtensionList.sort();
-                                
-                                OutputChannel.appendLine('Available hello world list ( file extensions ):');
-                                OutputChannel.appendLine(`${fileExtensionList.join(", ")}`);
+                                //console.log(`✨️ Open a hello world as a new file. ( Source is "${helloFilePath}" )`);
+                                OutputChannel.appendLine(`✨️ Open a [Hello, world!] as a new file.`);
+                                fs.exists
+                                (
+                                    helloFilePath,
+                                    (exists : boolean) =>
+                                    {
+                                        if (exists)
+                                        {
+                                            fs.readFile
+                                            (
+                                                helloFilePath, (err : NodeJS.ErrnoException, data : Buffer) =>
+                                                {
+                                                    if (err)
+                                                    {
+                                                        OutputChannel.appendLine("🚫 " + err.message);
+                                                    }
+                                                    else
+                                                    {
+                                                        newDocument.text = data.toString();
+                                                        newDocument.fileExtension = fileExtension;
+
+                                                        //  ドキュメント上は vscode.workspace.openTextDocument() で language を指定して新規ファイルオープン
+                                                        //  できることになってるっぽいんだけど、実際にそういうことができないので代わりに workbench.action.files.newUntitledFile
+                                                        //  を使っている。 untitled: を使ったやり方は保存予定の実パスを指定する必要があり、ここの目的には沿わない。
+
+                                                        //  language を指定して新規ファイルオープンできるようになったらその方法での実装に切り替えることを検討すること。
+
+                                                        vscode.commands.executeCommand("workbench.action.files.newUntitledFile")
+                                                        .then
+                                                        (
+                                                            (_value :{} ) =>
+                                                            {
+                                                                //  ここでは新規オープンされた document 周りの情報がなにも取得できないのでなにもできない。
+                                                                //  なので　vscode.window.onDidChangeActiveTextEditor　で処理している。
+                                                            }
+                                                        );
+                                            
+                                                    }
+                                                }
+                                            );
+                                        }
+                                        else
+                                        {
+                                            OutputChannel.appendLine("🚫 Unknown file extension!");
+                                            OutputChannel.appendLine('👉 You can set hello world files by [wandbox.helloWolrdFiles] setting.');
+                                        }
+                                    }
+                                );
+
                             }
                         }
                     );
@@ -889,7 +902,7 @@ module WandboxVSCode
             }
         );
     }
-    
+
     export function registerCommand(context: vscode.ExtensionContext) : void
     {
         [
