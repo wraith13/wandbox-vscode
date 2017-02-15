@@ -76,7 +76,7 @@ module WandboxVSCode
         function getUrl() :string
         {
             var result : string;
-            var setting = fileSetting[getCurrentFilename()];
+            var setting = fileSetting[WorkSpace.getCurrentFilename()];
             if (setting)
             {
                 result = setting.server;
@@ -290,59 +290,99 @@ module WandboxVSCode
         }
     }
 
-    function IsOpenFiles(files : string[]) : boolean
+    module WorkSpace
     {
-        var hasError = false;
-        files.forEach
-        (
-            file =>
-            {
-                var hit = false;
-                vscode.workspace.textDocuments.forEach
-                (
-                    document =>
-                    {
-                        hit = hit || file === stripDirectory(document.fileName);
-                    }
-                );
-                if (!hit)
+        export function IsOpenFiles(files : string[]) : boolean
+        {
+            var hasError = false;
+            files.forEach
+            (
+                file =>
                 {
-                    hasError = true;
-                    OutputChannel.appendLine(`🚫 Not found file: ${file} ( If opened, show this file once. And keep to open it.)`);
+                    var hit = false;
+                    vscode.workspace.textDocuments.forEach
+                    (
+                        document =>
+                        {
+                            hit = hit || file === stripDirectory(document.fileName);
+                        }
+                    );
+                    if (!hit)
+                    {
+                        hasError = true;
+                        OutputChannel.appendLine(`🚫 Not found file: ${file} ( If opened, show this file once. And keep to open it.)`);
+                    }
+                }
+            );
+            return !hasError;
+        }
+
+        export function getActiveDocument() :vscode.TextDocument
+        {
+            var activeTextEditor = vscode.window.activeTextEditor;
+            if (null !== activeTextEditor && undefined !== activeTextEditor)
+            {
+                var document = activeTextEditor.document;
+                if (null !== document && undefined !== document)
+                {
+                    return document;
                 }
             }
-        );
-        return !hasError;
-    }
+            return null;
+        };
 
-    function getActiveDocument() :vscode.TextDocument
-    {
-        var activeTextEditor = vscode.window.activeTextEditor;
-        if (null !== activeTextEditor && undefined !== activeTextEditor)
+        export function getCurrentFilename() : string
         {
-            var document = activeTextEditor.document;
-            if (null !== document && undefined !== document)
+            var result : string;
+            var document = getActiveDocument();
+            if (null !== document)
             {
-                return document;
+                result = document.fileName;
             }
+            if (!result)
+            {
+                result = "wandbox-vscode:default";
+            }
+            return result;
         }
-        return null;
-    };
 
-    function getCurrentFilename() : string
-    {
-        var result : string;
-        var document = getActiveDocument();
-        if (null !== document)
+        export function showJson(titile : string, json : any) : void
         {
-            result = document.fileName;
+            var provider = vscode.workspace.registerTextDocumentContentProvider
+            (
+                'wandbox-vscode-json',
+                new class implements vscode.TextDocumentContentProvider
+                {
+                    provideTextDocumentContent(_uri: vscode.Uri, _token: vscode.CancellationToken)
+                        : string | Thenable<string>
+                    {
+                        return JSON.stringify(json, null, 4);
+                    }
+                }
+            );
+            var date = new Date(); // 結果がキャッシュされようにする為
+            var stamp = date.getFullYear().toString()
+                +("0" +(date.getMonth() +1).toString()).slice(-2)
+                +("0" +date.getDate().toString()).slice(-2)
+                +"-"
+                +("0" +date.getHours().toString()).slice(-2)
+                +("0" +date.getMinutes().toString()).slice(-2)
+                +("0" +date.getSeconds().toString()).slice(-2);
+            vscode.workspace.openTextDocument
+            (
+                vscode.Uri.parse(`wandbox-vscode-json://wandbox-vscode/${stamp}/${titile}.json`)
+            )
+            .then
+            (
+                (value: vscode.TextDocument) =>
+                {
+                    vscode.window.showTextDocument(value);
+                    provider.dispose();
+                }
+            );
         }
-        if (!result)
-        {
-            result = "wandbox-vscode:default";
-        }
-        return result;
     }
+
 
     function getWandboxCompilerName(vscodeLang :string, fileName :string) :string
     {
@@ -368,45 +408,9 @@ module WandboxVSCode
         return result;
     }
 
-    function showJson(titile : string, json : any) : void
-    {
-        var provider = vscode.workspace.registerTextDocumentContentProvider
-        (
-            'wandbox-vscode-json',
-            new class implements vscode.TextDocumentContentProvider
-            {
-                provideTextDocumentContent(_uri: vscode.Uri, _token: vscode.CancellationToken)
-                    : string | Thenable<string>
-                {
-                    return JSON.stringify(json, null, 4);
-                }
-            }
-        );
-        var date = new Date(); // 結果がキャッシュされようにする為
-        var stamp = date.getFullYear().toString()
-            +("0" +(date.getMonth() +1).toString()).slice(-2)
-            +("0" +date.getDate().toString()).slice(-2)
-            +"-"
-            +("0" +date.getHours().toString()).slice(-2)
-            +("0" +date.getMinutes().toString()).slice(-2)
-            +("0" +date.getSeconds().toString()).slice(-2);
-        vscode.workspace.openTextDocument
-        (
-            vscode.Uri.parse(`wandbox-vscode-json://wandbox-vscode/${stamp}/${titile}.json`)
-        )
-        .then
-        (
-            (value: vscode.TextDocument) =>
-            {
-                vscode.window.showTextDocument(value);
-                provider.dispose();
-            }
-        );
-    }
-
     function showWandboxSettings() : void
     {
-        showJson
+        WorkSpace.showJson
         (
             "setting",
             {
@@ -477,7 +481,7 @@ module WandboxVSCode
         OutputChannel.makeSure();
         OutputChannel.bowWow();
 
-        var document = getActiveDocument();
+        var document = WorkSpace.getActiveDocument();
         if (null !== document)
         {
             var compilerName = getWandboxCompilerName
@@ -566,7 +570,7 @@ module WandboxVSCode
 
         WandboxServer.getList
         (
-            body => showJson
+            body => WorkSpace.showJson
             (
                 "list",
                 body
@@ -579,7 +583,7 @@ module WandboxVSCode
         OutputChannel.makeSure();
         OutputChannel.bowWow();
 
-        var document = getActiveDocument();
+        var document = WorkSpace.getActiveDocument();
         if (null !== document)
         {
             var fileName = document.fileName;
@@ -593,7 +597,7 @@ module WandboxVSCode
                         if ('additionals' === name)
                         {
                             var newFiles = value.split(',');
-                            if (IsOpenFiles(newFiles))
+                            if (WorkSpace.IsOpenFiles(newFiles))
                             {
                                 fileSetting[fileName][name] = newFiles;
                                 OutputChannel.appendLine(`Set ${name} "${newFiles.join('","')}" for "${fileName}"`);
@@ -644,7 +648,7 @@ module WandboxVSCode
         OutputChannel.makeSure();
         OutputChannel.bowWow();
 
-        var document = getActiveDocument();
+        var document = WorkSpace.getActiveDocument();
         if (null !== document)
         {
             var fileName = document.fileName;
@@ -669,7 +673,7 @@ module WandboxVSCode
         OutputChannel.makeSure();
         OutputChannel.bowWow();
 
-        var document = getActiveDocument();
+        var document = WorkSpace.getActiveDocument();
         if (null !== document)
         {
             var compilerName = getWandboxCompilerName
@@ -710,7 +714,7 @@ module WandboxVSCode
                 };
                 if (additionals)
                 {
-                    if (!IsOpenFiles(additionals))
+                    if (!WorkSpace.IsOpenFiles(additionals))
                     {
                         return;
                     }
@@ -996,7 +1000,7 @@ module WandboxVSCode
                             editBuilder.insert(new vscode.Position(0,0), newDocument.text);
                         }
                     );
-                    var document = getActiveDocument();
+                    var document = WorkSpace.getActiveDocument();
                     var fileName = document.fileName;
                     var compiler = getConfiguration("extensionCompilerMapping")[newDocument.fileExtension];
                     if (compiler)
