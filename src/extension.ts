@@ -397,12 +397,7 @@ module WandboxVSCode
         }
         if (!result && fileName)
         {
-            var elements = fileName.split('.');
-            if (2 <= elements.length)
-            {
-                var extension = elements[elements.length -1];
-                result = getConfiguration("extensionCompilerMapping")[extension];
-            }
+            result = getConfiguration("extensionCompilerMapping")[fileName.split('.').reverse()[0]];
         }
         return result;
     }
@@ -781,49 +776,44 @@ module WandboxVSCode
                 else
                 {
                     const hello = "hello.";
-                    var fileExtensionList = [];
-                    files.forEach
-                    (
-                        (i : string) => 
-                        {
-                            if (i.startsWith(hello))
-                            {
-                                fileExtensionList.push(i.substr(hello.length));
-                            }
-                        }
-                    );
-                    userFiles.forEach
-                    (
-                        (i : string ) =>
-                        {
-                            var parts = i.split(".");
-                            fileExtensionList.push(parts[parts.length -1]);
-                        }
-                    );
-                    
-                    fileExtensionList = fileExtensionList.filter((value, i, self) => self.indexOf(value) === i);
-                    fileExtensionList.sort();
-
                     var fileExtensionQuickPickList : vscode.QuickPickItem[] = [];
-                    fileExtensionList.forEach
+                    userFiles.forEach
                     (
                         (i : string ) =>
                         {
                             fileExtensionQuickPickList.push
                             (
                                 {
-                                    "label": i,
-                                    "description": `${extensionPath}/hellos/hello.${i}`,
+                                    "label": stripDirectory(i),
+                                    "description": i,
                                     "detail": null
                                 }
                             );
+                        }
+                    );
+                    files.forEach
+                    (
+                        (i : string) => 
+                        {
+                            if (i.startsWith(hello))
+                            {
+                                fileExtensionQuickPickList.push
+                                (
+                                    {
+                                        "label": i,
+                                        "description": `${extensionPath}/hellos/${i}`,
+                                        "detail": null
+                                    }
+                                );
+                            }
                         }
                     );
                     vscode.window.showQuickPick
                     (
                         fileExtensionQuickPickList,
                         {
-                            placeHolder: "Select a file extension"
+                            placeHolder: "Select a [hello, world!] file",
+                            matchOnDescription: true
                         }
                     )
                     .then
@@ -832,21 +822,9 @@ module WandboxVSCode
                         {
                             if (select)
                             {
-                                var fileExtension = select.label;
-                                var helloFilePath = `${extensionPath}/hellos/hello.${fileExtension}`;
-                                userFiles.forEach
-                                (
-                                    (i : string ) =>
-                                    {
-                                        var parts = i.split(".");
-                                        if (parts[parts.length -1] === fileExtension)
-                                        {
-                                            helloFilePath = i;
-                                        }
-                                    }
-                                );
-                                //console.log(`✨️ Open a hello world as a new file. ( Source is "${helloFilePath}" )`);
-                                OutputChannel.appendLine(`✨️ Open a [Hello, world!] as a new file.`);
+                                //var fileExtension = select.label;
+                                var helloFilePath = select.description;
+                                OutputChannel.appendLine(`✨️ Open a [hello, world!] as a new file. ( Source is "${helloFilePath}" )`);
                                 fs.exists
                                 (
                                     helloFilePath,
@@ -865,7 +843,7 @@ module WandboxVSCode
                                                     else
                                                     {
                                                         newDocument.text = data.toString();
-                                                        newDocument.fileExtension = fileExtension;
+                                                        newDocument.fileExtension = helloFilePath.split('.').reverse()[0];
 
                                                         //  ドキュメント上は vscode.workspace.openTextDocument() で language を指定して新規ファイルオープン
                                                         //  できることになってるっぽいんだけど、実際にそういうことができないので代わりに workbench.action.files.newUntitledFile
