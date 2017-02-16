@@ -767,7 +767,7 @@ module WandboxVSCode
         fs.readdir
         (
             `${extensionPath}/hellos`,
-            (err : NodeJS.ErrnoException, files : string[]) =>
+            async (err : NodeJS.ErrnoException, files : string[]) =>
             {
                 if (err)
                 {
@@ -808,74 +808,67 @@ module WandboxVSCode
                             }
                         }
                     );
-                    vscode.window.showQuickPick
+                    var select = await vscode.window.showQuickPick
                     (
                         fileExtensionQuickPickList,
                         {
                             placeHolder: "Select a [hello, world!] file",
                             matchOnDescription: true
                         }
-                    )
-                    .then
-                    (
-                        function(select : vscode.QuickPickItem)
-                        {
-                            if (select)
-                            {
-                                //var fileExtension = select.label;
-                                var helloFilePath = select.description;
-                                OutputChannel.appendLine(`✨️ Open a [hello, world!] as a new file. ( Source is "${helloFilePath}" )`);
-                                fs.exists
-                                (
-                                    helloFilePath,
-                                    (exists : boolean) =>
-                                    {
-                                        if (exists)
-                                        {
-                                            fs.readFile
-                                            (
-                                                helloFilePath, (err : NodeJS.ErrnoException, data : Buffer) =>
-                                                {
-                                                    if (err)
-                                                    {
-                                                        OutputChannel.appendLine("🚫 " + err.message);
-                                                    }
-                                                    else
-                                                    {
-                                                        newDocument.text = data.toString();
-                                                        newDocument.fileExtension = helloFilePath.split('.').reverse()[0];
-
-                                                        //  ドキュメント上は vscode.workspace.openTextDocument() で language を指定して新規ファイルオープン
-                                                        //  できることになってるっぽいんだけど、実際にそういうことができないので代わりに workbench.action.files.newUntitledFile
-                                                        //  を使っている。 untitled: を使ったやり方は保存予定の実パスを指定する必要があり、ここの目的には沿わない。
-
-                                                        //  language を指定して新規ファイルオープンできるようになったらその方法での実装に切り替えることを検討すること。
-
-                                                        vscode.commands.executeCommand("workbench.action.files.newUntitledFile")
-                                                        .then
-                                                        (
-                                                            (_value :{} ) =>
-                                                            {
-                                                                //  ここでは新規オープンされた document 周りの情報がなにも取得できないのでなにもできない。
-                                                                //  なので　vscode.window.onDidChangeActiveTextEditor　で処理している。
-                                                            }
-                                                        );
-                                            
-                                                    }
-                                                }
-                                            );
-                                        }
-                                        else
-                                        {
-                                            OutputChannel.appendLine("🚫 Unknown file extension!");
-                                            OutputChannel.appendLine('👉 You can set hello world files by [wandbox.helloWolrdFiles] setting.');
-                                        }
-                                    }
-                                );
-
-                            }
-                        }
                     );
+                    if (select)
+                    {
+                        //var fileExtension = select.label;
+                        var helloFilePath = select.description;
+                        OutputChannel.appendLine(`✨️ Open a [hello, world!] as a new file. ( Source is "${helloFilePath}" )`);
+                        fs.exists
+                        (
+                            helloFilePath,
+                            (exists : boolean) =>
+                            {
+                                if (exists)
+                                {
+                                    fs.readFile
+                                    (
+                                        helloFilePath, (err : NodeJS.ErrnoException, data : Buffer) =>
+                                        {
+                                            if (err)
+                                            {
+                                                OutputChannel.appendLine("🚫 " + err.message);
+                                            }
+                                            else
+                                            {
+                                                newDocument.text = data.toString();
+                                                newDocument.fileExtension = helloFilePath.split('.').reverse()[0];
+
+                                                //  ドキュメント上は vscode.workspace.openTextDocument() で language を指定して新規ファイルオープン
+                                                //  できることになってるっぽいんだけど、実際にそういうことができないので代わりに workbench.action.files.newUntitledFile
+                                                //  を使っている。 untitled: を使ったやり方は保存予定の実パスを指定する必要があり、ここの目的には沿わない。
+
+                                                //  language を指定して新規ファイルオープンできるようになったらその方法での実装に切り替えることを検討すること。
+
+                                                vscode.commands.executeCommand("workbench.action.files.newUntitledFile")
+                                                .then
+                                                (
+                                                    (_value :{} ) =>
+                                                    {
+                                                        //  ここでは新規オープンされた document 周りの情報がなにも取得できないのでなにもできない。
+                                                        //  なので　vscode.window.onDidChangeActiveTextEditor　で処理している。
+                                                    }
+                                                );
+                                    
+                                            }
+                                        }
+                                    );
+                                }
+                                else
+                                {
+                                    OutputChannel.appendLine("🚫 Unknown file extension!");
+                                    OutputChannel.appendLine('👉 You can set hello world files by [wandbox.helloWolrdFiles] setting.');
+                                }
+                            }
+                        );
+                    }
                 }
             }
         );
