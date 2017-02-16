@@ -5,6 +5,68 @@ import * as vscode from 'vscode';
 import * as request from 'request';
 import * as fs from 'fs';
 
+module rx
+{
+    class Result
+    {
+
+        public constructor
+        (
+            public error : any,
+            public response : any,
+            public body : any
+        )
+        {
+
+        }
+    }
+    export function get(url : string) : Thenable<Result>
+    {
+        return new Promise<Result>
+        (
+            resolve => request.get
+            (
+                url,
+                function(error, response, body)
+                {
+                    resolve
+                    (
+                        new Result
+                        (
+                            error,
+                            response,
+                            body
+                        )
+                    );
+                }
+            )
+        );
+    }
+
+    export function execute(data : any) : Thenable<Result>
+    {
+        return new Promise<Result>
+        (
+            resolve => request
+            (
+                data,
+                function(error, response, body)
+                {
+                    resolve
+                    (
+                        new Result
+                        (
+                            error,
+                            response,
+                            body
+                        )
+                    );
+                }
+            )
+        );
+    }
+}
+
 module WandboxVSCode
 {
     const extentionName = "wandbox-vscode";
@@ -97,27 +159,24 @@ module WandboxVSCode
             return getUrl() +`/?from=${extentionName}`;
         }
 
-        export function getList(callback : (list :any[]) => void) : void
+        export async function getList(callback : (list :any[]) => void) : Promise<void>
         {
             var requestUrl = getUrl() +`/api/list.json?from=${extentionName}`;
             OutputChannel.appendLine(`HTTP GET ${requestUrl}`);
-            request.get
+            var result = await rx.get
             (
                 requestUrl,
-                function(error, response, body)
-                {
-                    OutputChannel.appendLine(`statusCode: ${response.statusCode}`);
-                    if (error)
-                    {
-                        OutputChannel.appendLine(`🚫 error: ${error}`);
-                    }
-                    else
-                    if (response.statusCode === 200)
-                    {
-                        callback(list[getUrl()] = JSON.parse(body));
-                    }
-                }
             );
+            OutputChannel.appendLine(`statusCode: ${result.response.statusCode}`);
+            if (result.error)
+            {
+                OutputChannel.appendLine(`🚫 error: ${result.error}`);
+            }
+            else
+            if (result.response.statusCode === 200)
+            {
+                callback(list[getUrl()] = JSON.parse(result.body));
+            }
         }
 
         var list : {[name : string] : any[] } = { };
@@ -194,81 +253,13 @@ module WandboxVSCode
             return json;
         }
 
-        function outputCompileResult(error, response, body) : void
-        {
-            if (response.statusCode)
-            {
-                OutputChannel.appendLine(`HTTP statusCode: ${response.statusCode}`);
-            }
-            if (!error && response.statusCode === 200)
-            {
-                if (body.status)
-                {
-                    OutputChannel.appendLine(`status: ${body.status}`);
-                }
-                if (body.signal)
-                {
-                    OutputChannel.appendLine(`🚦 signal: ${body.signal}`);
-                }
-                if (body.compiler_output)
-                {
-                    OutputChannel.appendLine('compiler_output: ');
-                    OutputChannel.appendLine(body.compiler_output);
-                }
-                if (body.compiler_error)
-                {
-                    OutputChannel.appendLine('🚫 compiler_error: ');
-                    OutputChannel.appendLine(body.compiler_error);
-                }
-                //body.compiler_message
-                //merged messages compiler_output and compiler_error
-                if (body.program_output)
-                {
-                    OutputChannel.appendLine('program_output: ');
-                    OutputChannel.appendLine(body.program_output);
-                }
-                if (body.program_error)
-                {
-                    OutputChannel.appendLine('🚫 program_error: ');
-                    OutputChannel.appendLine(body.program_error);
-                }
-                //body.program_message
-                //merged messages program_output and program_error
-                //body.permlink && outputChannel.appendLine(`🔗 permlink: ${body.permlink}`);
-                if (body.url)
-                {
-                    OutputChannel.appendLine(`🔗 url: ${body.url}`);
-                    if (getConfiguration("autoOpenShareUrl"))
-                    {
-                        vscode.commands.executeCommand
-                        (
-                            'vscode.open',
-                            vscode.Uri.parse(body.url)
-                        );
-                    }
-                }
-
-            }
-            else
-            {
-                if (body)
-                {
-                    OutputChannel.appendLine(body);
-                }
-                if (error)
-                {
-                    OutputChannel.appendLine(`🚫 error: ${error}`);
-                }
-            }
-        }
-
-        export function compile(json : { }) : void
+        export async function compile(json : { }) : Promise<void>
         {
             var requestUrl = getUrl() +`/api/compile.json`;
             OutputChannel.appendLine(`HTTP POST ${requestUrl}`);
 
             var startAt = new Date();
-            request
+            var result = await rx.execute
             (
                 {
                     url: requestUrl,
@@ -279,14 +270,74 @@ module WandboxVSCode
                         'User-Agent': extentionName
                     },
                     json: buildCompileJson(json)
-                },
-                function(error, response, body)
-                {
-                    var endAt = new Date();
-                    outputCompileResult(error, response, body);
-                    OutputChannel.appendLine(`🏁 time: ${(endAt.getTime() -startAt.getTime()) /1000} s`);
                 }
             );
+            var endAt = new Date();
+            if (result.response.statusCode)
+            {
+                OutputChannel.appendLine(`HTTP statusCode: ${result.response.statusCode}`);
+            }
+            if (!result.error && result.response.statusCode === 200)
+            {
+                if (result.body.status)
+                {
+                    OutputChannel.appendLine(`status: ${result.body.status}`);
+                }
+                if (result.body.signal)
+                {
+                    OutputChannel.appendLine(`🚦 signal: ${result.body.signal}`);
+                }
+                if (result.body.compiler_output)
+                {
+                    OutputChannel.appendLine('compiler_output: ');
+                    OutputChannel.appendLine(result.body.compiler_output);
+                }
+                if (result.body.compiler_error)
+                {
+                    OutputChannel.appendLine('🚫 compiler_error: ');
+                    OutputChannel.appendLine(result.body.compiler_error);
+                }
+                //body.compiler_message
+                //merged messages compiler_output and compiler_error
+                if (result.body.program_output)
+                {
+                    OutputChannel.appendLine('program_output: ');
+                    OutputChannel.appendLine(result.body.program_output);
+                }
+                if (result.body.program_error)
+                {
+                    OutputChannel.appendLine('🚫 program_error: ');
+                    OutputChannel.appendLine(result.body.program_error);
+                }
+                //body.program_message
+                //merged messages program_output and program_error
+                //body.permlink && outputChannel.appendLine(`🔗 permlink: ${body.permlink}`);
+                if (result.body.url)
+                {
+                    OutputChannel.appendLine(`🔗 url: ${result.body.url}`);
+                    if (getConfiguration("autoOpenShareUrl"))
+                    {
+                        vscode.commands.executeCommand
+                        (
+                            'vscode.open',
+                            vscode.Uri.parse(result.body.url)
+                        );
+                    }
+                }
+
+            }
+            else
+            {
+                if (result.body)
+                {
+                    OutputChannel.appendLine(result.body);
+                }
+                if (result.error)
+                {
+                    OutputChannel.appendLine(`🚫 error: ${result.error}`);
+                }
+            }
+            OutputChannel.appendLine(`🏁 time: ${(endAt.getTime() -startAt.getTime()) /1000} s`);
         }
     }
 
