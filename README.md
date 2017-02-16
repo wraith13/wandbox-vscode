@@ -64,7 +64,9 @@ This extension contributes the following settings:
 * `wandbox.simplifyPostData`: simplify post data when showing
 * `wandbox.autoOpenShareUrl`: when make a share url, auto open it
 * `wandbox.outputChannelName`: output channel name
+* `wandbox.languageMapping`: set language in wandbox by language in vscode
 * `wandbox.languageCompilerMapping`: set compiler by language
+* `wandbox.extensionLanguageMapping`: set language by file extension
 * `wandbox.extensionCompilerMapping`: set compiler by file extension
 * `wandbox.options`: set options by compiler
 * `wandbox.compilerOptionRaw`: set raw option by compiler
