@@ -195,19 +195,19 @@ module WandboxVSCode
         {
             var requestUrl = getUrl() +`/api/list.json?from=${extentionName}`;
             OutputChannel.appendLine(`HTTP GET ${requestUrl}`);
-            var result = await rx.get
+            let { error, response, body } = await rx.get
             (
                 requestUrl,
             );
-            OutputChannel.appendLine(`statusCode: ${result.response.statusCode}`);
-            if (result.error)
+            OutputChannel.appendLine(`statusCode: ${response.statusCode}`);
+            if (error)
             {
-                OutputChannel.appendLine(`🚫 error: ${result.error}`);
+                OutputChannel.appendLine(`🚫 error: ${error}`);
             }
             else
-            if (result.response.statusCode === 200)
+            if (response.statusCode === 200)
             {
-                callback(list[getUrl()] = JSON.parse(result.body));
+                callback(list[getUrl()] = JSON.parse(body));
             }
         }
 
@@ -291,7 +291,7 @@ module WandboxVSCode
             OutputChannel.appendLine(`HTTP POST ${requestUrl}`);
 
             var startAt = new Date();
-            var result = await rx.execute
+            let { error, response, body } = await rx.execute
             (
                 {
                     url: requestUrl,
@@ -305,54 +305,54 @@ module WandboxVSCode
                 }
             );
             var endAt = new Date();
-            if (result.response.statusCode)
+            if (response.statusCode)
             {
-                OutputChannel.appendLine(`HTTP statusCode: ${result.response.statusCode}`);
+                OutputChannel.appendLine(`HTTP statusCode: ${response.statusCode}`);
             }
-            if (!result.error && result.response.statusCode === 200)
+            if (!error && response.statusCode === 200)
             {
-                if (result.body.status)
+                if (body.status)
                 {
-                    OutputChannel.appendLine(`status: ${result.body.status}`);
+                    OutputChannel.appendLine(`status: ${body.status}`);
                 }
-                if (result.body.signal)
+                if (body.signal)
                 {
-                    OutputChannel.appendLine(`🚦 signal: ${result.body.signal}`);
+                    OutputChannel.appendLine(`🚦 signal: ${body.signal}`);
                 }
-                if (result.body.compiler_output)
+                if (body.compiler_output)
                 {
                     OutputChannel.appendLine('compiler_output: ');
-                    OutputChannel.appendLine(result.body.compiler_output);
+                    OutputChannel.appendLine(body.compiler_output);
                 }
-                if (result.body.compiler_error)
+                if (body.compiler_error)
                 {
                     OutputChannel.appendLine('🚫 compiler_error: ');
-                    OutputChannel.appendLine(result.body.compiler_error);
+                    OutputChannel.appendLine(body.compiler_error);
                 }
                 //body.compiler_message
                 //merged messages compiler_output and compiler_error
-                if (result.body.program_output)
+                if (body.program_output)
                 {
                     OutputChannel.appendLine('program_output: ');
-                    OutputChannel.appendLine(result.body.program_output);
+                    OutputChannel.appendLine(body.program_output);
                 }
-                if (result.body.program_error)
+                if (body.program_error)
                 {
                     OutputChannel.appendLine('🚫 program_error: ');
-                    OutputChannel.appendLine(result.body.program_error);
+                    OutputChannel.appendLine(body.program_error);
                 }
                 //body.program_message
                 //merged messages program_output and program_error
                 //body.permlink && outputChannel.appendLine(`🔗 permlink: ${body.permlink}`);
-                if (result.body.url)
+                if (body.url)
                 {
-                    OutputChannel.appendLine(`🔗 url: ${result.body.url}`);
+                    OutputChannel.appendLine(`🔗 url: ${body.url}`);
                     if (getConfiguration("autoOpenShareUrl"))
                     {
                         vscode.commands.executeCommand
                         (
                             'vscode.open',
-                            vscode.Uri.parse(result.body.url)
+                            vscode.Uri.parse(body.url)
                         );
                     }
                 }
@@ -360,13 +360,13 @@ module WandboxVSCode
             }
             else
             {
-                if (result.body)
+                if (body)
                 {
-                    OutputChannel.appendLine(result.body);
+                    OutputChannel.appendLine(body);
                 }
-                if (result.error)
+                if (error)
                 {
-                    OutputChannel.appendLine(`🚫 error: ${result.error}`);
+                    OutputChannel.appendLine(`🚫 error: ${error}`);
                 }
             }
             OutputChannel.appendLine(`🏁 time: ${(endAt.getTime() -startAt.getTime()) /1000} s`);
@@ -845,10 +845,10 @@ module WandboxVSCode
         var userFiles : string[];
         userFiles = getConfiguration("helloWolrdFiles");
         var fileExtensionQuickPickList : vscode.QuickPickItem[] = [];
-        var result = await fx.readdir(`${extensionPath}/hellos`);
-        if (result.error)
+        let { error, files } = await fx.readdir(`${extensionPath}/hellos`);
+        if (error)
         {
-            OutputChannel.appendLine("🚫 " + result.error.message);
+            OutputChannel.appendLine("🚫 " + error.message);
         }
         else
         {
@@ -867,7 +867,7 @@ module WandboxVSCode
                     );
                 }
             );
-            result.files.forEach
+            files.forEach
             (
                 (i : string) => 
                 {
