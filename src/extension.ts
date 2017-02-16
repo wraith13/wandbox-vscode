@@ -983,12 +983,13 @@ module WandboxVSCode
             {
                 if (textEditor.document.isUntitled && newDocument.text)
                 {
+                    var text = newDocument.text;
                     var activeTextEditor = vscode.window.activeTextEditor;
                     activeTextEditor.edit
                     (
                         (editBuilder: vscode.TextEditorEdit) =>
                         {
-                            editBuilder.insert(new vscode.Position(0,0), newDocument.text);
+                            editBuilder.insert(new vscode.Position(0,0), text);
                         }
                     );
                     var document = WorkSpace.getActiveDocument();
