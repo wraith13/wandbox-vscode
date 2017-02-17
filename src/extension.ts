@@ -7,20 +7,10 @@ import * as fs from 'fs';
 
 module rx
 {
-    class Result
+    export function get(url : string)
+        : Thenable<{ error : any, response : any, body : any}>
     {
-        public constructor
-        (
-            public error : any,
-            public response : any,
-            public body : any
-        )
-        {
-        }
-    }
-    export function get(url : string) : Thenable<Result>
-    {
-        return new Promise<Result>
+        return new Promise
         (
             resolve => request.get
             (
@@ -29,20 +19,20 @@ module rx
                 {
                     resolve
                     (
-                        new Result
-                        (
+                        {
                             error,
                             response,
                             body
-                        )
+                        }
                     );
                 }
             )
         );
     }
-    export function execute(data : any) : Thenable<Result>
+    export function execute(data : any)
+        : Thenable<{ error : any, response : any, body : any}>
     {
-        return new Promise<Result>
+        return new Promise
         (
             resolve => request
             (
@@ -51,12 +41,11 @@ module rx
                 {
                     resolve
                     (
-                        new Result
-                        (
+                        {
                             error,
                             response,
                             body
-                        )
+                        }
                     );
                 }
             )
@@ -66,19 +55,10 @@ module rx
 
 module fx
 {
-    class ReaddirResult
+    export function readdir(path : string)
+        : Thenable<{ error : NodeJS.ErrnoException, files : string[] }>
     {
-        public constructor
-        (
-            public error : NodeJS.ErrnoException,
-            public files : string[]
-        )
-        {
-        }
-    }
-    export function readdir(path : string) : Thenable<ReaddirResult>
-    {
-        return new Promise<ReaddirResult>
+        return new Promise
         (
             resolve => fs.readdir
             (
@@ -87,11 +67,10 @@ module fx
                 {
                     resolve
                     (
-                        new ReaddirResult
-                        (
+                        {
                             error,
                             files
-                        )
+                        }
                     );
                 }
             )
