@@ -191,39 +191,49 @@ module WandboxVSCode
             return getUrl() +`/?from=${extentionName}`;
         }
 
-        export async function getList(callback : (list :any[]) => void) : Promise<void>
+        export async function getList() : Promise<any[]>
         {
-            var requestUrl = getUrl() +`/api/list.json?from=${extentionName}`;
-            OutputChannel.appendLine(`HTTP GET ${requestUrl}`);
-            let { error, response, body } = await rx.get
+            return new Promise<any[]>
             (
-                requestUrl,
+                async (resolve, reject) =>
+                {
+                    var requestUrl = getUrl() +`/api/list.json?from=${extentionName}`;
+                    OutputChannel.appendLine(`HTTP GET ${requestUrl}`);
+                    let { error, response, body } = await rx.get
+                    (
+                        requestUrl,
+                    );
+                    OutputChannel.appendLine(`statusCode: ${response.statusCode}`);
+                    if (error)
+                    {
+                        OutputChannel.appendLine(`🚫 error: ${error}`);
+                        reject(error);
+                    }
+                    else
+                    if (response.statusCode === 200)
+                    {
+                        resolve(list[getUrl()] = JSON.parse(body));
+                    }
+                }
             );
-            OutputChannel.appendLine(`statusCode: ${response.statusCode}`);
-            if (error)
-            {
-                OutputChannel.appendLine(`🚫 error: ${error}`);
-            }
-            else
-            if (response.statusCode === 200)
-            {
-                callback(list[getUrl()] = JSON.parse(body));
-            }
         }
 
         var list : {[name : string] : any[] } = { };
 
-        export function makeSureList(callback : (list :any[]) => void) : void
+        export function makeSureList() : Promise<any[]>
         {
-            var key = getUrl();
-            if (!list[key])
-            {
-                getList(body => callback(body));
-            }
-            else
-            {
-                callback(list[key]);
-            }
+            return new Promise<any[]>
+            (
+                async (resolve) =>
+                {
+                    var key = getUrl();
+                    if (!list[key])
+                    {
+                        await getList();
+                    }
+                    resolve(list[key]);
+                }
+            );
         }
 
         function buildCompileJson(json : { }) : { }
@@ -506,54 +516,49 @@ module WandboxVSCode
         );
     }
 
-    function showWandboxCompiers() : void
+    async function showWandboxCompiers() : Promise<void>
     {
         OutputChannel.makeSure();
         OutputChannel.bowWow();
 
-        WandboxServer.makeSureList
-        (
-            list =>
-            {
-                if (list)
+        let list = await WandboxServer.makeSureList();
+        if (list)
+        {
+            var languageNames :string[] = [];
+            list.forEach(item => languageNames.push(item.language));
+            languageNames = languageNames.filter((value, i, self) => self.indexOf(value) === i);
+            languageNames.sort();
+            var languages = {};
+            languageNames.forEach(item => languages[item] = languages[item] || []);
+            list.forEach
+            (
+                item =>
                 {
-                    var languageNames :string[] = [];
-                    list.forEach(item => languageNames.push(item.language));
-                    languageNames = languageNames.filter((value, i, self) => self.indexOf(value) === i);
-                    languageNames.sort();
-                    var languages = {};
-                    languageNames.forEach(item => languages[item] = languages[item] || []);
-                    list.forEach
+                    var displayItem = deepCopy(item);
+                    delete displayItem.switches;
+                    languages[displayItem.language].push(displayItem);
+                }
+            );
+            languageNames.forEach
+            (
+                language =>
+                {
+                    OutputChannel.appendLine(`📚 ${language}`);
+                    languages[language].forEach
                     (
                         item =>
                         {
                             var displayItem = deepCopy(item);
                             delete displayItem.switches;
-                            languages[displayItem.language].push(displayItem);
-                        }
-                    );
-                    languageNames.forEach
-                    (
-                        language =>
-                        {
-                            OutputChannel.appendLine(`📚 ${language}`);
-                            languages[language].forEach
-                            (
-                                item =>
-                                {
-                                    var displayItem = deepCopy(item);
-                                    delete displayItem.switches;
-                                    OutputChannel.appendLine(`${item.name}\t${JSON.stringify(displayItem)}`);
-                                }
-                            );
+                            OutputChannel.appendLine(`${item.name}\t${JSON.stringify(displayItem)}`);
                         }
                     );
                 }
-            }
-        );
+            );
+        }
     }
 
-    function showWandboxOptions() : void
+    async function showWandboxOptions() : Promise<void>
     {
         OutputChannel.makeSure();
         OutputChannel.bowWow();
@@ -568,64 +573,59 @@ module WandboxVSCode
             );
             if (compilerName)
             {
-                WandboxServer.makeSureList
-                (
-                    list =>
-                    {
-                        var hit :any;
-                        if (list)
+                let list = await WandboxServer.makeSureList();
+                var hit :any;
+                if (list)
+                {
+                    list.forEach
+                    (
+                        item =>
                         {
-                            list.forEach
-                            (
-                                item =>
-                                {
-                                    if (compilerName === item.name)
-                                    {
-                                        hit = item;
-                                    }
-                                }
-                            );
-                        }
-
-                        if (!hit)
-                        {
-                            OutputChannel.appendLine('🚫 Unknown compiler!');
-                            OutputChannel.appendLine('👉 You can set a compiler by [Wandbox: Set Compiler] command.');
-                            OutputChannel.appendLine('👉 You can see compilers list by [Wandbox: Show Compilers] command.');
-                        }
-                        else
-                        {
-                            if (!hit.switches || 0 === hit.switches.length)
+                            if (compilerName === item.name)
                             {
-                                OutputChannel.appendLine('this compiler has no options');
+                                hit = item;
                             }
-                            else
+                        }
+                    );
+                }
+
+                if (!hit)
+                {
+                    OutputChannel.appendLine('🚫 Unknown compiler!');
+                    OutputChannel.appendLine('👉 You can set a compiler by [Wandbox: Set Compiler] command.');
+                    OutputChannel.appendLine('👉 You can see compilers list by [Wandbox: Show Compilers] command.');
+                }
+                else
+                {
+                    if (!hit.switches || 0 === hit.switches.length)
+                    {
+                        OutputChannel.appendLine('this compiler has no options');
+                    }
+                    else
+                    {
+                        OutputChannel.appendLine('option\tdetails');
+                        hit.switches.forEach
+                        (
+                            item =>
                             {
-                                OutputChannel.appendLine('option\tdetails');
-                                hit.switches.forEach
-                                (
-                                    item =>
-                                    {
-                                        if (item.options)
-                                        {
-                                            item.options.forEach
-                                            (
-                                                item =>
-                                                {
-                                                    OutputChannel.appendLine(`${item.name}\t${JSON.stringify(item)}`);
-                                                }
-                                            );
-                                        }
-                                        else
+                                if (item.options)
+                                {
+                                    item.options.forEach
+                                    (
+                                        item =>
                                         {
                                             OutputChannel.appendLine(`${item.name}\t${JSON.stringify(item)}`);
                                         }
-                                    }
-                                );
+                                    );
+                                }
+                                else
+                                {
+                                    OutputChannel.appendLine(`${item.name}\t${JSON.stringify(item)}`);
+                                }
                             }
-                        }
+                        );
                     }
-                );
+                }
             }
             else
             {
@@ -640,18 +640,15 @@ module WandboxVSCode
         }
     }
     
-    function showWandboxListJson() : void
+    async function showWandboxListJson() : Promise<void>
     {
         OutputChannel.makeSure();
         OutputChannel.bowWow();
 
-        WandboxServer.getList
+        WorkSpace.showJson
         (
-            body => WorkSpace.showJson
-            (
-                "list",
-                body
-            )
+            "list",
+            await WandboxServer.getList()
         );
     }
     
