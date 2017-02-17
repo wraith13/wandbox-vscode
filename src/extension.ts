@@ -111,7 +111,7 @@ module WandboxVSCode
             .split('/').reverse()[0];
     }
 
-    function getConfiguration(key ?: string) : any
+    function getConfiguration<type>(key ?: string) : type
     {
         var configuration = vscode.workspace.getConfiguration("wandbox");
         return key ?
@@ -129,7 +129,7 @@ module WandboxVSCode
             {
                 outputChannel = vscode.window.createOutputChannel
                 (
-                    getConfiguration("outputChannelName")
+                    getConfiguration<string>("outputChannelName")
                 );
             }
             else
@@ -172,7 +172,7 @@ module WandboxVSCode
             }
             if (!result)
             {
-                result = getConfiguration("defaultServer");
+                result = getConfiguration<string>("defaultServer");
             }
             if (result.endsWith("/"))
             {
@@ -240,7 +240,7 @@ module WandboxVSCode
             {
                 additionals = setting['codes'];
             }
-            var simplifyPostData = getConfiguration("simplifyPostData");
+            var simplifyPostData = getConfiguration<boolean>("simplifyPostData");
             if (simplifyPostData)
             {
                 //  簡素化
@@ -352,7 +352,7 @@ module WandboxVSCode
                 if (body.url)
                 {
                     OutputChannel.appendLine(`🔗 url: ${body.url}`);
-                    if (getConfiguration("autoOpenShareUrl"))
+                    if (getConfiguration<boolean>("autoOpenShareUrl"))
                     {
                         vscode.commands.executeCommand
                         (
@@ -825,8 +825,7 @@ module WandboxVSCode
     async function getHelloWorldFiles() : Promise<vscode.QuickPickItem[]>
     {
         var extensionPath = vscode.extensions.getExtension("wraith13.wandbox-vscode").extensionPath;
-        var userFiles : string[];
-        userFiles = getConfiguration("helloWolrdFiles");
+        var userFiles = getConfiguration<string[]>("helloWolrdFiles");
         var fileExtensionQuickPickList : vscode.QuickPickItem[] = [];
         let { error, files } = await fx.readdir(`${extensionPath}/hellos`);
         if (error)
