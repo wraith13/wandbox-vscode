@@ -15,17 +15,14 @@ module rx
             resolve => request.get
             (
                 url,
-                function(error, response, body)
-                {
-                    resolve
-                    (
-                        {
-                            error,
-                            response,
-                            body
-                        }
-                    );
-                }
+                (error, response, body) => resolve
+                (
+                    {
+                        error,
+                        response,
+                        body
+                    }
+                )
             )
         );
     }
@@ -37,17 +34,14 @@ module rx
             resolve => request
             (
                 data,
-                function(error, response, body)
-                {
-                    resolve
-                    (
-                        {
-                            error,
-                            response,
-                            body
-                        }
-                    );
-                }
+                (error, response, body) => resolve
+                (
+                    {
+                        error,
+                        response,
+                        body
+                    }
+                )
             )
         );
     }
@@ -63,16 +57,38 @@ module fx
             resolve => fs.readdir
             (
                 path,
-                function(error : NodeJS.ErrnoException, files : string[])
-                {
-                    resolve
-                    (
-                        {
-                            error,
-                            files
-                        }
-                    );
-                }
+                (error : NodeJS.ErrnoException, files : string[]) => resolve
+                (
+                    {
+                        error,
+                        files
+                    }
+                )
+            )
+        );
+    }
+
+    export function exists(path : string) : Thenable<boolean>
+    {
+        return new Promise
+        (
+            resolve => fs.exists
+            (
+                path,
+                exists => resolve(exists)
+            )
+        );
+    }
+
+    export function readFile(path : string)
+        : Thenable<{ err : NodeJS.ErrnoException, data : Buffer }>
+    {
+        return new Promise
+        (
+            resolve => fs.readFile
+            (
+                path,
+                (err : NodeJS.ErrnoException, data : Buffer) => resolve({ err, data })
             )
         );
     }
@@ -418,7 +434,7 @@ module WandboxVSCode
             return result;
         }
 
-        export function showJson(titile : string, json : any) : void
+        export async function showJson(titile : string, json : any) : Promise<void>
         {
             var provider = vscode.workspace.registerTextDocumentContentProvider
             (
@@ -440,18 +456,14 @@ module WandboxVSCode
                 +("0" +date.getHours().toString()).slice(-2)
                 +("0" +date.getMinutes().toString()).slice(-2)
                 +("0" +date.getSeconds().toString()).slice(-2);
-            vscode.workspace.openTextDocument
+            vscode.window.showTextDocument
             (
-                vscode.Uri.parse(`wandbox-vscode-json://wandbox-vscode/${stamp}/${titile}.json`)
-            )
-            .then
-            (
-                (value: vscode.TextDocument) =>
-                {
-                    vscode.window.showTextDocument(value);
-                    provider.dispose();
-                }
+                await vscode.workspace.openTextDocument
+                (
+                    vscode.Uri.parse(`wandbox-vscode-json://wandbox-vscode/${stamp}/${titile}.json`)
+                )
             );
+            provider.dispose();
         }
     }
 
@@ -631,7 +643,7 @@ module WandboxVSCode
         );
     }
     
-    function setSetting(name : string, prompt: string) : void
+    async function setSetting(name : string, prompt: string) : Promise<void>
     {
         OutputChannel.makeSure();
         OutputChannel.bowWow();
@@ -640,55 +652,50 @@ module WandboxVSCode
         if (null !== document)
         {
             var fileName = document.fileName;
-            vscode.window.showInputBox({ prompt:prompt }).then
-            (
-                value =>
+            let value = await vscode.window.showInputBox({ prompt:prompt });
+            if (value)
+            {
+                fileSetting[fileName] = fileSetting[fileName] || { };
+                if ('additionals' === name)
                 {
-                    if (value)
+                    var newFiles = value.split(',');
+                    if (WorkSpace.IsOpenFiles(newFiles))
                     {
-                        fileSetting[fileName] = fileSetting[fileName] || { };
-                        if ('additionals' === name)
-                        {
-                            var newFiles = value.split(',');
-                            if (WorkSpace.IsOpenFiles(newFiles))
-                            {
-                                fileSetting[fileName][name] = newFiles;
-                                OutputChannel.appendLine(`Set ${name} "${newFiles.join('","')}" for "${fileName}"`);
-                            }
-                        }
-                        else
-                        if (name)
-                        {
-                            try
-                            {
-                                fileSetting[fileName][name] = JSON.parse(`"${value}"`);
-                                OutputChannel.appendLine(`Set ${name} "${value}" for "${fileName}"`);
-                            }
-                            catch(Err)
-                            {
-                                OutputChannel.appendLine(`🚫 ${Err}`);
-                            }
-                        }
-                        else
-                        {
-                            try
-                            {
-                                fileSetting[fileName] = JSON.parse(value);
-                                OutputChannel.appendLine(`Set settings for "${fileName}"`);
-                                OutputChannel.appendJson(fileSetting[fileName]);
-                            }
-                            catch(Err)
-                            {
-                                OutputChannel.appendLine(`🚫 ${Err}`);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        fileSetting[fileName][name] = null;
+                        fileSetting[fileName][name] = newFiles;
+                        OutputChannel.appendLine(`Set ${name} "${newFiles.join('","')}" for "${fileName}"`);
                     }
                 }
-            );
+                else
+                if (name)
+                {
+                    try
+                    {
+                        fileSetting[fileName][name] = JSON.parse(`"${value}"`);
+                        OutputChannel.appendLine(`Set ${name} "${value}" for "${fileName}"`);
+                    }
+                    catch(Err)
+                    {
+                        OutputChannel.appendLine(`🚫 ${Err}`);
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        fileSetting[fileName] = JSON.parse(value);
+                        OutputChannel.appendLine(`Set settings for "${fileName}"`);
+                        OutputChannel.appendJson(fileSetting[fileName]);
+                    }
+                    catch(Err)
+                    {
+                        OutputChannel.appendLine(`🚫 ${Err}`);
+                    }
+                }
+            }
+            else
+            {
+                fileSetting[fileName][name] = null;
+            }
         }
         else
         {
@@ -882,53 +889,34 @@ module WandboxVSCode
             //var fileExtension = select.label;
             var helloFilePath = select.description;
             OutputChannel.appendLine(`✨️ Open a [hello, world!] as a new file. ( Source is "${helloFilePath}" )`);
-            fs.exists
-            (
-                helloFilePath,
-                (exists : boolean) =>
+            if (await fx.exists(helloFilePath))
+            {
+                let { err, data } = await fx.readFile(helloFilePath);
+                if (err)
                 {
-                    if (exists)
-                    {
-                        fs.readFile
-                        (
-                            helloFilePath, (err : NodeJS.ErrnoException, data : Buffer) =>
-                            {
-                                if (err)
-                                {
-                                    OutputChannel.appendLine("🚫 " + err.message);
-                                }
-                                else
-                                {
-                                    newDocument.text = data.toString();
-                                    newDocument.fileExtension = helloFilePath.split('.').reverse()[0];
-
-                                    //  ドキュメント上は vscode.workspace.openTextDocument() で language を指定して新規ファイルオープン
-                                    //  できることになってるっぽいんだけど、実際にそういうことができないので代わりに workbench.action.files.newUntitledFile
-                                    //  を使っている。 untitled: を使ったやり方は保存予定の実パスを指定する必要があり、ここの目的には沿わない。
-
-                                    //  language を指定して新規ファイルオープンできるようになったらその方法での実装に切り替えることを検討すること。
-
-                                    vscode.commands.executeCommand("workbench.action.files.newUntitledFile")
-                                    .then
-                                    (
-                                        (_value :{} ) =>
-                                        {
-                                            //  ここでは新規オープンされた document 周りの情報がなにも取得できないのでなにもできない。
-                                            //  なので　vscode.window.onDidChangeActiveTextEditor　で処理している。
-                                        }
-                                    );
-                        
-                                }
-                            }
-                        );
-                    }
-                    else
-                    {
-                        OutputChannel.appendLine("🚫 Unknown file extension!");
-                        OutputChannel.appendLine('👉 You can set hello world files by [wandbox.helloWolrdFiles] setting.');
-                    }
+                    OutputChannel.appendLine("🚫 " + err.message);
                 }
-            );
+                else
+                {
+                    newDocument.text = data.toString();
+                    newDocument.fileExtension = helloFilePath.split('.').reverse()[0];
+
+                    //  ドキュメント上は vscode.workspace.openTextDocument() で language を指定して新規ファイルオープン
+                    //  できることになってるっぽいんだけど、実際にそういうことができないので代わりに workbench.action.files.newUntitledFile
+                    //  を使っている。 untitled: を使ったやり方は保存予定の実パスを指定する必要があり、ここの目的には沿わない。
+
+                    //  language を指定して新規ファイルオープンできるようになったらその方法での実装に切り替えることを検討すること。
+
+                    await vscode.commands.executeCommand("workbench.action.files.newUntitledFile");
+                    //  ここでは新規オープンされた document 周りの情報がなにも取得できないのでなにもできない。
+                    //  なので　vscode.window.onDidChangeActiveTextEditor　で処理している。
+                }
+            }
+            else
+            {
+                OutputChannel.appendLine("🚫 Unknown file extension!");
+                OutputChannel.appendLine('👉 You can set hello world files by [wandbox.helloWolrdFiles] setting.');
+            }
         }
     }
 
