@@ -255,30 +255,24 @@ module WandboxVSCode
             if (additionals)
             {
                 json['codes'] = [];
-                additionals.forEach
-                (
-                    filename =>
+                for(let filename of additionals)
+                {
+                    var code : string;
+                    for(let document of vscode.workspace.textDocuments)
                     {
-                        var code : string;
-                        vscode.workspace.textDocuments.forEach
-                        (
-                            document =>
-                            {
-                                if (filename === stripDirectory(document.fileName))
-                                {
-                                    code = document.getText();
-                                }
-                            }
-                        );
-                        json['codes'].push
-                        (
-                            {
-                                'file': filename,
-                                'code': code
-                            }
-                        );
+                        if (filename === stripDirectory(document.fileName))
+                        {
+                            code = document.getText();
+                        }
                     }
-                );
+                    json['codes'].push
+                    (
+                        {
+                            'file': filename,
+                            'code': code
+                        }
+                    );
+                }
             }
             json['code'] = document.getText();
             json['from'] = extentionName;
@@ -383,25 +377,19 @@ module WandboxVSCode
         export function IsOpenFiles(files : string[]) : boolean
         {
             var hasError = false;
-            files.forEach
-            (
-                file =>
+            for(let file of files)
+            {
+                var hit = false;
+                for(let document of vscode.workspace.textDocuments)
                 {
-                    var hit = false;
-                    vscode.workspace.textDocuments.forEach
-                    (
-                        document =>
-                        {
-                            hit = hit || file === stripDirectory(document.fileName);
-                        }
-                    );
-                    if (!hit)
-                    {
-                        hasError = true;
-                        OutputChannel.appendLine(`🚫 Not found file: ${file} ( If opened, show this file once. And keep to open it.)`);
-                    }
+                    hit = hit || file === stripDirectory(document.fileName);
                 }
-            );
+                if (!hit)
+                {
+                    hasError = true;
+                    OutputChannel.appendLine(`🚫 Not found file: ${file} ( If opened, show this file once. And keep to open it.)`);
+                }
+            }
             return !hasError;
         }
 
@@ -521,31 +509,22 @@ module WandboxVSCode
             languageNames.sort();
             var languages = {};
             languageNames.forEach(item => languages[item] = languages[item] || []);
-            list.forEach
-            (
-                item =>
+            for(let item of list)
+            {
+                var displayItem = deepCopy(item);
+                delete displayItem.switches;
+                languages[displayItem.language].push(displayItem);
+            }
+            for(let language of languageNames)
+            {
+                OutputChannel.appendLine(`📚 ${language}`);
+                for(let item of languages[language])
                 {
                     var displayItem = deepCopy(item);
                     delete displayItem.switches;
-                    languages[displayItem.language].push(displayItem);
+                    OutputChannel.appendLine(`${item.name}\t${JSON.stringify(displayItem)}`);
                 }
-            );
-            languageNames.forEach
-            (
-                language =>
-                {
-                    OutputChannel.appendLine(`📚 ${language}`);
-                    languages[language].forEach
-                    (
-                        item =>
-                        {
-                            var displayItem = deepCopy(item);
-                            delete displayItem.switches;
-                            OutputChannel.appendLine(`${item.name}\t${JSON.stringify(displayItem)}`);
-                        }
-                    );
-                }
-            );
+            }
         }
     }
 
@@ -568,16 +547,13 @@ module WandboxVSCode
                 var hit :any;
                 if (list)
                 {
-                    list.forEach
-                    (
-                        item =>
+                    for(let item of list)
+                    {
+                        if (compilerName === item.name)
                         {
-                            if (compilerName === item.name)
-                            {
-                                hit = item;
-                            }
+                            hit = item;
                         }
-                    );
+                    }
                 }
 
                 if (!hit)
@@ -595,26 +571,20 @@ module WandboxVSCode
                     else
                     {
                         OutputChannel.appendLine('option\tdetails');
-                        hit.switches.forEach
-                        (
-                            item =>
+                        for(let item of hit.switches)
+                        {
+                            if (item.options)
                             {
-                                if (item.options)
+                                for(let option of item.options)
                                 {
-                                    item.options.forEach
-                                    (
-                                        item =>
-                                        {
-                                            OutputChannel.appendLine(`${item.name}\t${JSON.stringify(item)}`);
-                                        }
-                                    );
-                                }
-                                else
-                                {
-                                    OutputChannel.appendLine(`${item.name}\t${JSON.stringify(item)}`);
+                                    OutputChannel.appendLine(`${option.name}\t${JSON.stringify(option)}`);
                                 }
                             }
-                        );
+                            else
+                            {
+                                OutputChannel.appendLine(`${item.name}\t${JSON.stringify(item)}`);
+                            }
+                        }
                     }
                 }
             }
@@ -835,37 +805,31 @@ module WandboxVSCode
         else
         {
             const hello = "hello.";
-            userFiles.forEach
-            (
-                (i : string ) =>
+            for(let i of userFiles)
+            {
+                fileExtensionQuickPickList.push
+                (
+                    {
+                        "label": stripDirectory(i),
+                        "description": i,
+                        "detail": null
+                    }
+                );
+            }
+            for(let i of files)
+            {
+                if (i.startsWith(hello))
                 {
                     fileExtensionQuickPickList.push
                     (
                         {
-                            "label": stripDirectory(i),
-                            "description": i,
+                            "label": i,
+                            "description": `${extensionPath}/hellos/${i}`,
                             "detail": null
                         }
                     );
                 }
-            );
-            files.forEach
-            (
-                (i : string) => 
-                {
-                    if (i.startsWith(hello))
-                    {
-                        fileExtensionQuickPickList.push
-                        (
-                            {
-                                "label": i,
-                                "description": `${extensionPath}/hellos/${i}`,
-                                "detail": null
-                            }
-                        );
-                    }
-                }
-            );
+            }
         }
         return fileExtensionQuickPickList;
     }
@@ -993,8 +957,7 @@ module WandboxVSCode
         ]
         .forEach
         (
-            i =>
-            context.subscriptions.push
+            i => context.subscriptions.push
             (
                 vscode.commands.registerCommand
                 (
