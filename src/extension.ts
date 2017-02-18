@@ -455,21 +455,107 @@ module WandboxVSCode
         }
     }
 
-    function getWandboxCompilerName(vscodeLang :string, fileName :string) :string
+    async function getLanguageList() : Promise<vscode.QuickPickItem[]>
+    {
+        var result : vscode.QuickPickItem[] = [];
+        let list = await WandboxServer.makeSureList();
+        if (list)
+        {
+            var languageNames :string[] = [];
+            list.forEach(item => languageNames.push(item.language));
+            languageNames = languageNames.filter((value, i, self) => self.indexOf(value) === i);
+            languageNames.sort();
+            languageNames.forEach
+            (
+                i => result.push
+                (
+                    {
+                        "label": i,
+                        "description": null,
+                        "detail": null
+                    }
+                )
+            );
+        }
+        return result;
+    }
+
+    async function getLanguageName(vscodeLang :string, fileName :string) : Promise<string>
     {
         var result : string;
+        if (!result && vscodeLang)
+        {
+            result = getConfiguration("languageMapping")[vscodeLang];
+        }
+        if (!result && fileName)
+        {
+            result = getConfiguration("extensionLanguageMapping")[fileName.split('.').reverse()[0]];
+        }
+        if (!result)
+        {
+            let select = await vscode.window.showQuickPick
+            (
+                getLanguageList(),
+                {
+                    placeHolder: "Select a language",
+                }
+            );
+            if (select)
+            {
+                result = select.label;
+            }
+        }
+        return result;
+    }
+
+    async function getWandboxCompilerName(vscodeLang :string, fileName :string) : Promise<string>
+    {
+        var result : string;
+        let list = await WandboxServer.makeSureList();
         var setting = fileSetting[fileName];
         if (setting)
         {
             result = setting.compiler;
         }
-        if (!result && vscodeLang)
-        {
-            result = getConfiguration("languageCompilerMapping")[vscodeLang];
-        }
         if (!result && fileName)
         {
             result = getConfiguration("extensionCompilerMapping")[fileName.split('.').reverse()[0]];
+        }
+        if (result)
+        {
+            var hit = false;
+            for(let i of list)
+            {
+                if (i.name === result)
+                {
+                    hit = true;
+                    break;
+                }
+            }
+            if (!hit)
+            {
+                OutputChannel.appendLine('🚫 Unknown compiler! : ' +result);
+                result = null;
+            }
+        }
+        if (!result)
+        {
+            let language = await getLanguageName(vscodeLang, fileName);
+            if (language)
+            {
+                result = getConfiguration("languageCompilerMapping")[language];
+                if (!result)
+                {
+                    for(let i of list)
+                    {
+                        if (i.language === language)
+                        {
+                            result = i.name;
+                            break;
+                        }
+                    }
+                }
+            }
         }
         return result;
     }
@@ -698,7 +784,7 @@ module WandboxVSCode
         }
     }
     
-    function invokeWandbox(args ?: any) : void
+    async function invokeWandbox(args ?: any) : Promise<void>
     {
         OutputChannel.makeSure();
         OutputChannel.bowWow();
@@ -706,7 +792,7 @@ module WandboxVSCode
         var document = WorkSpace.getActiveDocument();
         if (null !== document)
         {
-            var compilerName = getWandboxCompilerName
+            var compilerName = await getWandboxCompilerName
             (
                 document.languageId,
                 document.fileName
@@ -772,12 +858,6 @@ module WandboxVSCode
                     json['save'] = true;
                 }
                 WandboxServer.compile(json);
-            }
-            else
-            {
-                OutputChannel.appendLine('🚫 Unknown language!');
-                OutputChannel.appendLine('👉 You can use set a compiler by [Wandbox: Set Compiler] command.');
-                OutputChannel.appendLine('👉 You can see compilers list by [Wandbox: Show Compilers] command.');
             }
         }
         else
