@@ -54,10 +54,13 @@
         "configuration": {
             "title": "Wandbox configuration",
             "properties": {
-                "wandbox.defaultServer": {
-                    "type": "string",
-                    "default": "http://melpon.org/wandbox/",
-                    "description": "default wandbox server url"
+                "wandbox.Servers": {
+                    "type": "array",
+                    "default": [
+                        "http://melpon.org/wandbox/",
+                        "https://wandbox.fetus.jp/"
+                    ],
+                    "description": "wandbox server url list ( first one is default wandbox server url )"
                 },
                 "wandbox.simplifyPostData": {
                     "type": "boolean",

@@ -172,7 +172,7 @@ module WandboxVSCode
             }
             if (!result)
             {
-                result = getConfiguration<string>("defaultServer");
+                result = getConfiguration<string[]>("Servers")[0];
             }
             if (result.endsWith("/"))
             {
@@ -699,7 +699,7 @@ module WandboxVSCode
         );
     }
     
-    async function setSetting(name : string, prompt: string) : Promise<void>
+    async function setSetting(name : string,　dialog : () => Promise<string>) : Promise<void>
     {
         OutputChannel.makeSure();
         OutputChannel.bowWow();
@@ -708,7 +708,7 @@ module WandboxVSCode
         if (null !== document)
         {
             var fileName = document.fileName;
-            let value = await vscode.window.showInputBox({ prompt:prompt });
+            let value = await dialog();
             if (value)
             {
                 fileSetting[fileName] = fileSetting[fileName] || { };
@@ -757,6 +757,67 @@ module WandboxVSCode
         {
             OutputChannel.appendLine('🚫 No active text editor!');
         }
+    }
+    async function setSettingByInputBox(name : string,　prompt : string) : Promise<void>
+    {
+        return setSetting
+        (
+            name,
+            async () => await vscode.window.showInputBox({ prompt }) 
+        );
+    }
+
+    async function setServerSetting() : Promise<void>
+    {
+        await setSetting
+        (
+            'server',
+            async function () : Promise<string>
+            {
+                var result : string;
+                var servers = getConfiguration<string[]>("Servers");
+                var list : vscode.QuickPickItem[] = [];
+                servers.forEach
+                (
+                    i => list.push
+                    (
+                        {
+                            "label": i,
+                            "description": null,
+                            "detail": null
+                        }
+                    )
+                );
+                list[0].description = "default";
+                list.push
+                (
+                    {
+                        "label": "Other",
+                        "description": "enter a server url by manual",
+                        "detail": null
+                    }
+                );
+                var select = await vscode.window.showQuickPick
+                (
+                    list,
+                    {
+                        placeHolder: "Select a server",
+                    }
+                );
+                if (select)
+                {
+                    if (select === list.reverse()[0])
+                    {
+                        result = await vscode.window.showInputBox({prompt : 'Enter a server url'});
+                    }
+                    else
+                    {
+                        result = select.label;
+                    }
+                }
+                return result;
+            }
+        );
     }
 
     function resetWandboxFileSettings() : void
@@ -988,35 +1049,35 @@ module WandboxVSCode
             },
             {
                 command: 'extension.setWandboxFileServer',
-                callback: () => setSetting('server', 'Enter server url')
+                callback: setServerSetting
             },
             {
                 command: 'extension.setWandboxFileCompiler',
-                callback: () => setSetting('compiler', 'Enter compiler name')
+                callback: () => setSettingByInputBox('compiler', 'Enter compiler name')
             },
             {
                 command: 'extension.setWandboxFileAdditionals',
-                callback: () => setSetting('codes', 'Enter file names ( just file names without directory )')
+                callback: () => setSettingByInputBox('codes', 'Enter file names ( just file names without directory )')
             },
             {
                 command: 'extension.setWandboxFileStdIn',
-                callback: () => setSetting('stdin', 'Enter stdin text ( When you want to user multiline text, Use [Wandbox: Set Settings JSON] command. )')
+                callback: () => setSettingByInputBox('stdin', 'Enter stdin text ( When you want to user multiline text, Use [Wandbox: Set Settings JSON] command. )')
             },
             {
                 command: 'extension.setWandboxFileOptions',
-                callback: () => setSetting('options', 'Enter compiler option ( You can see compiler option list by [Wandbox: Show Compier Info] )')
+                callback: () => setSettingByInputBox('options', 'Enter compiler option ( You can see compiler option list by [Wandbox: Show Compier Info] )')
             },
             {
                 command: 'extension.setWandboxFileCompilerOptionRaw',
-                callback: () => setSetting('compiler-option-raw', 'Enter compiler option raw')
+                callback: () => setSettingByInputBox('compiler-option-raw', 'Enter compiler option raw')
             },
             {
                 command: 'extension.setWandboxFileRuntimeOptionRaw',
-                callback: () => setSetting('runtime-option-raw', 'Enter runtime option raw')
+                callback: () => setSettingByInputBox('runtime-option-raw', 'Enter runtime option raw')
             },
             {
                 command: 'extension.setWandboxFileSettingJson',
-                callback: () => setSetting(null, 'Enter settings JSON')
+                callback: () => setSettingByInputBox(null, 'Enter settings JSON')
             },
             {
                 command: 'extension.resetWandboxFileSettings',

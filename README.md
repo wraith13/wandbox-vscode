@@ -60,7 +60,7 @@ Effect of all setting commands expires with next Visual Studio Code process.
 
 This extension contributes the following settings:
 
-* `wandbox.defaultServer`: default wandbox server url
+* `wandbox.Servers`: wandbox server url list ( first one is default wandbox server url )
 * `wandbox.simplifyPostData`: simplify post data when showing
 * `wandbox.autoOpenShareUrl`: when make a share url, auto open it
 * `wandbox.outputChannelName`: output channel name
