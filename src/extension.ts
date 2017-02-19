@@ -480,7 +480,7 @@ module WandboxVSCode
         return result;
     }
 
-    async function getLanguageName(vscodeLang :string, fileName :string) : Promise<string>
+    async function getLanguageName(vscodeLang? :string, fileName? :string) : Promise<string>
     {
         var result : string;
         if (!result && vscodeLang)
@@ -820,6 +820,66 @@ module WandboxVSCode
         );
     }
 
+    async function getCompilerList(language : string) : Promise<vscode.QuickPickItem[]>
+    {
+        var result : vscode.QuickPickItem[] = [];
+        let list = await WandboxServer.makeSureList();
+        if (list)
+        {
+            for(let i of list)
+            {
+                if (i.language === language)
+                {
+                    result.push
+                    (
+                        {
+                            "label": i["display-name"] +" " +i["version"],
+                            "description": i["name"],
+                            "detail": null
+                        }
+                    )
+                }
+            }
+        }
+        return result;
+    }
+
+    async function setCompilerSetting() : Promise<void>
+    {
+        //() => setSettingByInputBox('compiler', 'Enter compiler name')
+        await setSetting
+        (
+            'compiler',
+            async function () : Promise<string>
+            {
+                var result : string;
+                var language = await getLanguageName();
+                if (language)
+                {
+                    let compilerList = await getCompilerList(language);
+                    if (1 === compilerList.length)
+                    {
+                        result = compilerList[0].description;
+                    }
+                    else
+                    {
+                        let select = await vscode.window.showQuickPick
+                        (
+                            compilerList,
+                            {
+                                placeHolder: "Select a compiler",
+                            }
+                        );
+                        if (select)
+                        {
+                            result = select.description;
+                        }
+                    }
+                }
+                return result;
+            }
+        );
+    }
     function resetWandboxFileSettings() : void
     {
         OutputChannel.makeSure();
@@ -1053,7 +1113,7 @@ module WandboxVSCode
             },
             {
                 command: 'extension.setWandboxFileCompiler',
-                callback: () => setSettingByInputBox('compiler', 'Enter compiler name')
+                callback: setCompilerSetting
             },
             {
                 command: 'extension.setWandboxFileAdditionals',
