@@ -880,6 +880,46 @@ module WandboxVSCode
             }
         );
     }
+
+    async function setAdditionalsSetting()
+    {
+        await setSetting
+        (
+            'codes',
+            async function () : Promise<string>
+            {
+                var result : string;
+                result = await vscode.window.showInputBox({ prompt: 'Enter file names ( just file names without directory )' });
+                /*
+                var language = await getLanguageName();
+                if (language)
+                {
+                    let compilerList = await getCompilerList(language);
+                    if (1 === compilerList.length)
+                    {
+                        result = compilerList[0].description;
+                    }
+                    else
+                    {
+                        let select = await vscode.window.showQuickPick
+                        (
+                            compilerList,
+                            {
+                                placeHolder: "Select a compiler",
+                            }
+                        );
+                        if (select)
+                        {
+                            result = select.description;
+                        }
+                    }
+                }
+                */
+                return result;
+            }
+        );
+    }
+
     function resetWandboxFileSettings() : void
     {
         OutputChannel.makeSure();
@@ -1117,7 +1157,7 @@ module WandboxVSCode
             },
             {
                 command: 'extension.setWandboxFileAdditionals',
-                callback: () => setSettingByInputBox('codes', 'Enter file names ( just file names without directory )')
+                callback: setAdditionalsSetting
             },
             {
                 command: 'extension.setWandboxFileStdIn',
