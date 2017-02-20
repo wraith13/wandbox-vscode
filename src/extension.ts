@@ -712,11 +712,11 @@ module WandboxVSCode
             if (value)
             {
                 fileSetting[fileName] = fileSetting[fileName] || { };
-                if ('additionals' === name)
+                if ('codes' === name)
                 {
-                    var newFiles = value.split(',');
-                    if (WorkSpace.IsOpenFiles(newFiles))
+                    if (!newDocument.additionalTo)
                     {
+                        var newFiles = JSON.parse(value);
                         fileSetting[fileName][name] = newFiles;
                         OutputChannel.appendLine(`Set ${name} "${newFiles.join('","')}" for "${fileName}"`);
                     }
@@ -837,7 +837,7 @@ module WandboxVSCode
                             "description": i["name"],
                             "detail": null
                         }
-                    )
+                    );
                 }
             }
         }
@@ -888,23 +888,32 @@ module WandboxVSCode
             'codes',
             async function () : Promise<string>
             {
-                var result : string;
-                //*
-                result = await vscode.window.showInputBox({ prompt: 'Enter file names ( just file names without directory )' });
-                /*/
-                //let currentSelectFiles =
+                var document = WorkSpace.getActiveDocument();
+                var setting = fileSetting[document.fileName] || {};
+                var additionals = setting['codes'] || [];
+                var result : string = JSON.stringify(additionals);
                 let fileList : vscode.QuickPickItem[] = [];
-                vscode.workspace.textDocuments.forEach
-                (
-                    i => fileList.push
+                vscode.workspace.textDocuments
+                    .filter
                     (
-                        {
-                            label: stripDirectory(i.fileName),
-                            description: i.fileName,
-                            detail: null
-                        }
+                        i =>
+                            0 === i.fileName.indexOf("Untitled") ||
+                            0 <= i.fileName.indexOf("/") ||
+                            0 <= i.fileName.indexOf("\\")
                     )
-                );
+                    .map(i => i.fileName)
+                    .filter((value, i, self) => self.indexOf(value) === i)
+                    .forEach
+                    (
+                        fileName => fileList.push
+                        (
+                            {
+                                label: (0 <= additionals.indexOf(fileName) ? "✅️　": "") +stripDirectory(fileName),
+                                description: fileName,
+                                detail: document.fileName === fileName ? "this file itself": null
+                            }
+                        )
+                    );
                 fileList.push
                 (
                     {
@@ -924,8 +933,21 @@ module WandboxVSCode
                 {
                     if (select.description)
                     {
-                        result = select.description;
+                        if (0 <= additionals.indexOf(select.description))
+                        {
+                            additionals = additionals.filter(value => select.description !== value);
+                        }
+                        else
+                        {
+                            additionals.push(select.description);
+                        }
                     }
+                    else
+                    {
+                        newDocument.additionalTo = document.fileName;
+                        await vscode.commands.executeCommand("workbench.action.files.newUntitledFile");
+                    }
+                    result = JSON.stringify(additionals);
                 }
                 //*/
                 return result;
@@ -1043,7 +1065,8 @@ module WandboxVSCode
     var newDocument =
     {
         text: null,
-        fileExtension: null
+        fileExtension: null,
+        additionalTo: null
     };
 
     async function getHelloWorldFiles() : Promise<vscode.QuickPickItem[]>
@@ -1236,28 +1259,42 @@ module WandboxVSCode
         (
             (textEditor : vscode.TextEditor) =>
             {
-                if (textEditor.document.isUntitled && newDocument.text)
+                if (textEditor.document.isUntitled)
                 {
-                    var text = newDocument.text;
-                    var activeTextEditor = vscode.window.activeTextEditor;
-                    activeTextEditor.edit
-                    (
-                        (editBuilder: vscode.TextEditorEdit) =>
-                        {
-                            editBuilder.insert(new vscode.Position(0,0), text);
-                        }
-                    );
-                    var document = WorkSpace.getActiveDocument();
-                    var fileName = document.fileName;
-                    var compiler = getConfiguration("extensionCompilerMapping")[newDocument.fileExtension];
-                    if (compiler)
+                    if (newDocument.text)
                     {
-                        fileSetting[fileName] = fileSetting[fileName] || { };
-                        fileSetting[fileName]['compiler'] = compiler;
-                    }
+                        var text = newDocument.text;
+                        var activeTextEditor = vscode.window.activeTextEditor;
+                        activeTextEditor.edit
+                        (
+                            (editBuilder: vscode.TextEditorEdit) =>
+                            {
+                                editBuilder.insert(new vscode.Position(0,0), text);
+                            }
+                        );
+                        var document = WorkSpace.getActiveDocument();
+                        var fileName = document.fileName;
+                        var compiler = getConfiguration("extensionCompilerMapping")[newDocument.fileExtension];
+                        if (compiler)
+                        {
+                            fileSetting[fileName] = fileSetting[fileName] || { };
+                            fileSetting[fileName]['compiler'] = compiler;
+                        }
 
-                    newDocument.text = null;
-                    newDocument.fileExtension = null;
+                        newDocument.text = null;
+                        newDocument.fileExtension = null;
+                    }
+                    if (newDocument.additionalTo)
+                    {
+                        var document = WorkSpace.getActiveDocument();
+                        let fileName = newDocument.additionalTo;
+                        fileSetting[fileName] = fileSetting[fileName] || {};
+                        let newFiles = fileSetting[fileName]['codes'] || [];
+                        newFiles.push(document.fileName);
+                        fileSetting[fileName]['codes'] = newFiles;
+                        OutputChannel.appendLine(`Set codes "${newFiles.join('","')}" for "${fileName}"`);
+                        newDocument.additionalTo = null;
+                    }
                 }
             }
         );
