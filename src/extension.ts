@@ -889,32 +889,45 @@ module WandboxVSCode
             async function () : Promise<string>
             {
                 var result : string;
+                //*
                 result = await vscode.window.showInputBox({ prompt: 'Enter file names ( just file names without directory )' });
-                /*
-                var language = await getLanguageName();
-                if (language)
-                {
-                    let compilerList = await getCompilerList(language);
-                    if (1 === compilerList.length)
-                    {
-                        result = compilerList[0].description;
-                    }
-                    else
-                    {
-                        let select = await vscode.window.showQuickPick
-                        (
-                            compilerList,
-                            {
-                                placeHolder: "Select a compiler",
-                            }
-                        );
-                        if (select)
+                /*/
+                //let currentSelectFiles =
+                let fileList : vscode.QuickPickItem[] = [];
+                vscode.workspace.textDocuments.forEach
+                (
+                    i => fileList.push
+                    (
                         {
-                            result = select.description;
+                            label: stripDirectory(i.fileName),
+                            description: i.fileName,
+                            detail: null
                         }
+                    )
+                );
+                fileList.push
+                (
+                    {
+                        label: "new untitled document",
+                        description: null,
+                        detail: null
+                    }
+                );
+                let select = await vscode.window.showQuickPick
+                (
+                    fileList,
+                    {
+                        placeHolder: "Select a add file( or a remove file )",
+                    }
+                );
+                if (select)
+                {
+                    if (select.description)
+                    {
+                        result = select.description;
                     }
                 }
-                */
+                //*/
                 return result;
             }
         );
