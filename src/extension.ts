@@ -908,7 +908,7 @@ module WandboxVSCode
                         fileName => fileList.push
                         (
                             {
-                                label: (0 <= additionals.indexOf(fileName) ? "✅️　": "") +stripDirectory(fileName),
+                                label: (0 <= additionals.indexOf(fileName) ? "☑️ ": "⬜️ ") +stripDirectory(fileName),
                                 description: fileName,
                                 detail: document.fileName === fileName ? "this file itself": null
                             }
@@ -953,6 +953,138 @@ module WandboxVSCode
                 return result;
             }
         );
+    }
+
+    async function setOptionsSetting() : Promise<void>
+    {
+        OutputChannel.makeSure();
+        OutputChannel.bowWow();
+
+        // 'Enter compiler option ( You can see compiler option list by [Wandbox: Show Compier Info] )')
+        var document = WorkSpace.getActiveDocument();
+        if (null !== document)
+        {
+            let fileName = document.fileName;
+            var compilerName = await getWandboxCompilerName
+            (
+                document.languageId,
+                fileName
+            );
+            //var options : string = getConfiguration("options")[compilerName];
+            var compiler = (<any[]> await WandboxServer.makeSureList())
+                .filter(i => i.name === compilerName)[0];
+
+            if (!compiler.switches || 0 === compiler.switches.length)
+            {
+                OutputChannel.appendLine('this compiler has no options');
+            }
+            else
+            {
+                var options : string = getConfiguration("options")[compilerName];
+                var setting = fileSetting[fileName];
+                if (setting && undefined !== setting['options'])
+                {
+                    options = setting['options'];
+                }
+                var selectedOptionList = (options || "").split(",").filter(i => i);
+
+                let optionList : any[] = [];
+                let lastGroup = 0;
+                let separator =
+                {
+                    label: null,
+                    description: "------------------------------------------------"
+                };
+                for(let item of compiler.switches)
+                {
+                    if (item.options)
+                    {
+                        if (lastGroup)
+                        {
+                            optionList.push(separator);
+                        }
+                        for(let option of item.options)
+                        {
+                            optionList.push
+                            (
+                                {
+                                    label: (0 <= selectedOptionList.indexOf(option.name) ? "🔘 ": "⚪️ ") +option["display-name"],
+                                    description: item["option-flags"],
+                                    detail:  null,
+                                    item,
+                                    option
+                                }
+                            );
+                        }
+                        lastGroup = 2;
+                    }
+                    else
+                    {
+                        if (2 === lastGroup)
+                        {
+                            optionList.push(separator);
+                        }
+                        optionList.push
+                        (
+                            {
+                                label: (0 <= selectedOptionList.indexOf(item.name) ? "☑️ ": "⬜️ ") +item["display-name"],
+                                description: item["display-flags"],
+                                detail:  null,
+                                item
+                            }
+                        );
+                        lastGroup = 1;
+                    }
+                }
+
+                let select = await vscode.window.showQuickPick
+                (
+                    optionList,
+                    {
+                        placeHolder: "Select a add option( or a remove option )",
+                    }
+                );
+                if (select)
+                {
+                    if (select.option)
+                    {
+                        let selected = 0 <= selectedOptionList.indexOf(select.option.name);
+                        for(let option of select.item.options)
+                        {
+                            selectedOptionList = selectedOptionList.filter(i => i !== option.name);
+                        }
+                        if (!selected)
+                        {
+                            selectedOptionList.push(select.option.name);
+                        }
+                    }
+                    else
+                    {
+                        let selected = 0 <= selectedOptionList.indexOf(select.item.name);
+                        if (selected)
+                        {
+                            selectedOptionList = selectedOptionList.filter(i => i !== select.item.name);
+                        }
+                        else
+                        {
+                            selectedOptionList.push(select.item.name);
+                        }
+                    }
+
+                    try
+                    {
+                        setting = fileSetting[fileName] = fileSetting[fileName] || {};
+                        setting['options'] = selectedOptionList.join(",");
+                        OutputChannel.appendLine(`Set options "${setting['options']}" for "${fileName}"`);
+                    }
+                    catch(Err)
+                    {
+                        OutputChannel.appendLine(`🚫 ${Err}`);
+                    }
+                    
+                }
+            }
+        }
     }
 
     function resetWandboxFileSettings() : void
@@ -1201,7 +1333,7 @@ module WandboxVSCode
             },
             {
                 command: 'extension.setWandboxFileOptions',
-                callback: () => setSettingByInputBox('options', 'Enter compiler option ( You can see compiler option list by [Wandbox: Show Compier Info] )')
+                callback: setOptionsSetting
             },
             {
                 command: 'extension.setWandboxFileCompilerOptionRaw',
