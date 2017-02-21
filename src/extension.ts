@@ -992,8 +992,8 @@ module WandboxVSCode
                 let lastGroup = 0;
                 let separator =
                 {
-                    label: null,
-                    description: "------------------------------------------------"
+                    label: "",
+                    description: "------------------------------------------------------------------------------------------------"
                 };
                 for(let item of compiler.switches)
                 {
@@ -1044,7 +1044,7 @@ module WandboxVSCode
                         placeHolder: "Select a add option( or a remove option )",
                     }
                 );
-                if (select)
+                if (select && select.item)
                 {
                     if (select.option)
                     {
