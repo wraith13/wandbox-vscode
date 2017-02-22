@@ -1057,7 +1057,7 @@ module WandboxVSCode
                                 (
                                     {
                                         label: (0 <= selectedOptionList.indexOf(option.name) ? "🔘 ": "⚪️ ") +option["display-name"],
-                                        description: item["option-flags"],
+                                        description: option["display-flags"],
                                         detail:  null,
                                         item,
                                         option
