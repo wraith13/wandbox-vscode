@@ -1096,15 +1096,11 @@ module WandboxVSCode
                     {
                         if (select.option)
                         {
-                            let selected = 0 <= selectedOptionList.indexOf(select.option.name);
                             for(let option of select.item.options)
                             {
                                 selectedOptionList = selectedOptionList.filter(i => i !== option.name);
                             }
-                            if (!selected)
-                            {
-                                selectedOptionList.push(select.option.name);
-                            }
+                            selectedOptionList.push(select.option.name);
                         }
                         else
                         {
