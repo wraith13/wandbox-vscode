@@ -1201,7 +1201,7 @@ module WandboxVSCode
     var newDocument =
     {
         text: null,
-        fileExtension: null,
+        sourceFile: null,
         additionalTo: null
     };
 
@@ -1275,7 +1275,7 @@ module WandboxVSCode
                 else
                 {
                     newDocument.text = data.toString();
-                    newDocument.fileExtension = helloFilePath.split('.').reverse()[0];
+                    newDocument.sourceFile = helloFilePath;
 
                     //  ドキュメント上は vscode.workspace.openTextDocument() で language を指定して新規ファイルオープン
                     //  できることになってるっぽいんだけど、実際にそういうことができないので代わりに workbench.action.files.newUntitledFile
@@ -1393,7 +1393,7 @@ module WandboxVSCode
 
         vscode.window.onDidChangeActiveTextEditor
         (
-            (textEditor : vscode.TextEditor) =>
+            async (textEditor : vscode.TextEditor) =>
             {
                 if (textEditor.document.isUntitled)
                 {
@@ -1410,7 +1410,7 @@ module WandboxVSCode
                         );
                         var document = WorkSpace.getActiveDocument();
                         var fileName = document.fileName;
-                        var compiler = getConfiguration("extensionCompilerMapping")[newDocument.fileExtension];
+                        var compiler = await getWandboxCompilerName(undefined, newDocument.sourceFile);
                         if (compiler)
                         {
                             fileSetting[fileName] = fileSetting[fileName] || { };
@@ -1418,7 +1418,7 @@ module WandboxVSCode
                         }
 
                         newDocument.text = null;
-                        newDocument.fileExtension = null;
+                        newDocument.sourceFile = null;
                     }
                     if (newDocument.additionalTo)
                     {
