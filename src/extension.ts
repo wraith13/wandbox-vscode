@@ -560,6 +560,45 @@ module WandboxVSCode
         return result;
     }
 
+    async function getOptions(vscodeLang :string, fileName :string) : Promise<string>
+    {
+        var result : string;
+        var setting = fileSetting[fileName];
+        if (setting)
+        {
+            result = setting.options;
+        }
+        if (!result)
+        {
+            var compilerName = await getWandboxCompilerName(vscodeLang, fileName);
+            if (compilerName)
+            {
+                result = getConfiguration("options")[compilerName];
+            }
+            if (!result)
+            {
+                var compiler = (<any[]> await WandboxServer.makeSureList())
+                    .filter(i => i.name === compilerName)[0];
+                var options : string[] = [];
+                for(let item of compiler.switches || [])
+                {
+                    if (item.options)
+                    {
+                        options.push(item.default);
+                    }
+                    else
+                    if (item.default)
+                    {
+                        options.push(item.name);
+                    }
+                }
+                result = options.join(",");
+            }
+        }
+
+        return result;
+    }
+
     function showWandboxSettings() : void
     {
         WorkSpace.showJson
@@ -967,10 +1006,11 @@ module WandboxVSCode
         var document = WorkSpace.getActiveDocument();
         if (null !== document)
         {
+            let languageId = document.languageId;
             let fileName = document.fileName;
             var compilerName = await getWandboxCompilerName
             (
-                document.languageId,
+                languageId,
                 fileName
             );
             if (compilerName)
@@ -984,7 +1024,11 @@ module WandboxVSCode
                 }
                 else
                 {
-                    var options : string = getConfiguration("options")[compilerName];
+                    var options : string = await getOptions
+                    (
+                        languageId,
+                        fileName
+                    );
                     var setting = fileSetting[fileName];
                     if (setting && undefined !== setting['options'])
                     {
@@ -1130,7 +1174,11 @@ module WandboxVSCode
                 document.fileName
             );
             var additionals : string[];
-            var options : string = getConfiguration("options")[compilerName];
+            var options : string = await getOptions
+            (
+                document.languageId,
+                document.fileName
+            );
             var stdIn : string;
             var compilerOptionRaw : string = getConfiguration("compilerOptionRaw")[compilerName];
             var runtimeOptionRaw : string = getConfiguration("runtimeOptionRaw")[compilerName];
@@ -1138,10 +1186,6 @@ module WandboxVSCode
             if (setting)
             {
                 additionals = setting['codes'];
-                if (undefined !== setting['options'])
-                {
-                    options = setting['options'];
-                }
                 stdIn = setting['stdin'];
                 if (undefined !== setting['compiler-option-raw'])
                 {
