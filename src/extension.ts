@@ -709,48 +709,51 @@ module WandboxVSCode
         {
             var fileName = document.fileName;
             let value = await dialog();
-            if (value)
+            if (undefined !== value)
             {
                 fileSetting[fileName] = fileSetting[fileName] || { };
-                if ('codes' === name)
+                if (value)
                 {
-                    if (!newDocument.additionalTo)
+                    if ('codes' === name)
                     {
-                        var newFiles = JSON.parse(value);
-                        fileSetting[fileName][name] = newFiles;
-                        OutputChannel.appendLine(`Set ${name} "${newFiles.join('","')}" for "${fileName}"`);
+                        if (!newDocument.additionalTo)
+                        {
+                            var newFiles = JSON.parse(value);
+                            fileSetting[fileName][name] = newFiles;
+                            OutputChannel.appendLine(`Set ${name} "${newFiles.join('","')}" for "${fileName}"`);
+                        }
+                    }
+                    else
+                    if (name)
+                    {
+                        try
+                        {
+                            fileSetting[fileName][name] = JSON.parse(`"${value}"`);
+                            OutputChannel.appendLine(`Set ${name} "${value}" for "${fileName}"`);
+                        }
+                        catch(Err)
+                        {
+                            OutputChannel.appendLine(`🚫 ${Err}`);
+                        }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            fileSetting[fileName] = JSON.parse(value);
+                            OutputChannel.appendLine(`Set settings for "${fileName}"`);
+                            OutputChannel.appendJson(fileSetting[fileName]);
+                        }
+                        catch(Err)
+                        {
+                            OutputChannel.appendLine(`🚫 ${Err}`);
+                        }
                     }
                 }
                 else
-                if (name)
                 {
-                    try
-                    {
-                        fileSetting[fileName][name] = JSON.parse(`"${value}"`);
-                        OutputChannel.appendLine(`Set ${name} "${value}" for "${fileName}"`);
-                    }
-                    catch(Err)
-                    {
-                        OutputChannel.appendLine(`🚫 ${Err}`);
-                    }
+                    fileSetting[fileName][name] = null;
                 }
-                else
-                {
-                    try
-                    {
-                        fileSetting[fileName] = JSON.parse(value);
-                        OutputChannel.appendLine(`Set settings for "${fileName}"`);
-                        OutputChannel.appendJson(fileSetting[fileName]);
-                    }
-                    catch(Err)
-                    {
-                        OutputChannel.appendLine(`🚫 ${Err}`);
-                    }
-                }
-            }
-            else
-            {
-                fileSetting[fileName][name] = null;
             }
         }
         else
@@ -970,118 +973,119 @@ module WandboxVSCode
                 document.languageId,
                 fileName
             );
-            //var options : string = getConfiguration("options")[compilerName];
-            var compiler = (<any[]> await WandboxServer.makeSureList())
-                .filter(i => i.name === compilerName)[0];
+            if (compilerName)
+            {
+                var compiler = (<any[]> await WandboxServer.makeSureList())
+                    .filter(i => i.name === compilerName)[0];
 
-            if (!compiler.switches || 0 === compiler.switches.length)
-            {
-                OutputChannel.appendLine('this compiler has no options');
-            }
-            else
-            {
-                var options : string = getConfiguration("options")[compilerName];
-                var setting = fileSetting[fileName];
-                if (setting && undefined !== setting['options'])
+                if (!compiler.switches || 0 === compiler.switches.length)
                 {
-                    options = setting['options'];
+                    OutputChannel.appendLine('this compiler has no options');
                 }
-                var selectedOptionList = (options || "").split(",").filter(i => i);
-
-                let optionList : any[] = [];
-                let lastGroup = 0;
-                let separator =
+                else
                 {
-                    label: "",
-                    description: "------------------------------------------------------------------------------------------------"
-                };
-                for(let item of compiler.switches)
-                {
-                    if (item.options)
+                    var options : string = getConfiguration("options")[compilerName];
+                    var setting = fileSetting[fileName];
+                    if (setting && undefined !== setting['options'])
                     {
-                        if (lastGroup)
-                        {
-                            optionList.push(separator);
-                        }
-                        for(let option of item.options)
-                        {
-                            optionList.push
-                            (
-                                {
-                                    label: (0 <= selectedOptionList.indexOf(option.name) ? "🔘 ": "⚪️ ") +option["display-name"],
-                                    description: item["option-flags"],
-                                    detail:  null,
-                                    item,
-                                    option
-                                }
-                            );
-                        }
-                        lastGroup = 2;
+                        options = setting['options'];
                     }
-                    else
+                    var selectedOptionList = (options || "").split(",").filter(i => i);
+
+                    let optionList : any[] = [];
+                    let lastGroup = 0;
+                    let separator =
                     {
-                        if (2 === lastGroup)
+                        label: "",
+                        description: "------------------------------------------------------------------------------------------------"
+                    };
+                    for(let item of compiler.switches)
+                    {
+                        if (item.options)
                         {
-                            optionList.push(separator);
-                        }
-                        optionList.push
-                        (
+                            if (lastGroup)
                             {
-                                label: (0 <= selectedOptionList.indexOf(item.name) ? "☑️ ": "⬜️ ") +item["display-name"],
-                                description: item["display-flags"],
-                                detail:  null,
-                                item
+                                optionList.push(separator);
                             }
-                        );
-                        lastGroup = 1;
-                    }
-                }
-
-                let select = await vscode.window.showQuickPick
-                (
-                    optionList,
-                    {
-                        placeHolder: "Select a add option( or a remove option )",
-                    }
-                );
-                if (select && select.item)
-                {
-                    if (select.option)
-                    {
-                        let selected = 0 <= selectedOptionList.indexOf(select.option.name);
-                        for(let option of select.item.options)
-                        {
-                            selectedOptionList = selectedOptionList.filter(i => i !== option.name);
-                        }
-                        if (!selected)
-                        {
-                            selectedOptionList.push(select.option.name);
-                        }
-                    }
-                    else
-                    {
-                        let selected = 0 <= selectedOptionList.indexOf(select.item.name);
-                        if (selected)
-                        {
-                            selectedOptionList = selectedOptionList.filter(i => i !== select.item.name);
+                            for(let option of item.options)
+                            {
+                                optionList.push
+                                (
+                                    {
+                                        label: (0 <= selectedOptionList.indexOf(option.name) ? "🔘 ": "⚪️ ") +option["display-name"],
+                                        description: item["option-flags"],
+                                        detail:  null,
+                                        item,
+                                        option
+                                    }
+                                );
+                            }
+                            lastGroup = 2;
                         }
                         else
                         {
-                            selectedOptionList.push(select.item.name);
+                            if (2 === lastGroup)
+                            {
+                                optionList.push(separator);
+                            }
+                            optionList.push
+                            (
+                                {
+                                    label: (0 <= selectedOptionList.indexOf(item.name) ? "☑️ ": "⬜️ ") +item["display-name"],
+                                    description: item["display-flags"],
+                                    detail:  null,
+                                    item
+                                }
+                            );
+                            lastGroup = 1;
                         }
                     }
 
-                    try
+                    let select = await vscode.window.showQuickPick
+                    (
+                        optionList,
+                        {
+                            placeHolder: "Select a add option( or a remove option )",
+                        }
+                    );
+                    if (select && select.item)
                     {
-                        setting = fileSetting[fileName] = fileSetting[fileName] || {};
-                        setting['options'] = selectedOptionList.join(",");
-                        OutputChannel.appendLine(`Set options "${setting['options']}" for "${fileName}"`);
+                        if (select.option)
+                        {
+                            let selected = 0 <= selectedOptionList.indexOf(select.option.name);
+                            for(let option of select.item.options)
+                            {
+                                selectedOptionList = selectedOptionList.filter(i => i !== option.name);
+                            }
+                            if (!selected)
+                            {
+                                selectedOptionList.push(select.option.name);
+                            }
+                        }
+                        else
+                        {
+                            let selected = 0 <= selectedOptionList.indexOf(select.item.name);
+                            if (selected)
+                            {
+                                selectedOptionList = selectedOptionList.filter(i => i !== select.item.name);
+                            }
+                            else
+                            {
+                                selectedOptionList.push(select.item.name);
+                            }
+                        }
+
+                        try
+                        {
+                            setting = fileSetting[fileName] = fileSetting[fileName] || {};
+                            setting['options'] = selectedOptionList.join(",");
+                            OutputChannel.appendLine(`Set options "${setting['options']}" for "${fileName}"`);
+                        }
+                        catch(Err)
+                        {
+                            OutputChannel.appendLine(`🚫 ${Err}`);
+                        }
                     }
-                    catch(Err)
-                    {
-                        OutputChannel.appendLine(`🚫 ${Err}`);
-                    }
-                    
                 }
             }
         }
