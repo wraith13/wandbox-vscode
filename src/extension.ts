@@ -1269,32 +1269,32 @@ module WandboxVSCode
                 document.languageId,
                 document.fileName
             );
-            var additionals : string[];
-            var options : string = await getOptions
-            (
-                document.languageId,
-                document.fileName
-            );
-            var stdIn : string;
-            var compilerOptionRaw : string = getConfiguration("compilerOptionRaw")[compilerName];
-            var runtimeOptionRaw : string = getConfiguration("runtimeOptionRaw")[compilerName];
-            var setting = fileSetting[document.fileName];
-            if (setting)
-            {
-                additionals = setting['codes'];
-                stdIn = setting['stdin'];
-                if (undefined !== setting['compiler-option-raw'])
-                {
-                    compilerOptionRaw = setting['compiler-option-raw'];
-                }
-                if (undefined !== setting['runtime-option-raw'])
-                {
-                    runtimeOptionRaw = setting['runtime-option-raw'];
-                }
-            }
-
             if (compilerName)
             {
+                var additionals : string[];
+                var options : string = await getOptions
+                (
+                    document.languageId,
+                    document.fileName
+                );
+                var stdIn : string;
+                var compilerOptionRaw : string = getConfiguration("compilerOptionRaw")[compilerName];
+                var runtimeOptionRaw : string = getConfiguration("runtimeOptionRaw")[compilerName];
+                var setting = fileSetting[document.fileName];
+                if (setting)
+                {
+                    additionals = setting['codes'];
+                    stdIn = setting['stdin'];
+                    if (undefined !== setting['compiler-option-raw'])
+                    {
+                        compilerOptionRaw = setting['compiler-option-raw'];
+                    }
+                    if (undefined !== setting['runtime-option-raw'])
+                    {
+                        runtimeOptionRaw = setting['runtime-option-raw'];
+                    }
+                }
+
                 var json =
                 {
                     compiler: compilerName,
