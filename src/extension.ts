@@ -260,9 +260,10 @@ module WandboxVSCode
                     var code : string;
                     for(let document of vscode.workspace.textDocuments)
                     {
-                        if (filename === stripDirectory(document.fileName))
+                        if (filename === document.fileName)
                         {
                             code = document.getText();
+                            break;
                         }
                     }
                     json['codes'].push
@@ -273,6 +274,19 @@ module WandboxVSCode
                         }
                     );
                 }
+            }
+            if (json['stdin'])
+            {
+                var stdin : string;
+                for(let document of vscode.workspace.textDocuments)
+                {
+                    if (json['stdin'] === document.fileName)
+                    {
+                        stdin = document.getText();
+                        break;
+                    }
+                }
+                json['stdin'] = stdin;
             }
             json['code'] = document.getText();
             json['from'] = extentionName;
@@ -420,6 +434,20 @@ module WandboxVSCode
                 result = "wandbox-vscode:default";
             }
             return result;
+        }
+
+        export function getTextFiles() : string[]
+        {
+            return vscode.workspace.textDocuments
+                    .filter
+                    (
+                        i =>
+                            0 === i.fileName.indexOf("Untitled") ||
+                            0 <= i.fileName.indexOf("/") ||
+                            0 <= i.fileName.indexOf("\\")
+                    )
+                    .map(i => i.fileName)
+                    .filter((value, i, self) => self.indexOf(value) === i);
         }
 
         export async function showJson(titile : string, json : any) : Promise<void>
@@ -792,6 +820,7 @@ module WandboxVSCode
                 else
                 {
                     fileSetting[fileName][name] = null;
+                    OutputChannel.appendLine(`Reset ${name} for "${fileName}"`);
                 }
             }
         }
@@ -935,16 +964,7 @@ module WandboxVSCode
                 var additionals = setting['codes'] || [];
                 var result : string = JSON.stringify(additionals);
                 let fileList : vscode.QuickPickItem[] = [];
-                vscode.workspace.textDocuments
-                    .filter
-                    (
-                        i =>
-                            0 === i.fileName.indexOf("Untitled") ||
-                            0 <= i.fileName.indexOf("/") ||
-                            0 <= i.fileName.indexOf("\\")
-                    )
-                    .map(i => i.fileName)
-                    .filter((value, i, self) => self.indexOf(value) === i)
+                WorkSpace.getTextFiles()
                     .forEach
                     (
                         fileName => fileList.push
@@ -992,6 +1012,77 @@ module WandboxVSCode
                     result = JSON.stringify(additionals);
                 }
                 //*/
+                return result;
+            }
+        );
+    }
+
+    async function setStdInSetting()
+    {
+        await setSetting
+        (
+            'stdin',
+            async function () : Promise<string>
+            {
+                var document = WorkSpace.getActiveDocument();
+                var setting = fileSetting[document.fileName] || {};
+                var stdin : string = setting['stdin'];
+                let fileList : vscode.QuickPickItem[] = [];
+                let noStdIn : vscode.QuickPickItem = 
+                {
+                    label: (!stdin ? "🔘 ": "⚪️ ") +"no stdin",
+                    description: null,
+                    detail: null
+                };
+                fileList.push(noStdIn);
+                WorkSpace.getTextFiles()
+                    .forEach
+                    (
+                        fileName => fileList.push
+                        (
+                            {
+                                label: (stdin === fileName ? "🔘 ": "⚪️ ") +stripDirectory(fileName),
+                                description: fileName,
+                                detail: document.fileName === fileName ? "this file itself": null
+                            }
+                        )
+                    );
+                let newUntitledDocument : vscode.QuickPickItem = 
+                {
+                    label: "✨️ new untitled document",
+                    description: null,
+                    detail: null
+                };
+                fileList.push(newUntitledDocument);
+                let select = await vscode.window.showQuickPick
+                (
+                    fileList,
+                    {
+                        placeHolder: "Select a file as a stdin",
+                    }
+                );
+                var result : string = undefined;
+                if (select)
+                {
+                    if (newUntitledDocument !== select)
+                    {
+                        if (noStdIn === select)
+                        {
+                            result = null;
+                        }
+                        else
+                        {
+                            result = select.description
+                                .replace("\\","\\\\")
+                                .replace("\"","\\\"");
+                        }
+                    }
+                    else
+                    {
+                        newDocument.stdinTo = document.fileName;
+                        await vscode.commands.executeCommand("workbench.action.files.newUntitledFile");
+                    }
+                }
                 return result;
             }
         );
@@ -1242,7 +1333,8 @@ module WandboxVSCode
     {
         text: null,
         sourceFile: null,
-        additionalTo: null
+        additionalTo: null,
+        stdinTo: null
     };
 
     async function getHelloWorldFiles() : Promise<vscode.QuickPickItem[]>
@@ -1373,7 +1465,7 @@ module WandboxVSCode
             },
             {
                 command: 'extension.setWandboxFileStdIn',
-                callback: () => setSettingByInputBox('stdin', 'Enter stdin text ( When you want to user multiline text, Use [Wandbox: Set Settings JSON] command. )')
+                callback: setStdInSetting
             },
             {
                 command: 'extension.setWandboxFileOptions',
@@ -1433,43 +1525,53 @@ module WandboxVSCode
 
         vscode.window.onDidChangeActiveTextEditor
         (
-            async (textEditor : vscode.TextEditor) =>
+            async (textEditor : vscode.TextEditor) : Promise<void> =>
             {
-                if (textEditor.document.isUntitled)
+                if (textEditor)
                 {
-                    if (newDocument.text)
+                    var document = textEditor.document;
+                    if (document && document.isUntitled)
                     {
-                        var text = newDocument.text;
-                        var activeTextEditor = vscode.window.activeTextEditor;
-                        activeTextEditor.edit
-                        (
-                            (editBuilder: vscode.TextEditorEdit) =>
-                            {
-                                editBuilder.insert(new vscode.Position(0,0), text);
-                            }
-                        );
-                        var document = WorkSpace.getActiveDocument();
-                        var fileName = document.fileName;
-                        var compiler = await getWandboxCompilerName(undefined, newDocument.sourceFile);
-                        if (compiler)
+                        if (newDocument.text)
                         {
-                            fileSetting[fileName] = fileSetting[fileName] || { };
-                            fileSetting[fileName]['compiler'] = compiler;
-                        }
+                            var text = newDocument.text;
+                            var activeTextEditor = vscode.window.activeTextEditor;
+                            activeTextEditor.edit
+                            (
+                                (editBuilder: vscode.TextEditorEdit) =>
+                                {
+                                    editBuilder.insert(new vscode.Position(0,0), text);
+                                }
+                            );
+                            var fileName = document.fileName;
+                            var compiler = await getWandboxCompilerName(undefined, newDocument.sourceFile);
+                            if (compiler)
+                            {
+                                fileSetting[fileName] = fileSetting[fileName] || { };
+                                fileSetting[fileName]['compiler'] = compiler;
+                            }
 
-                        newDocument.text = null;
-                        newDocument.sourceFile = null;
-                    }
-                    if (newDocument.additionalTo)
-                    {
-                        var document = WorkSpace.getActiveDocument();
-                        let fileName = newDocument.additionalTo;
-                        fileSetting[fileName] = fileSetting[fileName] || {};
-                        let newFiles = fileSetting[fileName]['codes'] || [];
-                        newFiles.push(document.fileName);
-                        fileSetting[fileName]['codes'] = newFiles;
-                        OutputChannel.appendLine(`Set codes "${newFiles.join('","')}" for "${fileName}"`);
-                        newDocument.additionalTo = null;
+                            newDocument.text = null;
+                            newDocument.sourceFile = null;
+                        }
+                        if (newDocument.additionalTo)
+                        {
+                            let fileName = newDocument.additionalTo;
+                            fileSetting[fileName] = fileSetting[fileName] || {};
+                            let newFiles = fileSetting[fileName]['codes'] || [];
+                            newFiles.push(document.fileName);
+                            fileSetting[fileName]['codes'] = newFiles;
+                            OutputChannel.appendLine(`Set codes "${newFiles.join('","')}" for "${fileName}"`);
+                            newDocument.additionalTo = null;
+                        }
+                        if (newDocument.stdinTo)
+                        {
+                            let fileName = newDocument.stdinTo;
+                            fileSetting[fileName] = fileSetting[fileName] || {};
+                            fileSetting[fileName]['stdin'] = document.fileName;
+                            OutputChannel.appendLine(`Set stdin "${document.fileName}" for "${fileName}"`);
+                            newDocument.stdinTo = null;
+                        }
                     }
                 }
             }
