@@ -518,6 +518,10 @@ module WandboxVSCode
         if (!result && fileName)
         {
             result = getConfiguration("extensionLanguageMapping")[fileName.split('.').reverse()[0]];
+            if (!result && fileSetting[fileName])
+            {
+                result = fileSetting[fileName].language;
+            }
         }
         if (!result)
         {
@@ -531,6 +535,11 @@ module WandboxVSCode
             if (select)
             {
                 result = select.label;
+                if (fileName)
+                {
+                    fileSetting[fileName] = fileSetting[fileName] || {};
+                    fileSetting[fileName].language = result;
+                }
             }
         }
         return result;
