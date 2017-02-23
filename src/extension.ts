@@ -1231,6 +1231,43 @@ module WandboxVSCode
         }
     }
 
+    async function setRawOptionSetting(name : string,　prompt : string) : Promise<void>
+    {
+        return setSetting
+        (
+            name,
+            async () : Promise<string> =>
+            {
+                var result : string;
+                var document = WorkSpace.getActiveDocument();
+                if (null !== document)
+                {
+                    let languageId = document.languageId;
+                    let fileName = document.fileName;
+                    var compilerName = await getWandboxCompilerName
+                    (
+                        languageId,
+                        fileName
+                    );
+                    if (compilerName)
+                    {
+                        var compiler = (<any[]> await WandboxServer.makeSureList())
+                            .filter(i => i.name === compilerName)[0];
+                        if (compiler && compiler[name])
+                        {
+                            result = await vscode.window.showInputBox({ prompt });
+                        }
+                        else
+                        {
+                            OutputChannel.appendLine(`⚠️ This compiler not accept "${name}".`);
+                        }
+                    }
+                }
+                return result;
+            }
+        );
+    }
+
     function resetWandboxFileSettings() : void
     {
         OutputChannel.makeSure();
@@ -1482,11 +1519,11 @@ module WandboxVSCode
             },
             {
                 command: 'extension.setWandboxFileCompilerOptionRaw',
-                callback: () => setSettingByInputBox('compiler-option-raw', 'Enter compiler option raw')
+                callback: () => setRawOptionSetting('compiler-option-raw', 'Enter compiler option raw')
             },
             {
                 command: 'extension.setWandboxFileRuntimeOptionRaw',
-                callback: () => setSettingByInputBox('runtime-option-raw', 'Enter runtime option raw')
+                callback: () => setRawOptionSetting('runtime-option-raw', 'Enter runtime option raw')
             },
             {
                 command: 'extension.setWandboxFileSettingJson',
