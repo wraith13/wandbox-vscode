@@ -728,7 +728,7 @@ module WandboxVSCode
                 {
                     if (!hit.switches || 0 === hit.switches.length)
                     {
-                        OutputChannel.appendLine('this compiler has no options');
+                        OutputChannel.appendLine(`⚠️ This compiler has no options`);
                     }
                     else
                     {
@@ -1120,7 +1120,7 @@ module WandboxVSCode
 
                 if (!compiler.switches || 0 === compiler.switches.length)
                 {
-                    OutputChannel.appendLine('this compiler has no options');
+                    OutputChannel.appendLine(`⚠️ This compiler has no options`);
                 }
                 else
                 {
