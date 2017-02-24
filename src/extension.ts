@@ -162,7 +162,7 @@ module WandboxVSCode
 
     module WandboxServer
     {
-        function getUrl() :string
+        export function getServer() : string
         {
             var result : string;
             var setting = fileSetting[WorkSpace.getCurrentFilename()];
@@ -174,6 +174,12 @@ module WandboxVSCode
             {
                 result = getConfiguration<string[]>("Servers")[0];
             }
+            return result;
+        }
+
+        function getUrl() :string
+        {
+            var result : string = getServer();
             if (result.endsWith("/"))
             {
                 result = result.substr(0, result.length -1);
@@ -483,9 +489,27 @@ module WandboxVSCode
         }
     }
 
-    async function getLanguageList() : Promise<vscode.QuickPickItem[]>
+    function getLanguageNameFromSetting(vscodeLang? :string, fileName? :string) : string
     {
-        var result : vscode.QuickPickItem[] = [];
+        var result : string;
+        if (!result && fileName && fileSetting[fileName])
+        {
+            result = fileSetting[fileName].language;
+        }
+        if (!result && vscodeLang)
+        {
+            result = getConfiguration("languageMapping")[vscodeLang];
+        }
+        if (!result && fileName)
+        {
+            result = getConfiguration("extensionLanguageMapping")[fileName.split('.').reverse()[0]];
+        }
+        return result;
+    }
+
+    async function getLanguageList(selectedLanguage? :string) : Promise<vscode.QuickPickItem[]>
+    {
+        var result : any[] = [];
         let list = await WandboxServer.makeSureList();
         if (list)
         {
@@ -498,9 +522,10 @@ module WandboxVSCode
                 i => result.push
                 (
                     {
-                        "label": i,
+                        "label": (selectedLanguage === i ? "🔘 ": "⚪️ ") +i,
                         "description": null,
-                        "detail": null
+                        "detail": null,
+                        "value": i
                     }
                 )
             );
@@ -508,41 +533,33 @@ module WandboxVSCode
         return result;
     }
 
-    async function getLanguageName(vscodeLang? :string, fileName? :string) : Promise<string>
+    async function queryLanguageNameToUser(vscodeLang? :string, fileName? :string) : Promise<string>
     {
         var result : string;
-        if (!result && vscodeLang)
-        {
-            result = getConfiguration("languageMapping")[vscodeLang];
-        }
-        if (!result && fileName)
-        {
-            result = getConfiguration("extensionLanguageMapping")[fileName.split('.').reverse()[0]];
-            if (!result && fileSetting[fileName])
+        let selectedLanguage = getLanguageNameFromSetting(vscodeLang, fileName);
+        let select : any = await vscode.window.showQuickPick
+        (
+            getLanguageList(selectedLanguage),
             {
-                result = fileSetting[fileName].language;
+                placeHolder: "Select a language",
             }
-        }
-        if (!result)
+        );
+        if (select)
         {
-            let select = await vscode.window.showQuickPick
-            (
-                getLanguageList(),
-                {
-                    placeHolder: "Select a language",
-                }
-            );
-            if (select)
+            result = select.value;
+            if (fileName)
             {
-                result = select.label;
-                if (fileName)
-                {
-                    fileSetting[fileName] = fileSetting[fileName] || {};
-                    fileSetting[fileName].language = result;
-                }
+                fileSetting[fileName] = fileSetting[fileName] || {};
+                fileSetting[fileName].language = result;
             }
         }
         return result;
+    }
+
+    async function getLanguageName(vscodeLang? :string, fileName? :string) : Promise<string>
+    {
+        return getLanguageNameFromSetting(vscodeLang, fileName) ||
+            await queryLanguageNameToUser(vscodeLang, fileName);
     }
 
     async function getWandboxCompilerName(vscodeLang :string, fileName :string) : Promise<string>
@@ -855,26 +872,29 @@ module WandboxVSCode
             async function () : Promise<string>
             {
                 var result : string;
+                var selectedServer = WandboxServer.getServer();
                 var servers = getConfiguration<string[]>("Servers");
-                var list : vscode.QuickPickItem[] = [];
+                var list : any[] = [];
                 servers.forEach
                 (
                     i => list.push
                     (
                         {
-                            "label": i,
+                            "label": (selectedServer === i ? "🔘 ": "⚪️ ") +i,
                             "description": null,
-                            "detail": null
+                            "detail": null,
+                            "value": i
                         }
                     )
                 );
                 list[0].description = "default";
+                let isOther = servers.indexOf(selectedServer) < 0;
                 list.push
                 (
                     {
-                        "label": "Other",
+                        "label": (isOther ? "🔘 ": "⚪️ ") +"Other",
                         "description": "enter a server url by manual",
-                        "detail": null
+                        "detail": isOther ? selectedServer: null
                     }
                 );
                 var select = await vscode.window.showQuickPick
@@ -892,7 +912,7 @@ module WandboxVSCode
                     }
                     else
                     {
-                        result = select.label;
+                        result = select.value;
                     }
                 }
                 return result;
@@ -933,7 +953,10 @@ module WandboxVSCode
             async function () : Promise<string>
             {
                 var result : string;
-                var language = await getLanguageName();
+                var document = WorkSpace.getActiveDocument();
+                var vscodeLang = document.languageId;
+                var fileName = document.fileName;
+                var language = await queryLanguageNameToUser(vscodeLang, fileName);
                 if (language)
                 {
                     let compilerList = await getCompilerList(language);
@@ -943,6 +966,15 @@ module WandboxVSCode
                     }
                     else
                     {
+                        let selectedCompiler = await getWandboxCompilerName(vscodeLang, fileName);
+                        if (!selectedCompiler || compilerList.filter(i => selectedCompiler === i.description).length <= 0)
+                        {
+                            selectedCompiler = compilerList[0].description;
+                        }
+                        for(let i of compilerList)
+                        {
+                            i.label = (selectedCompiler === i.description ? "🔘 ": "⚪️ ")  +i.label;
+                        }
                         let select = await vscode.window.showQuickPick
                         (
                             compilerList,
