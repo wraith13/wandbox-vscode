@@ -988,7 +988,7 @@ module WandboxVSCode
                 fileList.push
                 (
                     {
-                        label: "new untitled document",
+                        label: "✨️ new untitled document",
                         description: null,
                         detail: null
                     }
