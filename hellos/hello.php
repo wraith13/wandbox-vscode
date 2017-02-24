@@ -3,4 +3,3 @@
 print("Hello, Wandbox!\n");
 //  PHP references:
 //  http://php.net
-?>
