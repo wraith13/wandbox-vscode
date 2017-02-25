@@ -489,7 +489,7 @@ module WandboxVSCode
         }
     }
 
-    function getLanguageNameFromSetting(vscodeLang? :string, fileName? :string) : string
+    async function getLanguageNameFromSetting(vscodeLang? :string, fileName? :string) : Promise<string>
     {
         var result : string;
         if (!result && fileName && fileSetting[fileName])
@@ -503,6 +503,25 @@ module WandboxVSCode
         if (!result && fileName)
         {
             result = getConfiguration("extensionLanguageMapping")[fileName.split('.').reverse()[0]];
+        }
+        if (result)
+        {
+            let list = await WandboxServer.makeSureList();
+            var hit = false;
+            for(let i of list)
+            {
+                if (i.language === result)
+                {
+                    hit = true;
+                    break;
+                }
+            }
+            if (!hit)
+            {
+                //  構造上、ここでメッセージを出すと複数回同じメッセージが出てしまう。
+                //OutputChannel.appendLine('⚠️ Unknown language! : ' +result);
+                result = null;
+            }
         }
         return result;
     }
@@ -536,7 +555,7 @@ module WandboxVSCode
     async function queryLanguageNameToUser(vscodeLang? :string, fileName? :string) : Promise<string>
     {
         var result : string;
-        let selectedLanguage = getLanguageNameFromSetting(vscodeLang, fileName);
+        let selectedLanguage = await getLanguageNameFromSetting(vscodeLang, fileName);
         let select : any = await vscode.window.showQuickPick
         (
             getLanguageList(selectedLanguage),
@@ -558,7 +577,7 @@ module WandboxVSCode
 
     async function getLanguageName(vscodeLang? :string, fileName? :string) : Promise<string>
     {
-        return getLanguageNameFromSetting(vscodeLang, fileName) ||
+        return await getLanguageNameFromSetting(vscodeLang, fileName) ||
             await queryLanguageNameToUser(vscodeLang, fileName);
     }
 
