@@ -153,6 +153,11 @@ module WandboxVSCode
         {
             OutputChannel.appendLine(JSON.stringify(value, null, 4));
         }
+
+        export function canceled() : void
+        {
+            appendLine(`Canceled`);
+        }
     }
 
     module WandboxServer
@@ -751,6 +756,10 @@ module WandboxVSCode
                     OutputChannel.appendLine(`Reset ${name} for "${fileName}"`);
                 }
             }
+            else
+            {
+                OutputChannel.canceled();
+            }
         }
         else
         {
@@ -1339,6 +1348,10 @@ module WandboxVSCode
                 }
                 WandboxServer.compile(json);
             }
+            else
+            {
+                OutputChannel.canceled();
+            }
         }
         else
         {
@@ -1439,6 +1452,10 @@ module WandboxVSCode
                 OutputChannel.appendLine("🚫 Unknown file extension!");
                 OutputChannel.appendLine('👉 You can set hello world files by [wandbox.helloWolrdFiles] setting.');
             }
+        }
+        else
+        {
+            OutputChannel.canceled();
         }
     }
 
