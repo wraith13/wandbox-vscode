@@ -25,8 +25,6 @@ Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, 
 
 ## Show Commands
 
-* `Wandbox: Show Compilers` : show available compilers list on wandbox
-* `Wandbox: Show Options` : show options of a current compiler
 * `Wandbox: Show Raw JSON` : show a wandbox specs as raw JSON
 
 > see [Wandbox API Reference](https://github.com/melpon/wandbox/blob/master/kennel2/API.rst)

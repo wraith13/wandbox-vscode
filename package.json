@@ -268,14 +268,6 @@
             "title": "Hello",
             "category": "Wandbox"
         },{
-            "command": "extension.showWandboxCompiers",
-            "title": "Show Compilers",
-            "category": "Wandbox"
-        },{
-            "command": "extension.showWandboxOptions",
-            "title": "Show Options",
-            "category": "Wandbox"
-        },{
             "command": "extension.showWandboxListJson",
             "title": "Show Raw JSON",
             "category": "Wandbox"

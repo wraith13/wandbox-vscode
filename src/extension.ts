@@ -99,11 +99,6 @@ module WandboxVSCode
     const extentionName = "wandbox-vscode";
     var fileSetting = { };
 
-    function deepCopy(source : any) : any
-    {
-        return JSON.parse(JSON.stringify(source));
-    }
-
     function stripDirectory(path : string) : string
     {
         return path
@@ -691,106 +686,6 @@ module WandboxVSCode
             'vscode.open',
             vscode.Uri.parse(WandboxServer.getWebUrl())
         );
-    }
-
-    async function showWandboxCompiers() : Promise<void>
-    {
-        let list = await WandboxServer.makeSureList();
-        if (list)
-        {
-            var languageNames :string[] = [];
-            list.forEach(item => languageNames.push(item.language));
-            languageNames = languageNames.filter((value, i, self) => self.indexOf(value) === i);
-            languageNames.sort();
-            var languages = {};
-            languageNames.forEach(item => languages[item] = languages[item] || []);
-            for(let item of list)
-            {
-                var displayItem = deepCopy(item);
-                delete displayItem.switches;
-                languages[displayItem.language].push(displayItem);
-            }
-            for(let language of languageNames)
-            {
-                OutputChannel.appendLine(`📚 ${language}`);
-                for(let item of languages[language])
-                {
-                    var displayItem = deepCopy(item);
-                    delete displayItem.switches;
-                    OutputChannel.appendLine(`${item.name}\t${JSON.stringify(displayItem)}`);
-                }
-            }
-        }
-    }
-
-    async function showWandboxOptions() : Promise<void>
-    {
-        var document = WorkSpace.getActiveDocument();
-        if (null !== document)
-        {
-            var compilerName = getWandboxCompilerName
-            (
-                document.languageId,
-                document.fileName
-            );
-            if (compilerName)
-            {
-                let list = await WandboxServer.makeSureList();
-                var hit :any;
-                if (list)
-                {
-                    for(let item of list)
-                    {
-                        if (compilerName === item.name)
-                        {
-                            hit = item;
-                        }
-                    }
-                }
-
-                if (!hit)
-                {
-                    OutputChannel.appendLine('🚫 Unknown compiler!');
-                    OutputChannel.appendLine('👉 You can set a compiler by [Wandbox: Set Compiler] command.');
-                    OutputChannel.appendLine('👉 You can see compilers list by [Wandbox: Show Compilers] command.');
-                }
-                else
-                {
-                    if (!hit.switches || 0 === hit.switches.length)
-                    {
-                        OutputChannel.appendLine(`⚠️ This compiler has no options`);
-                    }
-                    else
-                    {
-                        OutputChannel.appendLine('option\tdetails');
-                        for(let item of hit.switches)
-                        {
-                            if (item.options)
-                            {
-                                for(let option of item.options)
-                                {
-                                    OutputChannel.appendLine(`${option.name}\t${JSON.stringify(option)}`);
-                                }
-                            }
-                            else
-                            {
-                                OutputChannel.appendLine(`${item.name}\t${JSON.stringify(item)}`);
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                OutputChannel.appendLine('🚫 Unknown language!');
-                OutputChannel.appendLine('👉 You can use set a compiler by [Wandbox: Set Compiler] command.');
-                OutputChannel.appendLine('👉 You can see compilers list by [Wandbox: Show Compilers] command.');
-            }
-        }
-        else
-        {
-            OutputChannel.appendLine('🚫 No active text editor!');
-        }
     }
     
     async function showWandboxListJson() : Promise<void>
@@ -1557,14 +1452,6 @@ module WandboxVSCode
             {
                 command: 'extension.showWandboxWeb',
                 callback: showWandboxWeb
-            },
-            {
-                command: 'extension.showWandboxCompiers',
-                callback: showWandboxCompiers
-            },
-            {
-                command: 'extension.showWandboxOptions',
-                callback: showWandboxOptions
             },
             {
                 command: 'extension.showWandboxListJson',
