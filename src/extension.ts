@@ -1075,21 +1075,21 @@ module WandboxVSCode
                 };
                 let AdditinalsMenuItem =
                 {
-                    label: "Select a add file( or a remove file )",
+                    label: "✒️ Select a add file( or a remove file )",
                     description: "",
                     detail: setting && (setting['codes'] || []).join(', '),
                 };
                 optionList.push(AdditinalsMenuItem);
                 let stdInMenuItem =
                 {
-                    label: "Select a file as a stdin",
+                    label: "✒️ Select a file as a stdin",
                     description: "",
                     detail: setting && setting['stdin'],
                 };
                 optionList.push(stdInMenuItem);
                 let CompilerOptionRawMenuItem =
                 {
-                    label: "Set compiler option raw",
+                    label: "✒️ Set compiler option raw",
                     description: "",
                     detail: setting && setting['compiler-option-raw'],
                 };
@@ -1099,7 +1099,7 @@ module WandboxVSCode
                 }
                 let RuntimeOptionRawMenuItem =
                 {
-                    label: "Set runtime option raw",
+                    label: "✒️ Set runtime option raw",
                     description: "",
                     detail: setting && setting['runtime-option-raw'],
                 };
