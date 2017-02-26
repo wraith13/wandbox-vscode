@@ -857,7 +857,6 @@ module WandboxVSCode
 
     async function setCompilerSetting() : Promise<void>
     {
-        //() => setSettingByInputBox('compiler', 'Enter compiler name')
         await setSetting
         (
             'compiler',
@@ -1042,7 +1041,6 @@ module WandboxVSCode
 
     async function setOptionsSetting() : Promise<void>
     {
-        // 'Enter compiler option ( You can see compiler option list by [Wandbox: Show Compier Info] )')
         var document = WorkSpace.getActiveDocument();
         if (null !== document)
         {
@@ -1421,7 +1419,6 @@ module WandboxVSCode
         );
         if (select)
         {
-            //var fileExtension = select.label;
             var helloFilePath = select.description;
             OutputChannel.appendLine(`✨️ Open a [hello, world!] as a new file. ( Source is "${helloFilePath}" )`);
             if (await fx.exists(helloFilePath))
