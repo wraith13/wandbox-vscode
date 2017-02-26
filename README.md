@@ -65,6 +65,7 @@ This extension contributes the following settings:
 * `wandbox.compilerOptionRaw`: set raw option by compiler
 * `wandbox.runtimeOptionRaw`: set raw runtime option by compiler
 * `wandbox.helloWolrdFiles`: set hello world files
+* `wandbox.emoji`: set emoji
 
 ## Release Notes
 

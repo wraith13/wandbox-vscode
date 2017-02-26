@@ -252,6 +252,26 @@
                     "type": "array",
                     "default": [],
                     "description": "set hello world files"
+                },
+                "wandbox.emoji": {
+                    "type": "object",
+                    "default": {
+                        "stamp": "🐾",
+                        "error": "🚫",
+                        "warning": "⚠️",
+                        "hint": "👉",
+                        "signal": "🚦",
+                        "link": "🔗",
+                        "lap": "🏁",
+                        "new": "✨️",
+                        "checkedBox": "☑️",
+                        "uncheckedBox": "⬜️",
+                        "checkedRadio": "🔘",
+                        "uncheckedRadio": "⚪️",
+                        "edit": "✒️",
+                        "menuSeparator": "─────────────────────────────────────────────"
+                    },
+                    "description": "set emoji"
                 }
             }
         },

@@ -114,6 +114,20 @@ module WandboxVSCode
             configuration;
     }
 
+    function emoji(key : string) : string
+    {
+        var result : string = getConfiguration("emoji")[key];
+        if (result)
+        {
+            result += " ";
+        }
+        else
+        {
+            result = "";
+        }
+        return result;
+    }
+
     module OutputChannel
     {
         var outputChannel :vscode.OutputChannel;
@@ -137,7 +151,7 @@ module WandboxVSCode
         export function bowWow() : void
         {
             show();
-            appendLine(`🐾 Bow-wow! ${new Date().toString()}`);
+            appendLine(`${emoji("stamp")}Bow-wow! ${new Date().toString()}`);
         }
 
         export function show() : void
@@ -207,7 +221,7 @@ module WandboxVSCode
                     OutputChannel.appendLine(`statusCode: ${response.statusCode}`);
                     if (error)
                     {
-                        OutputChannel.appendLine(`🚫 error: ${error}`);
+                        OutputChannel.appendLine(`${emoji("error")}error: ${error}`);
                         reject(error);
                     }
                     else
@@ -336,7 +350,7 @@ module WandboxVSCode
                 }
                 if (body.signal)
                 {
-                    OutputChannel.appendLine(`🚦 signal: ${body.signal}`);
+                    OutputChannel.appendLine(`${emoji("signal")}signal: ${body.signal}`);
                 }
                 if (body.compiler_output)
                 {
@@ -345,7 +359,7 @@ module WandboxVSCode
                 }
                 if (body.compiler_error)
                 {
-                    OutputChannel.appendLine('🚫 compiler_error: ');
+                    OutputChannel.appendLine(`${emoji("error")}compiler_error: `);
                     OutputChannel.appendLine(body.compiler_error);
                 }
                 //body.compiler_message
@@ -357,15 +371,15 @@ module WandboxVSCode
                 }
                 if (body.program_error)
                 {
-                    OutputChannel.appendLine('🚫 program_error: ');
+                    OutputChannel.appendLine(`${emoji("error")}program_error: `);
                     OutputChannel.appendLine(body.program_error);
                 }
                 //body.program_message
                 //merged messages program_output and program_error
-                //body.permlink && outputChannel.appendLine(`🔗 permlink: ${body.permlink}`);
+                //body.permlink && outputChannel.appendLine(`${emoji("link")}permlink: ${body.permlink}`);
                 if (body.url)
                 {
-                    OutputChannel.appendLine(`🔗 url: ${body.url}`);
+                    OutputChannel.appendLine(`${emoji("link")}url: ${body.url}`);
                     if (getConfiguration<boolean>("autoOpenShareUrl"))
                     {
                         vscode.commands.executeCommand
@@ -385,10 +399,10 @@ module WandboxVSCode
                 }
                 if (error)
                 {
-                    OutputChannel.appendLine(`🚫 error: ${error}`);
+                    OutputChannel.appendLine(`${emoji("error")}error: ${error}`);
                 }
             }
-            OutputChannel.appendLine(`🏁 time: ${(endAt.getTime() -startAt.getTime()) /1000} s`);
+            OutputChannel.appendLine(`${emoji("lap")}time: ${(endAt.getTime() -startAt.getTime()) /1000} s`);
         }
     }
 
@@ -407,7 +421,7 @@ module WandboxVSCode
                 if (!hit)
                 {
                     hasError = true;
-                    OutputChannel.appendLine(`🚫 Not found file: ${file} ( If opened, show this file once. And keep to open it.)`);
+                    OutputChannel.appendLine(`${emoji("error")}Not found file: ${file} ( If opened, show this file once. And keep to open it.)`);
                 }
             }
             return !hasError;
@@ -519,7 +533,7 @@ module WandboxVSCode
             if (!hit)
             {
                 //  構造上、ここでメッセージを出すと複数回同じメッセージが出てしまう。
-                //OutputChannel.appendLine('⚠️ Unknown language! : ' +result);
+                //OutputChannel.appendLine(`${emoji("warning")}Unknown language! : ${result}`);
                 result = null;
             }
         }
@@ -541,7 +555,7 @@ module WandboxVSCode
                 i => result.push
                 (
                     {
-                        "label": (selectedLanguage === i ? "🔘 ": "⚪️ ") +i,
+                        label: emoji(selectedLanguage === i ? "checkedRadio": "uncheckedRadio") +i,
                         "description": null,
                         "detail": null,
                         "value": i
@@ -607,7 +621,7 @@ module WandboxVSCode
             }
             if (!hit)
             {
-                OutputChannel.appendLine('🚫 Unknown compiler! : ' +result);
+                OutputChannel.appendLine(`${emoji("error")}Unknown compiler! : ${result}`);
                 result = null;
             }
         }
@@ -733,7 +747,7 @@ module WandboxVSCode
                         }
                         catch(Err)
                         {
-                            OutputChannel.appendLine(`🚫 ${Err}`);
+                            OutputChannel.appendLine(`${emoji("error")}${Err}`);
                         }
                     }
                     else
@@ -746,7 +760,7 @@ module WandboxVSCode
                         }
                         catch(Err)
                         {
-                            OutputChannel.appendLine(`🚫 ${Err}`);
+                            OutputChannel.appendLine(`${emoji("error")}${Err}`);
                         }
                     }
                 }
@@ -763,7 +777,7 @@ module WandboxVSCode
         }
         else
         {
-            OutputChannel.appendLine('🚫 No active text editor!');
+            OutputChannel.appendLine(`${emoji("error")}No active text editor!`);
         }
     }
     async function setSettingByInputBox(name : string,　prompt : string) : Promise<void>
@@ -791,7 +805,7 @@ module WandboxVSCode
                     i => list.push
                     (
                         {
-                            "label": (selectedServer === i ? "🔘 ": "⚪️ ") +i,
+                            label: emoji(selectedServer === i ? "checkedRadio": "uncheckedRadio") +i,
                             "description": null,
                             "detail": null,
                             "value": i
@@ -803,7 +817,7 @@ module WandboxVSCode
                 list.push
                 (
                     {
-                        "label": (isOther ? "🔘 ": "⚪️ ") +"Other",
+                        label: emoji(isOther ? "checkedRadio": "uncheckedRadio") +"Other",
                         "description": "enter a server url by manual",
                         "detail": isOther ? selectedServer: null
                     }
@@ -883,7 +897,7 @@ module WandboxVSCode
                         }
                         for(let i of compilerList)
                         {
-                            i.label = (selectedCompiler === i.description ? "🔘 ": "⚪️ ")  +i.label;
+                            i.label = emoji(selectedCompiler === i.description ? "checkedRadio": "uncheckedRadio") +i.label;
                         }
                         let select = await vscode.window.showQuickPick
                         (
@@ -921,7 +935,7 @@ module WandboxVSCode
                         fileName => fileList.push
                         (
                             {
-                                label: (0 <= additionals.indexOf(fileName) ? "☑️ ": "⬜️ ") +stripDirectory(fileName),
+                                label: emoji(0 <= additionals.indexOf(fileName) ? "checkedBox": "uncheckedBox") +stripDirectory(fileName),
                                 description: fileName,
                                 detail: document.fileName === fileName ? "this file itself": null
                             }
@@ -930,7 +944,7 @@ module WandboxVSCode
                 fileList.push
                 (
                     {
-                        label: "✨️ new untitled document",
+                        label: `${emoji("new")}new untitled document`,
                         description: null,
                         detail: null
                     }
@@ -980,7 +994,7 @@ module WandboxVSCode
                 let fileList : vscode.QuickPickItem[] = [];
                 let noStdIn : vscode.QuickPickItem = 
                 {
-                    label: (!stdin ? "🔘 ": "⚪️ ") +"no stdin",
+                    label: emoji(!stdin ? "checkedRadio": "uncheckedRadio") +"no stdin",
                     description: null,
                     detail: null
                 };
@@ -991,7 +1005,7 @@ module WandboxVSCode
                         fileName => fileList.push
                         (
                             {
-                                label: (stdin === fileName ? "🔘 ": "⚪️ ") +stripDirectory(fileName),
+                                label: emoji(stdin === fileName ? "checkedRadio": "uncheckedRadio") +stripDirectory(fileName),
                                 description: fileName,
                                 detail: document.fileName === fileName ? "this file itself": null
                             }
@@ -999,7 +1013,7 @@ module WandboxVSCode
                     );
                 let newUntitledDocument : vscode.QuickPickItem = 
                 {
-                    label: "✨️ new untitled document",
+                    label: `${emoji("new")}new untitled document`,
                     description: null,
                     detail: null
                 };
@@ -1070,25 +1084,25 @@ module WandboxVSCode
                 let separator =
                 {
                     label: "",
-                    description: "------------------------------------------------------------------------------------------------"
+                    description: emoji("menuSeparator")
                 };
                 let AdditinalsMenuItem =
                 {
-                    label: "✒️ Select a add file( or a remove file )",
+                    label: `${emoji("edit")}Select a add file( or a remove file )`,
                     description: "",
                     detail: setting && (setting['codes'] || []).join(', '),
                 };
                 optionList.push(AdditinalsMenuItem);
                 let stdInMenuItem =
                 {
-                    label: "✒️ Select a file as a stdin",
+                    label: `${emoji("edit")}Select a file as a stdin`,
                     description: "",
                     detail: setting && setting['stdin'],
                 };
                 optionList.push(stdInMenuItem);
                 let CompilerOptionRawMenuItem =
                 {
-                    label: "✒️ Set compiler option raw",
+                    label: `${emoji("edit")}Set compiler option raw`,
                     description: "",
                     detail: setting && setting['compiler-option-raw'],
                 };
@@ -1098,7 +1112,7 @@ module WandboxVSCode
                 }
                 let RuntimeOptionRawMenuItem =
                 {
-                    label: "✒️ Set runtime option raw",
+                    label: `${emoji("edit")}Set runtime option raw`,
                     description: "",
                     detail: setting && setting['runtime-option-raw'],
                 };
@@ -1117,7 +1131,7 @@ module WandboxVSCode
                             optionList.push
                             (
                                 {
-                                    label: (0 <= selectedOptionList.indexOf(option.name) ? "🔘 ": "⚪️ ") +option["display-name"],
+                                    label: emoji(0 <= selectedOptionList.indexOf(option.name) ? "checkedRadio": "uncheckedRadio") +option["display-name"],
                                     description: option["display-flags"],
                                     detail:  null,
                                     item,
@@ -1136,7 +1150,7 @@ module WandboxVSCode
                         optionList.push
                         (
                             {
-                                label: (0 <= selectedOptionList.indexOf(item.name) ? "☑️ ": "⬜️ ") +item["display-name"],
+                                label: emoji(0 <= selectedOptionList.indexOf(item.name) ? "checkedBox": "uncheckedBox") +item["display-name"],
                                 description: item["display-flags"],
                                 detail:  null,
                                 item
@@ -1206,7 +1220,7 @@ module WandboxVSCode
                         }
                         catch(Err)
                         {
-                            OutputChannel.appendLine(`🚫 ${Err}`);
+                            OutputChannel.appendLine(`${emoji("error")}${Err}`);
                         }
                     }
                 }
@@ -1242,7 +1256,7 @@ module WandboxVSCode
                         }
                         else
                         {
-                            OutputChannel.appendLine(`⚠️ This compiler not accept "${name}".`);
+                            OutputChannel.appendLine(`${emoji("warning")}This compiler not accept "${name}".`);
                         }
                     }
                 }
@@ -1264,12 +1278,12 @@ module WandboxVSCode
             }
             else
             {
-                OutputChannel.appendLine(`⚠️ Not found settings for "${fileName}"`);
+                OutputChannel.appendLine(`${emoji("warning")}Not found settings for "${fileName}"`);
             }
         }
         else
         {
-            OutputChannel.appendLine('🚫 No active text editor!');
+            OutputChannel.appendLine(`${emoji("error")}No active text editor!`);
         }
     }
     
@@ -1352,7 +1366,7 @@ module WandboxVSCode
         }
         else
         {
-            OutputChannel.appendLine('🚫 No active text editor!');
+            OutputChannel.appendLine(`${emoji("error")}No active text editor!`);
         }
     }
     
@@ -1372,7 +1386,7 @@ module WandboxVSCode
         let { error, files } = await fx.readdir(`${extensionPath}/hellos`);
         if (error)
         {
-            OutputChannel.appendLine("🚫 " + error.message);
+            OutputChannel.appendLine(emoji("error") +error.message);
         }
         else
         {
@@ -1419,13 +1433,13 @@ module WandboxVSCode
         if (select)
         {
             var helloFilePath = select.description;
-            OutputChannel.appendLine(`✨️ Open a [hello, world!] as a new file. ( Source is "${helloFilePath}" )`);
+            OutputChannel.appendLine(`${emoji("new")}Open a [hello, world!] as a new file. ( Source is "${helloFilePath}" )`);
             if (await fx.exists(helloFilePath))
             {
                 let { err, data } = await fx.readFile(helloFilePath);
                 if (err)
                 {
-                    OutputChannel.appendLine("🚫 " + err.message);
+                    OutputChannel.appendLine(emoji("error") +err.message);
                 }
                 else
                 {
@@ -1445,8 +1459,8 @@ module WandboxVSCode
             }
             else
             {
-                OutputChannel.appendLine("🚫 Unknown file extension!");
-                OutputChannel.appendLine('👉 You can set hello world files by [wandbox.helloWolrdFiles] setting.');
+                OutputChannel.appendLine(`${emoji("error")} Unknown file extension!`);
+                OutputChannel.appendLine(`${emoji("hint")}You can set hello world files by [wandbox.helloWolrdFiles] setting.`);
             }
         }
         else
