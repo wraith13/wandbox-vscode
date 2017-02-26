@@ -695,9 +695,6 @@ module WandboxVSCode
 
     async function showWandboxCompiers() : Promise<void>
     {
-        OutputChannel.makeSure();
-        OutputChannel.bowWow();
-
         let list = await WandboxServer.makeSureList();
         if (list)
         {
@@ -728,9 +725,6 @@ module WandboxVSCode
 
     async function showWandboxOptions() : Promise<void>
     {
-        OutputChannel.makeSure();
-        OutputChannel.bowWow();
-
         var document = WorkSpace.getActiveDocument();
         if (null !== document)
         {
@@ -801,9 +795,6 @@ module WandboxVSCode
     
     async function showWandboxListJson() : Promise<void>
     {
-        OutputChannel.makeSure();
-        OutputChannel.bowWow();
-
         WorkSpace.showJson
         (
             "list",
@@ -813,9 +804,6 @@ module WandboxVSCode
     
     async function setSetting(name : string,　dialog : () => Promise<string>) : Promise<void>
     {
-        OutputChannel.makeSure();
-        OutputChannel.bowWow();
-
         var document = WorkSpace.getActiveDocument();
         if (null !== document)
         {
@@ -1150,9 +1138,6 @@ module WandboxVSCode
 
     async function setOptionsSetting() : Promise<void>
     {
-        OutputChannel.makeSure();
-        OutputChannel.bowWow();
-
         // 'Enter compiler option ( You can see compiler option list by [Wandbox: Show Compier Info] )')
         var document = WorkSpace.getActiveDocument();
         if (null !== document)
@@ -1168,82 +1153,128 @@ module WandboxVSCode
             {
                 var compiler = (<any[]> await WandboxServer.makeSureList())
                     .filter(i => i.name === compilerName)[0];
-
-                if (!compiler.switches || 0 === compiler.switches.length)
+                var options : string = await getOptions
+                (
+                    languageId,
+                    fileName
+                );
+                var setting = fileSetting[fileName];
+                if (setting && undefined !== setting['options'])
                 {
-                    OutputChannel.appendLine(`⚠️ This compiler has no options`);
+                    options = setting['options'];
                 }
-                else
-                {
-                    var options : string = await getOptions
-                    (
-                        languageId,
-                        fileName
-                    );
-                    var setting = fileSetting[fileName];
-                    if (setting && undefined !== setting['options'])
-                    {
-                        options = setting['options'];
-                    }
-                    var selectedOptionList = (options || "").split(",").filter(i => i);
+                var selectedOptionList = (options || "").split(",").filter(i => i);
 
-                    let optionList : any[] = [];
-                    let lastGroup = 0;
-                    let separator =
+                let optionList : any[] = [];
+                let separator =
+                {
+                    label: "",
+                    description: "------------------------------------------------------------------------------------------------"
+                };
+                let AdditinalsMenuItem =
+                {
+                    label: "Select a add file( or a remove file )",
+                    description: "",
+                    detail: setting && (setting['codes'] || []).join(', '),
+                };
+                optionList.push(AdditinalsMenuItem);
+                let stdInMenuItem =
+                {
+                    label: "Select a file as a stdin",
+                    description: "",
+                    detail: setting && setting['stdin'],
+                };
+                optionList.push(stdInMenuItem);
+                let CompilerOptionRawMenuItem =
+                {
+                    label: "Set compiler option raw",
+                    description: "",
+                    detail: setting && setting['compiler-option-raw'],
+                };
+                if (compiler['compiler-option-raw'])
+                {
+                    optionList.push(CompilerOptionRawMenuItem);
+                }
+                let RuntimeOptionRawMenuItem =
+                {
+                    label: "Set runtime option raw",
+                    description: "",
+                    detail: setting && setting['runtime-option-raw'],
+                };
+                if (compiler['runtime-option-raw'])
+                {
+                    optionList.push(RuntimeOptionRawMenuItem);
+                }
+                let lastGroup = 0;
+                for(let item of (compiler.switches || []))
+                {
+                    if (item.options)
                     {
-                        label: "",
-                        description: "------------------------------------------------------------------------------------------------"
-                    };
-                    for(let item of compiler.switches)
-                    {
-                        if (item.options)
+                        optionList.push(separator);
+                        for(let option of item.options)
                         {
-                            if (lastGroup)
-                            {
-                                optionList.push(separator);
-                            }
-                            for(let option of item.options)
-                            {
-                                optionList.push
-                                (
-                                    {
-                                        label: (0 <= selectedOptionList.indexOf(option.name) ? "🔘 ": "⚪️ ") +option["display-name"],
-                                        description: option["display-flags"],
-                                        detail:  null,
-                                        item,
-                                        option
-                                    }
-                                );
-                            }
-                            lastGroup = 2;
-                        }
-                        else
-                        {
-                            if (2 === lastGroup)
-                            {
-                                optionList.push(separator);
-                            }
                             optionList.push
                             (
                                 {
-                                    label: (0 <= selectedOptionList.indexOf(item.name) ? "☑️ ": "⬜️ ") +item["display-name"],
-                                    description: item["display-flags"],
+                                    label: (0 <= selectedOptionList.indexOf(option.name) ? "🔘 ": "⚪️ ") +option["display-name"],
+                                    description: option["display-flags"],
                                     detail:  null,
-                                    item
+                                    item,
+                                    option
                                 }
                             );
-                            lastGroup = 1;
                         }
+                        lastGroup = 2;
                     }
-
-                    let select = await vscode.window.showQuickPick
-                    (
-                        optionList,
+                    else
+                    {
+                        if (1 !== lastGroup)
                         {
-                            placeHolder: "Select a add option( or a remove option )",
+                            optionList.push(separator);
                         }
-                    );
-                    if (select && select.item)
+                        optionList.push
+                        (
+                            {
+                                label: (0 <= selectedOptionList.indexOf(item.name) ? "☑️ ": "⬜️ ") +item["display-name"],
+                                description: item["display-flags"],
+                                detail:  null,
+                                item
+                            }
+                        );
+                        lastGroup = 1;
+                    }
+                }
+
+                let select = await vscode.window.showQuickPick
+                (
+                    optionList,
+                    {
+                        placeHolder: "Select a add option( or a remove option )",
+                    }
+                );
+                if (select)
+                {
+                    if (AdditinalsMenuItem === select)
+                    {
+                        setAdditionalsSetting();
+                    }
+                    else
+                    if (stdInMenuItem === select)
+                    {
+                        setStdInSetting();
+                    }
+                    else
+                    if (CompilerOptionRawMenuItem === select)
+                    {
+                        setRawOptionSetting('compiler-option-raw', 'Enter compiler option raw');
+                    }
+                    else
+                    if (RuntimeOptionRawMenuItem === select)
+                    {
+                        setRawOptionSetting('runtime-option-raw', 'Enter runtime option raw');
+                    }
+                    else
+                    if (select.item)
                     {
                         if (select.option)
                         {
@@ -1321,9 +1352,6 @@ module WandboxVSCode
 
     function resetWandboxFileSettings() : void
     {
-        OutputChannel.makeSure();
-        OutputChannel.bowWow();
-
         var document = WorkSpace.getActiveDocument();
         if (null !== document)
         {
@@ -1346,9 +1374,6 @@ module WandboxVSCode
     
     async function invokeWandbox(args ?: any) : Promise<void>
     {
-        OutputChannel.makeSure();
-        OutputChannel.bowWow();
-
         var document = WorkSpace.getActiveDocument();
         if (null !== document)
         {
@@ -1478,9 +1503,6 @@ module WandboxVSCode
 
     async function helloWandbox() : Promise<void>
     {
-        OutputChannel.makeSure();
-        OutputChannel.bowWow();
-
         var select = await vscode.window.showQuickPick
         (
             getHelloWorldFiles(),
@@ -1557,24 +1579,8 @@ module WandboxVSCode
                 callback: setCompilerSetting
             },
             {
-                command: 'extension.setWandboxFileAdditionals',
-                callback: setAdditionalsSetting
-            },
-            {
-                command: 'extension.setWandboxFileStdIn',
-                callback: setStdInSetting
-            },
-            {
                 command: 'extension.setWandboxFileOptions',
                 callback: setOptionsSetting
-            },
-            {
-                command: 'extension.setWandboxFileCompilerOptionRaw',
-                callback: () => setRawOptionSetting('compiler-option-raw', 'Enter compiler option raw')
-            },
-            {
-                command: 'extension.setWandboxFileRuntimeOptionRaw',
-                callback: () => setRawOptionSetting('runtime-option-raw', 'Enter runtime option raw')
             },
             {
                 command: 'extension.setWandboxFileSettingJson',
@@ -1604,7 +1610,12 @@ module WandboxVSCode
                 vscode.commands.registerCommand
                 (
                     i.command,
-                    i.callback
+                    () =>
+                    {
+                        OutputChannel.makeSure();
+                        OutputChannel.bowWow();
+                        i.callback();
+                    }
                 )
             )
         );

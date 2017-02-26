@@ -41,11 +41,7 @@
         "onCommand:extension.showWandboxSettings",
         "onCommand:extension.setWandboxFileServer",
         "onCommand:extension.setWandboxFileCompiler",
-        "onCommand:extension.setWandboxFileAdditionals",
-        "onCommand:extension.setWandboxFileStdIn",
         "onCommand:extension.setWandboxFileOptions",
-        "onCommand:extension.setWandboxFileCompilerOptionRaw",
-        "onCommand:extension.setWandboxFileRuntimeOptionRaw",
         "onCommand:extension.setWandboxFileSettingJson",
         "onCommand:extension.resetWandboxFileSettings"
     ],
@@ -300,24 +296,8 @@
             "title": "Set Compiler",
             "category": "Wandbox"
         },{
-            "command": "extension.setWandboxFileAdditionals",
-            "title": "Set Additional Files",
-            "category": "Wandbox"
-        },{
-            "command": "extension.setWandboxFileStdIn",
-            "title": "Set StdIn",
-            "category": "Wandbox"
-        },{
             "command": "extension.setWandboxFileOptions",
             "title": "Set Options",
-            "category": "Wandbox"
-        },{
-            "command": "extension.setWandboxFileCompilerOptionRaw",
-            "title": "Set Compiler Option Raw",
-            "category": "Wandbox"
-        },{
-            "command": "extension.setWandboxFileRuntimeOptionRaw",
-            "title": "Set Runtime Option Raw",
             "category": "Wandbox"
         },{
             "command": "extension.setWandboxFileSettingJson",
