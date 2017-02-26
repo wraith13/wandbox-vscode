@@ -711,7 +711,7 @@ module WandboxVSCode
             let value = await dialog();
             if (undefined !== value)
             {
-                fileSetting[fileName] = fileSetting[fileName] || { };
+                fileSetting[fileName] = fileSetting[fileName] || {};
                 if (value)
                 {
                     if ('codes' === name)
@@ -962,7 +962,6 @@ module WandboxVSCode
                     }
                     result = JSON.stringify(additionals);
                 }
-                //*/
                 return result;
             }
         );
@@ -1521,6 +1520,10 @@ module WandboxVSCode
             )
         );
 
+        /*
+        workbench.action.files.newUntitledFile を呼び出した際になぜか閉じられてもなければ untiled でもないドキュメント
+        が untiled な扱いで閉じたとされて呼び出されてしまう。 vscode v1.9.1 のバグではないかと思われる。仕方が無いので 
+        vscode.window.onDidChangeActiveTextEditor 内で代わりに処理するように修正した。
         vscode.workspace.onDidCloseTextDocument
         (
             (document : vscode.TextDocument) =>
@@ -1531,6 +1534,7 @@ module WandboxVSCode
                 }
             }
         );
+        */
 
         vscode.window.onDidChangeActiveTextEditor
         (
@@ -1541,6 +1545,10 @@ module WandboxVSCode
                     var document = textEditor.document;
                     if (document && document.isUntitled)
                     {
+                        if (fileSetting[document.fileName])
+                        {
+                            delete fileSetting[document.fileName];
+                        }
                         if (newDocument.text)
                         {
                             var text = newDocument.text;
@@ -1556,7 +1564,7 @@ module WandboxVSCode
                             var compiler = await getWandboxCompilerName(undefined, newDocument.sourceFile);
                             if (compiler)
                             {
-                                fileSetting[fileName] = fileSetting[fileName] || { };
+                                fileSetting[fileName] = fileSetting[fileName] || {};
                                 fileSetting[fileName]['compiler'] = compiler;
                             }
 
