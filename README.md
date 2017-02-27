@@ -13,6 +13,21 @@ wandbox-vscode provide several commands in the Command Palette for compile, run,
 Available languages on wandbox at now :
 Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, Java, JavaScript, Lazy K, Lisp, Lua, Pascal, Perl, PHP, Python, Rill, Ruby, Rust, Scala, SQL, Apple Swift, Vim script
 
+## Screenshots
+
+### command list
+![](https://wraith13.github.io/wandbox-vscode/screenshots/command.list.png)
+
+### languages
+![](https://wraith13.github.io/wandbox-vscode/screenshots/languages.png)
+![](https://wraith13.github.io/wandbox-vscode/screenshots/languages2.png)
+
+### compilers
+![](https://wraith13.github.io/wandbox-vscode/screenshots/compilers.png)
+
+### options
+![](https://wraith13.github.io/wandbox-vscode/screenshots/options.png)
+![](https://wraith13.github.io/wandbox-vscode/screenshots/options2.png)
 
 ## Main Commands
 
@@ -66,6 +81,28 @@ This extension contributes the following settings:
 * `wandbox.runtimeOptionRaw`: set raw runtime option by compiler
 * `wandbox.helloWolrdFiles`: set hello world files
 * `wandbox.emoji`: set emoji
+
+> You can set following if your environment's font is poor.
+>```json
+>    "wandbox.emoji": {
+>        "stamp": null,
+>        "error": null,
+>        "warning": null,
+>        "hint": null,
+>        "signal": null,
+>        "link": null,
+>        "lap": null,
+>        "new": null,
+>        "checkedBox": "[o]",
+>        "uncheckedBox": "[_]",
+>        "checkedRadio": "(o)",
+>        "uncheckedRadio": "(_)",
+>        "edit": null,
+>        "menuSeparator": "---------------------------------------------"
+>    }
+>```
+> `wandbox.emoji` setting's screenshot in Mac ( for reference )
+> ![](https://wraith13.github.io/wandbox-vscode/screenshots/emoji.png?!)
 
 ## Release Notes
 

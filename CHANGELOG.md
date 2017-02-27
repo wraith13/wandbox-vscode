@@ -3,10 +3,40 @@ All notable changes to the "wandbox-vscode" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 2.0.0 - 2017-02-27
+### Added
+- Added `wandbox.Servers` setting.
+- Added `wandbox.emoji` setting.
+- Added `wandbox.languageMapping` setting.
+- Added `wandbox.extensionLanguageMapping` setting.
+- DOC: VSMarketplaceBadge.
+- DOC: Screenshots.
+
+### Changed
+- Changed to quick pick based UI for to easy use.
+- Default compiler selection was changed to follows wandbox server .
+- Writes "Canceled" in log when a command is canceled by user operation.
+- Changed `wandbox.languageCompilerMapping` default setting to null.
+- Changed `wandbox.extensionCompilerMapping` default setting to null.
+- Changed PHP's hello, world! file ( https://github.com/wraith13/wandbox-vscode/pull/3 )
+
+### Fixed
+- Fixed issue that reset settings without intention when to open untitled documents.
+
+### Removed
+- Removed `wandbox.defaultServer` setting. ( You can use `wandbox.Servers` setting. )
+- Removed `Wandbox: Show Compilers` command. ( You can use `Wandbox: Set Compilers` command or `Wandbox: Show Raw JSON` command. )
+- Removed `Wandbox: Show Options` command. ( You can use `Wandbox: Set Options` command or `Wandbox: Show Raw JSON` command. )
+- Removed `Wandbox: Set Additional Files` command. ( You can use `Wandbox: Set Options` command. )
+- Removed `Wandbox: Set StdIn` command. ( You can use `Wandbox: Set Options` command. )
+- Removed `Wandbox: Set Compiler Option Raw` command. ( You can use `Wandbox: Set Options` command. )
+- Removed `Wandbox: Set Runtime Option Raw` command. ( You can use `Wandbox: Set Options` command. )
+
+
 ## 1.1.0 - 2017-02-07
 ### Added
-- Added Hello Command ( with wandbox.helloWolrdFiles setting ).
-- Added wandbox.simplifyPostData setting.
+- Added `Wandbox: Hello Command` ( with `wandbox.helloWolrdFiles` setting ).
+- Added `wandbox.simplifyPostData` setting.
 
 ### Changed
 - Update a compiler mapping table for current Wandbox.
@@ -23,7 +53,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## 1.0.5 - 2017-02-07
 ### Added
-- wandbox.outputChannelName setting
+- `wandbox.outputChannelName` setting
 
 ### Changed
 - optimize output when wandbox server return error.

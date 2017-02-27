@@ -3,7 +3,7 @@
     "displayName": "wandbox-vscode",
     "description": "Wandbox(compile & run & share service) client for VSCode. Available languages: Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, Java, JavaScript, Lazy K, Lisp, Lua, Pascal, Perl, PHP, Python, Rill, Ruby, Rust, Scala, SQL, Apple Swift, Vim script",
     "icon": "images/wandhex.128.png",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "publisher": "wraith13",
     "license": "SEE LICENSE IN LICENSE_1_0.txt",
     "engines": {
@@ -87,7 +87,7 @@
                         "dockerfile": null,
                         "fsharp": null,
                         "git-commit": null,
-                        "git-rebase" :null,
+                        "git-rebase": null,
                         "go": null,
                         "groovy": "Groovy",
                         "handlebars": null,
@@ -209,10 +209,10 @@
                         "hs": "Haskell",
                         "java": "Java",
                         "js": "JavaScript",
-                        "lazy":"Lazy K",
-                        "lisp":"Lisp",
+                        "lazy": "Lazy K",
+                        "lisp": "Lisp",
                         "lua": "Lua",
-                        "pas":"Pascal",
+                        "pas": "Pascal",
                         "php": "PHP",
                         "pl": "Perl",
                         "py": "Python",
@@ -230,7 +230,7 @@
                 "wandbox.options": {
                     "type": "object",
                     "default": {
-                        "compiler(example)":"option1,option2"
+                        "compiler(example)": "option1,option2"
                     },
                     "description": "set options by compiler"
                 },
@@ -275,51 +275,63 @@
                 }
             }
         },
-        "commands": [{
-            "command": "extension.invokeWandbox",
-            "title": "Run",
-            "category": "Wandbox"
-        },{
-            "command": "extension.shareWandbox",
-            "title": "Share",
-            "category": "Wandbox"
-        },{
-            "command": "extension.helloWandbox",
-            "title": "Hello",
-            "category": "Wandbox"
-        },{
-            "command": "extension.showWandboxListJson",
-            "title": "Show Raw JSON",
-            "category": "Wandbox"
-        },{
-            "command": "extension.showWandboxWeb",
-            "title": "Show Web Site",
-            "category": "Wandbox"
-        },{
-            "command": "extension.showWandboxSettings",
-            "title": "Show Settings",
-            "category": "Wandbox"
-        },{
-            "command": "extension.setWandboxFileServer",
-            "title": "Set Server",
-            "category": "Wandbox"
-        },{
-            "command": "extension.setWandboxFileCompiler",
-            "title": "Set Compiler",
-            "category": "Wandbox"
-        },{
-            "command": "extension.setWandboxFileOptions",
-            "title": "Set Options",
-            "category": "Wandbox"
-        },{
-            "command": "extension.setWandboxFileSettingJson",
-            "title": "Set Settings JSON",
-            "category": "Wandbox"
-        },{
-            "command": "extension.resetWandboxFileSettings",
-            "title": "Reset Settings",
-            "category": "Wandbox"
-        }]
+        "commands": [
+            {
+                "command": "extension.invokeWandbox",
+                "title": "Run",
+                "category": "Wandbox"
+            },
+            {
+                "command": "extension.shareWandbox",
+                "title": "Share",
+                "category": "Wandbox"
+            },
+            {
+                "command": "extension.helloWandbox",
+                "title": "Hello",
+                "category": "Wandbox"
+            },
+            {
+                "command": "extension.showWandboxListJson",
+                "title": "Show Raw JSON",
+                "category": "Wandbox"
+            },
+            {
+                "command": "extension.showWandboxWeb",
+                "title": "Show Web Site",
+                "category": "Wandbox"
+            },
+            {
+                "command": "extension.showWandboxSettings",
+                "title": "Show Settings",
+                "category": "Wandbox"
+            },
+            {
+                "command": "extension.setWandboxFileServer",
+                "title": "Set Server",
+                "category": "Wandbox"
+            },
+            {
+                "command": "extension.setWandboxFileCompiler",
+                "title": "Set Compiler",
+                "category": "Wandbox"
+            },
+            {
+                "command": "extension.setWandboxFileOptions",
+                "title": "Set Options",
+                "category": "Wandbox"
+            },
+            {
+                "command": "extension.setWandboxFileSettingJson",
+                "title": "Set Settings JSON",
+                "category": "Wandbox"
+            },
+            {
+                "command": "extension.resetWandboxFileSettings",
+                "title": "Reset Settings",
+                "category": "Wandbox"
+            }
+        ]
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",
