@@ -503,17 +503,12 @@ module WandboxVSCode
         }
         if (result)
         {
-            let list = await WandboxServer.makeSureList();
-            var hit = false;
-            for(let i of list)
-            {
-                if (i.language === result)
-                {
-                    hit = true;
-                    break;
-                }
-            }
-            if (!hit)
+            if
+            (
+                (await WandboxServer.makeSureList())
+                    .filter(i => i.language === result)
+                    .length <= 0
+            )
             {
                 //  構造上、ここでメッセージを出すと複数回同じメッセージが出てしまう。
                 //OutputChannel.appendLine(`${emoji("warning")}Unknown language! : ${result}`);
