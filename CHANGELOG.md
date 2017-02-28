@@ -3,6 +3,12 @@ All notable changes to the "wandbox-vscode" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 2.0.1 - 2017-02-28
+### Fixed
+- Fixed issue that additionals dosn't work.
+- Fixed issue that error handling in additionals and stdin dosn't work.
+
+
 ## 2.0.0 - 2017-02-27
 ### Added
 - Added `wandbox.Servers` setting.

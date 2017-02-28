@@ -3,7 +3,7 @@
     "displayName": "wandbox-vscode",
     "description": "Wandbox(compile & run & share service) client for VSCode. Available languages: Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, Java, JavaScript, Lazy K, Lisp, Lua, Pascal, Perl, PHP, Python, Rill, Ruby, Rust, Scala, SQL, Apple Swift, Vim script",
     "icon": "images/wandhex.128.png",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "publisher": "wraith13",
     "license": "SEE LICENSE IN LICENSE_1_0.txt",
     "engines": {
