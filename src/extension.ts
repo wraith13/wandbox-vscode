@@ -394,20 +394,20 @@ module WandboxVSCode
     {
         export function IsOpenFiles(files : string[]) : boolean
         {
-            return files.filter
+            var notFoundFiles = files.filter
             (
                 file => vscode.workspace.textDocuments
                     .filter(document => file === document.fileName)
                     .length <= 0
-            )
-            .map
+            );
+            notFoundFiles.forEach
             (
                 file => OutputChannel.appendLine
                 (
                     `${emoji("error")}Not found file: ${file} ( If opened, show this file once. And keep to open it.)`
                 )
-            )
-            .length <= 0;
+            );
+            return notFoundFiles.length <= 0;
         }
 
         export function getActiveDocument() :vscode.TextDocument
@@ -924,6 +924,19 @@ module WandboxVSCode
                             }
                         )
                     );
+                additionals
+                    .filter(i => 0 === fileList.filter(item => i === item.description).length)
+                    .forEach
+                    (
+                        fileName => fileList.push
+                        (
+                            {
+                                label: emoji("checkedBox") +stripDirectory(fileName),
+                                description: fileName,
+                                detail: `${emoji("error")}Not found file ( If opened, show this file once. And keep to open it.)`
+                            }
+                        )
+                    );
                 fileList.push
                 (
                     {
@@ -994,6 +1007,17 @@ module WandboxVSCode
                             }
                         )
                     );
+                if (stdin && 0 === fileList.filter(item => stdin === item.description).length)
+                {
+                    fileList.push
+                    (
+                        {
+                            label: emoji("checkedRadio") +stripDirectory(stdin),
+                            description: stdin,
+                            detail: `${emoji("error")}Not found file ( If opened, show this file once. And keep to open it.)`
+                        }
+                    );
+                }
                 let newUntitledDocument : vscode.QuickPickItem = 
                 {
                     label: `${emoji("new")}new untitled document`,
