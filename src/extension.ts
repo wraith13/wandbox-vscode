@@ -416,7 +416,7 @@ module WandboxVSCode
                 var hit = false;
                 for(let document of vscode.workspace.textDocuments)
                 {
-                    hit = hit || file === stripDirectory(document.fileName);
+                    hit = hit || file === document.fileName;
                 }
                 if (!hit)
                 {
