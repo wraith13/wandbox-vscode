@@ -394,21 +394,20 @@ module WandboxVSCode
     {
         export function IsOpenFiles(files : string[]) : boolean
         {
-            var hasError = false;
-            for(let file of files)
-            {
-                var hit = false;
-                for(let document of vscode.workspace.textDocuments)
-                {
-                    hit = hit || file === document.fileName;
-                }
-                if (!hit)
-                {
-                    hasError = true;
-                    OutputChannel.appendLine(`${emoji("error")}Not found file: ${file} ( If opened, show this file once. And keep to open it.)`);
-                }
-            }
-            return !hasError;
+            return files.filter
+            (
+                file => vscode.workspace.textDocuments
+                    .filter(document => file === document.fileName)
+                    .length <= 0
+            )
+            .map
+            (
+                file => OutputChannel.appendLine
+                (
+                    `${emoji("error")}Not found file: ${file} ( If opened, show this file once. And keep to open it.)`
+                )
+            )
+            .length <= 0;
         }
 
         export function getActiveDocument() :vscode.TextDocument
@@ -1327,6 +1326,10 @@ module WandboxVSCode
                 }
                 if (stdIn)
                 {
+                    if (!WorkSpace.IsOpenFiles([stdIn]))
+                    {
+                        return;
+                    }
                     json['stdin'] = stdIn;
                 }
                 if (compilerOptionRaw)
