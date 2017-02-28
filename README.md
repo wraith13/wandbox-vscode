@@ -101,7 +101,9 @@ This extension contributes the following settings:
 >        "menuSeparator": "---------------------------------------------"
 >    }
 >```
+>
 > `wandbox.emoji` setting's screenshot in Mac ( for reference )
+>
 > ![](https://wraith13.github.io/wandbox-vscode/screenshots/emoji.png?!)
 
 ## Release Notes
