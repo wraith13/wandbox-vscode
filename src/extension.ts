@@ -98,6 +98,7 @@ module WandboxVSCode
 {
     const extentionName = "wandbox-vscode";
     var fileSetting = { };
+    var pass_through;
 
     function stripDirectory(path : string) : string
     {
@@ -274,39 +275,22 @@ module WandboxVSCode
             }
             if (additionals)
             {
-                json['codes'] = [];
-                for(let filename of additionals)
-                {
-                    var code : string;
-                    for(let document of vscode.workspace.textDocuments)
+                json['codes'] = additionals.map
+                (
+                    filename => pass_through =
                     {
-                        if (filename === document.fileName)
-                        {
-                            code = document.getText();
-                            break;
-                        }
+                        'file': filename,
+                        'code': vscode.workspace.textDocuments
+                            .filter(document => filename === document.fileName)[0]
+                            .getText()
                     }
-                    json['codes'].push
-                    (
-                        {
-                            'file': filename,
-                            'code': code
-                        }
-                    );
-                }
+                );
             }
             if (json['stdin'])
             {
-                var stdin : string;
-                for(let document of vscode.workspace.textDocuments)
-                {
-                    if (json['stdin'] === document.fileName)
-                    {
-                        stdin = document.getText();
-                        break;
-                    }
-                }
-                json['stdin'] = stdin;
+                json['stdin'] = vscode.workspace.textDocuments
+                            .filter(document => json['stdin'] === document.fileName)[0]
+                            .getText();
             }
             json['code'] = document.getText();
             json['from'] = extentionName;
