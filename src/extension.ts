@@ -520,28 +520,20 @@ module WandboxVSCode
 
     async function getLanguageList(selectedLanguage? :string) : Promise<vscode.QuickPickItem[]>
     {
-        var result : any[] = [];
-        let list = await WandboxServer.makeSureList();
-        if (list)
-        {
-            var languageNames :string[] = [];
-            list.forEach(item => languageNames.push(item.language));
-            languageNames = languageNames.filter((value, i, self) => self.indexOf(value) === i);
-            languageNames.sort();
-            languageNames.forEach
+        return ((await WandboxServer.makeSureList()) || [])
+            .map(i => i.language)
+            .filter((value, i, self) => self.indexOf(value) === i)
+            .sort()
+            .map
             (
-                i => result.push
-                (
-                    {
-                        label: emoji(selectedLanguage === i ? "checkedRadio": "uncheckedRadio") +i,
-                        "description": null,
-                        "detail": null,
-                        "value": i
-                    }
-                )
+                i => pass_through =
+                {
+                    label: emoji(selectedLanguage === i ? "checkedRadio": "uncheckedRadio") +i,
+                    "description": null,
+                    "detail": null,
+                    "value": i
+                }
             );
-        }
-        return result;
     }
 
     async function queryLanguageNameToUser(vscodeLang? :string, fileName? :string) : Promise<string>
