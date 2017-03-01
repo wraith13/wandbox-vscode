@@ -748,18 +748,15 @@ module WandboxVSCode
                 var result : string;
                 var selectedServer = WandboxServer.getServer();
                 var servers = getConfiguration<string[]>("Servers");
-                var list : any[] = [];
-                servers.forEach
+                var list : any[] = servers.map
                 (
-                    i => list.push
-                    (
-                        {
-                            label: emoji(selectedServer === i ? "checkedRadio": "uncheckedRadio") +i,
-                            "description": null,
-                            "detail": null,
-                            "value": i
-                        }
-                    )
+                    i => pass_through =
+                    {
+                        label: emoji(selectedServer === i ? "checkedRadio": "uncheckedRadio") +i,
+                        "description": null,
+                        "detail": null,
+                        "value": i
+                    }
                 );
                 list[0].description = "default";
                 let isOther = servers.indexOf(selectedServer) < 0;
