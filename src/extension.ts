@@ -793,26 +793,17 @@ module WandboxVSCode
 
     async function getCompilerList(language : string) : Promise<vscode.QuickPickItem[]>
     {
-        var result : vscode.QuickPickItem[] = [];
-        let list = await WandboxServer.makeSureList();
-        if (list)
-        {
-            for(let i of list)
-            {
-                if (i.language === language)
+        return ((await WandboxServer.makeSureList()) || [])
+            .filter(i => i.language === language)
+            .map
+            (
+                i => pass_through =
                 {
-                    result.push
-                    (
-                        {
-                            "label": i["display-name"] +" " +i["version"],
-                            "description": i["name"],
-                            "detail": null
-                        }
-                    );
+                    "label": i["display-name"] +" " +i["version"],
+                    "description": i["name"],
+                    "detail": null
                 }
-            }
-        }
-        return result;
+            );
     }
 
     async function setCompilerSetting() : Promise<void>
