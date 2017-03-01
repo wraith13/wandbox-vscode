@@ -281,7 +281,7 @@ module WandboxVSCode
                     {
                         'file': filename,
                         'code': vscode.workspace.textDocuments
-                            .filter(document => filename === document.fileName)[0]
+                            .find(document => filename === document.fileName)
                             .getText()
                     }
                 );
@@ -289,7 +289,7 @@ module WandboxVSCode
             if (json['stdin'])
             {
                 json['stdin'] = vscode.workspace.textDocuments
-                            .filter(document => json['stdin'] === document.fileName)[0]
+                            .find(document => json['stdin'] === document.fileName)
                             .getText();
             }
             json['code'] = document.getText();
@@ -396,9 +396,7 @@ module WandboxVSCode
         {
             var notFoundFiles = files.filter
             (
-                file => vscode.workspace.textDocuments
-                    .filter(document => file === document.fileName)
-                    .length <= 0
+                file => !vscode.workspace.textDocuments.find(document => file === document.fileName)
             );
             notFoundFiles.forEach
             (
@@ -503,12 +501,7 @@ module WandboxVSCode
         }
         if (result)
         {
-            if
-            (
-                (await WandboxServer.makeSureList())
-                    .filter(i => i.language === result)
-                    .length <= 0
-            )
+            if (!(await WandboxServer.makeSureList()).find(i => i.language === result))
             {
                 //  構造上、ここでメッセージを出すと複数回同じメッセージが出てしまう。
                 //OutputChannel.appendLine(`${emoji("warning")}Unknown language! : ${result}`);
@@ -580,7 +573,7 @@ module WandboxVSCode
         }
         if (result)
         {
-            if (list.filter(i => i.name === result).length <= 0)
+            if (!list.find(i => i.name === result))
             {
                 OutputChannel.appendLine(`${emoji("error")}Unknown compiler! : ${result}`);
                 result = null;
@@ -592,7 +585,7 @@ module WandboxVSCode
             if (language)
             {
                 result = getConfiguration("languageCompilerMapping")[language] ||
-                    list.filter(i => i.language === language)[0].name;
+                    list.find(i => i.language === language).name;
             }
         }
         return result;
@@ -618,7 +611,7 @@ module WandboxVSCode
                 result =
                 (
                     (await WandboxServer.makeSureList())
-                    .filter(i => i.name === compilerName)[0].switches || []
+                    .find(i => i.name === compilerName).switches || []
                 )
                 .map
                 (
@@ -828,7 +821,7 @@ module WandboxVSCode
                     else
                     {
                         let selectedCompiler = await getWandboxCompilerName(vscodeLang, fileName);
-                        if (!selectedCompiler || compilerList.filter(i => selectedCompiler === i.description).length <= 0)
+                        if (!selectedCompiler || !compilerList.find(i => selectedCompiler === i.description))
                         {
                             selectedCompiler = compilerList[0].description;
                         }
@@ -881,7 +874,7 @@ module WandboxVSCode
                                 }
                             ),
                         additionals
-                            .filter(fileName => 0 === workspaceTextFiles.filter(i => i === fileName).length)
+                            .filter(fileName => !workspaceTextFiles.find(i => i === fileName))
                             .map
                             (
                                 fileName => pass_through =
@@ -956,7 +949,7 @@ module WandboxVSCode
                             }
                         )
                     );
-                if (stdin && 0 === fileList.filter(item => stdin === item.description).length)
+                if (stdin && !fileList.find(item => stdin === item.description))
                 {
                     fileList.push
                     (
@@ -1023,7 +1016,7 @@ module WandboxVSCode
             if (compilerName)
             {
                 var compiler = (<any[]> await WandboxServer.makeSureList())
-                    .filter(i => i.name === compilerName)[0];
+                    .find(i => i.name === compilerName);
                 var options : string = await getOptions
                 (
                     languageId,
@@ -1205,7 +1198,7 @@ module WandboxVSCode
                     if (compilerName)
                     {
                         var compiler = (<any[]> await WandboxServer.makeSureList())
-                            .filter(i => i.name === compilerName)[0];
+                            .find(i => i.name === compilerName);
                         if (compiler && compiler[name])
                         {
                             result = await vscode.window.showInputBox({ prompt });
