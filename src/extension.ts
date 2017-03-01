@@ -615,22 +615,20 @@ module WandboxVSCode
             }
             if (!result)
             {
-                var compiler = (<any[]> await WandboxServer.makeSureList())
-                    .filter(i => i.name === compilerName)[0];
-                var options : string[] = [];
-                for(let item of compiler.switches || [])
-                {
-                    if (item.options)
-                    {
-                        options.push(item.default);
-                    }
-                    else
-                    if (item.default)
-                    {
-                        options.push(item.name);
-                    }
-                }
-                result = options.join(",");
+                result =
+                (
+                    (await WandboxServer.makeSureList())
+                    .filter(i => i.name === compilerName)[0].switches || []
+                )
+                .map
+                (
+                    item =>
+                        item.options ? item.default:
+                        item.default ? item.name:
+                        null
+                )
+                .filter(i => i)
+                .join(",");
             }
         }
 
