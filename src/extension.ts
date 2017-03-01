@@ -580,16 +580,7 @@ module WandboxVSCode
         }
         if (result)
         {
-            var hit = false;
-            for(let i of list)
-            {
-                if (i.name === result)
-                {
-                    hit = true;
-                    break;
-                }
-            }
-            if (!hit)
+            if (list.filter(i => i.name === result).length <= 0)
             {
                 OutputChannel.appendLine(`${emoji("error")}Unknown compiler! : ${result}`);
                 result = null;
@@ -600,18 +591,8 @@ module WandboxVSCode
             let language = await getLanguageName(vscodeLang, fileName);
             if (language)
             {
-                result = getConfiguration("languageCompilerMapping")[language];
-                if (!result)
-                {
-                    for(let i of list)
-                    {
-                        if (i.language === language)
-                        {
-                            result = i.name;
-                            break;
-                        }
-                    }
-                }
+                result = getConfiguration("languageCompilerMapping")[language] ||
+                    list.filter(i => i.language === language)[0].name;
             }
         }
         return result;
