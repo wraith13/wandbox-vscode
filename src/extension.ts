@@ -865,43 +865,38 @@ module WandboxVSCode
                 var setting = fileSetting[document.fileName] || {};
                 var additionals = setting['codes'] || [];
                 var result : string = JSON.stringify(additionals);
-                let fileList : vscode.QuickPickItem[] = [];
-                WorkSpace.getTextFiles()
-                    .forEach
-                    (
-                        fileName => fileList.push
-                        (
-                            {
-                                label: emoji(0 <= additionals.indexOf(fileName) ? "checkedBox": "uncheckedBox") +stripDirectory(fileName),
-                                description: fileName,
-                                detail: document.fileName === fileName ? "this file itself": null
-                            }
-                        )
-                    );
-                additionals
-                    .filter(i => 0 === fileList.filter(item => i === item.description).length)
-                    .forEach
-                    (
-                        fileName => fileList.push
-                        (
-                            {
-                                label: emoji("checkedBox") +stripDirectory(fileName),
-                                description: fileName,
-                                detail: `${emoji("error")}Not found file ( If opened, show this file once. And keep to open it.)`
-                            }
-                        )
-                    );
-                fileList.push
-                (
-                    {
-                        label: `${emoji("new")}new untitled document`,
-                        description: null,
-                        detail: null
-                    }
-                );
+                let workspaceTextFiles = WorkSpace.getTextFiles();
                 let select = await vscode.window.showQuickPick
                 (
-                    fileList,
+                    [].concat
+                    (
+                        workspaceTextFiles
+                            .map
+                            (
+                                fileName => pass_through =
+                                {
+                                    label: emoji(0 <= additionals.indexOf(fileName) ? "checkedBox": "uncheckedBox") +stripDirectory(fileName),
+                                    description: fileName,
+                                    detail: document.fileName === fileName ? "this file itself": null
+                                }
+                            ),
+                        additionals
+                            .filter(fileName => 0 === workspaceTextFiles.filter(i => i === fileName).length)
+                            .map
+                            (
+                                fileName => pass_through =
+                                {
+                                    label: emoji("checkedBox") +stripDirectory(fileName),
+                                    description: fileName,
+                                    detail: `${emoji("error")}Not found file ( If opened, show this file once. And keep to open it.)`
+                                }
+                            ),
+                        {
+                            label: `${emoji("new")}new untitled document`,
+                            description: null,
+                            detail: null
+                        }
+                    ),
                     {
                         placeHolder: "Select a add file( or a remove file )",
                     }
