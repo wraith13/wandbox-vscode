@@ -5,8 +5,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## 2.0.1 - 2017-02-28
 ### Fixed
-- Fixed issue that additionals dosn't work.
-- Fixed issue that error handling in additionals and stdin dosn't work.
+- Fixed issue that additionals dosen't work.
+- Fixed issue that error handling in additionals and stdin dosen't work.
 
 
 ## 2.0.0 - 2017-02-27
