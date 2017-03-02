@@ -46,6 +46,11 @@ Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, 
 
 * `Wandbox: Show Web Site` : open wandbox web site
 * `Wandbox: Show Settings` : show all wandbox-vscode settings
+* `Wandbox: Show History` : show share history
+
+## Clear Commands
+
+* `Wandbox: Clear History` : clear share history
 
 ## Setting Commands
 
@@ -81,6 +86,7 @@ This extension contributes the following settings:
 * `wandbox.runtimeOptionRaw`: set raw runtime option by compiler
 * `wandbox.helloWolrdFiles`: set hello world files
 * `wandbox.emoji`: set emoji
+* `wandbox.maxHistorySize`: set max share history size
 
 > You can set following if your environment's font is poor.
 >```json

@@ -97,6 +97,7 @@ module fx
 module WandboxVSCode
 {
     const extentionName = "wandbox-vscode";
+    let context: vscode.ExtensionContext;
     var fileSetting = { };
     var pass_through;
 
@@ -113,6 +114,23 @@ module WandboxVSCode
         return key ?
             configuration[key]:
             configuration;
+    }
+
+    class HistoryEntry
+    {
+        public timestamp : Date;
+        public language : string;
+        public compiler : string;
+        public shareUrl : string;
+    }
+
+    async function getHistory() : Promise<HistoryEntry[]>
+    {
+        return await context.globalState.get<HistoryEntry[]>("history", []);
+    }
+    async function updateHistory(history : HistoryEntry[]) : Promise<void>
+    {
+        await context.globalState.update("history", history);
     }
 
     function emoji(key : string) : string
@@ -302,6 +320,29 @@ module WandboxVSCode
             return json;
         }
 
+        async function appendHistory(compiler : string, shareUrl : string) : Promise<void>
+        {
+            let history = await getHistory();
+            let maxHistorySize = Math.max(0, getConfiguration<number>("maxHistorySize"));
+            if (maxHistorySize || history.length)
+            {
+                history.push
+                (
+                    {
+                        timestamp: new Date(),
+                        language: (await makeSureList()).find(i => i.name === compiler).language,
+                        compiler,
+                        shareUrl,
+                    }
+                );
+                while(maxHistorySize < history.length)
+                {
+                    history.shift();
+                }
+                await updateHistory(history);
+            }
+        }
+
         export async function compile(json : { }) : Promise<void>
         {
             var requestUrl = getUrl() +`/api/compile.json`;
@@ -372,6 +413,7 @@ module WandboxVSCode
                             vscode.Uri.parse(body.url)
                         );
                     }
+                    await appendHistory(json['compiler'], body.url);
                 }
 
             }
@@ -656,6 +698,26 @@ module WandboxVSCode
             "list",
             await WandboxServer.getList()
         );
+    }
+    
+    async function showHistory() : Promise<void>
+    {
+        let history = await getHistory();
+        history.forEach(entry => OutputChannel.appendLine(`${entry.timestamp}\t${entry.shareUrl}\t${entry.language}\t${entry.compiler}\t`))
+        OutputChannel.appendLine(`${history.length} share urls`);
+    }
+
+    async function clearHistory() : Promise<void>
+    {
+        if ("Yes" === await vscode.window.showWarningMessage("Are you sure to clear share history?", "Yes"))
+        {
+            updateHistory([]);
+            OutputChannel.appendLine(`Cleared share history.`);
+        }
+        else
+        {
+            OutputChannel.canceled();
+        }
     }
     
     async function setSetting(name : string,　dialog : () => Promise<string>) : Promise<void>
@@ -1411,8 +1473,9 @@ module WandboxVSCode
         }
     }
 
-    export function registerCommand(context: vscode.ExtensionContext) : void
+    export function registerCommand(aContext: vscode.ExtensionContext) : void
     {
+        context = aContext;
         [
             {
                 command: 'extension.showWandboxSettings',
@@ -1425,6 +1488,14 @@ module WandboxVSCode
             {
                 command: 'extension.showWandboxListJson',
                 callback: showWandboxListJson
+            },
+            {
+                command: 'extension.showHistory',
+                callback: showHistory
+            },
+            {
+                command: 'extension.clearHistory',
+                callback: clearHistory
             },
             {
                 command: 'extension.setWandboxFileServer',

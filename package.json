@@ -39,6 +39,8 @@
         "onCommand:extension.showWandboxListJson",
         "onCommand:extension.showWandboxWeb",
         "onCommand:extension.showWandboxSettings",
+        "onCommand:extension.showHistory",
+        "onCommand:extension.clearHistory",
         "onCommand:extension.setWandboxFileServer",
         "onCommand:extension.setWandboxFileCompiler",
         "onCommand:extension.setWandboxFileOptions",
@@ -272,6 +274,11 @@
                         "menuSeparator": "─────────────────────────────────────────────"
                     },
                     "description": "set emoji"
+                },
+                "wandbox.maxHistorySize": {
+                    "type": "integer",
+                    "default": 256,
+                    "description": "set max share history size"
                 }
             }
         },
@@ -304,6 +311,16 @@
             {
                 "command": "extension.showWandboxSettings",
                 "title": "Show Settings",
+                "category": "Wandbox"
+            },
+            {
+                "command": "extension.showHistory",
+                "title": "Show History",
+                "category": "Wandbox"
+            },
+            {
+                "command": "extension.clearHistory",
+                "title": "Clear History",
                 "category": "Wandbox"
             },
             {
