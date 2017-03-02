@@ -929,47 +929,43 @@ module WandboxVSCode
                 var document = WorkSpace.getActiveDocument();
                 var setting = fileSetting[document.fileName] || {};
                 var stdin : string = setting['stdin'];
-                let fileList : vscode.QuickPickItem[] = [];
                 let noStdIn : vscode.QuickPickItem = 
                 {
                     label: emoji(!stdin ? "checkedRadio": "uncheckedRadio") +"no stdin",
                     description: null,
                     detail: null
                 };
-                fileList.push(noStdIn);
-                WorkSpace.getTextFiles()
-                    .forEach
-                    (
-                        fileName => fileList.push
-                        (
-                            {
-                                label: emoji(stdin === fileName ? "checkedRadio": "uncheckedRadio") +stripDirectory(fileName),
-                                description: fileName,
-                                detail: document.fileName === fileName ? "this file itself": null
-                            }
-                        )
-                    );
-                if (stdin && !fileList.find(item => stdin === item.description))
-                {
-                    fileList.push
-                    (
-                        {
-                            label: emoji("checkedRadio") +stripDirectory(stdin),
-                            description: stdin,
-                            detail: `${emoji("error")}Not found file ( If opened, show this file once. And keep to open it.)`
-                        }
-                    );
-                }
                 let newUntitledDocument : vscode.QuickPickItem = 
                 {
                     label: `${emoji("new")}new untitled document`,
                     description: null,
                     detail: null
                 };
-                fileList.push(newUntitledDocument);
+                let workspaceTextFiles = WorkSpace.getTextFiles();
                 let select = await vscode.window.showQuickPick
                 (
-                    fileList,
+                    [].concat
+                    (
+                        noStdIn,
+                        workspaceTextFiles.map
+                        (
+                            fileName => pass_through =
+                            {
+                                label: emoji(stdin === fileName ? "checkedRadio": "uncheckedRadio") +stripDirectory(fileName),
+                                description: fileName,
+                                detail: document.fileName === fileName ? "this file itself": null
+                            }
+                        ),
+                        (stdin && !workspaceTextFiles.find(fileName => stdin === fileName)) ?
+                            {
+                                label: emoji("checkedRadio") +stripDirectory(stdin),
+                                description: stdin,
+                                detail: `${emoji("error")}Not found file ( If opened, show this file once. And keep to open it.)`
+                            }:
+                            null,
+                        newUntitledDocument
+                    )
+                    .filter(i => i),
                     {
                         placeHolder: "Select a file as a stdin",
                     }
