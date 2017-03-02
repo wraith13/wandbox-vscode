@@ -1331,42 +1331,35 @@ module WandboxVSCode
     {
         var extensionPath = vscode.extensions.getExtension("wraith13.wandbox-vscode").extensionPath;
         var userFiles = getConfiguration<string[]>("helloWolrdFiles");
-        var fileExtensionQuickPickList : vscode.QuickPickItem[] = [];
         let { error, files } = await fx.readdir(`${extensionPath}/hellos`);
         if (error)
         {
             OutputChannel.appendLine(emoji("error") +error.message);
         }
-        else
-        {
-            const hello = "hello.";
-            for(let i of userFiles)
-            {
-                fileExtensionQuickPickList.push
-                (
-                    {
-                        "label": stripDirectory(i),
-                        "description": i,
-                        "detail": null
-                    }
-                );
-            }
-            for(let i of files)
-            {
-                if (i.startsWith(hello))
+        const hello = "hello.";
+        return [].concat
+        (
+            userFiles.map
+            (
+                i => pass_through =
                 {
-                    fileExtensionQuickPickList.push
-                    (
-                        {
-                            "label": i,
-                            "description": `${extensionPath}/hellos/${i}`,
-                            "detail": null
-                        }
-                    );
+                    "label": stripDirectory(i),
+                    "description": i,
+                    "detail": null
                 }
-            }
-        }
-        return fileExtensionQuickPickList;
+            ),
+            (files || [])
+            .filter(i => i.startsWith(hello))
+            .map
+            (
+                i => pass_through =
+                {
+                    "label": i,
+                    "description": `${extensionPath}/hellos/${i}`,
+                    "detail": null
+                }
+            )
+        );
     }
 
     async function helloWandbox() : Promise<void>
