@@ -3,6 +3,13 @@ All notable changes to the "wandbox-vscode" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 2.1.0 - 2017-03-03
+### Added
+- Added `Wandbox: Show History` command.
+- Added `Wandbox: Clear History` command.
+- Added `wandbox.maxHistorySize` setting.
+
+
 ## 2.0.1 - 2017-02-28
 ### Fixed
 - Fixed issue that additionals dosen't work.
