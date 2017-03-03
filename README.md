@@ -1,4 +1,4 @@
-# wandbox-vscode ( [Japanese](https://github.com/wraith13/wandbox-vscode/blob/master/README.ja.md) )
+# wandbox-vscode ( [🇯🇵 Japanese](https://github.com/wraith13/wandbox-vscode/blob/master/README.ja.md) )
 [![](http://vsmarketplacebadge.apphb.com/version/wraith13.wandbox-vscode.svg) ![](http://vsmarketplacebadge.apphb.com/installs/wraith13.wandbox-vscode.svg) ![](http://vsmarketplacebadge.apphb.com/rating/wraith13.wandbox-vscode.svg)](https://marketplace.visualstudio.com/items?itemName=wraith13.wandbox-vscode)
 
 [Wandbox](http://melpon.org/wandbox)([GitHub](https://github.com/melpon/wandbox/)) is a social compilation service. This extension is Wandbox front-end for Visual Studio Code.
@@ -12,9 +12,9 @@ wandbox-vscode provide several commands in the Command Palette for compile, run,
 
 > You can show Command Palette by keyboard-shortcuts.
 >
-> Mac: [F1] or [Shift]+[⌘Command]+[P]
+> Mac: `[F1]` or `[Shift]+[Command]+[P]`
 >
-> Windows and Linux: [F1] or [Shift]+[Ctrl]+[P]
+> Windows and Linux: `[F1] or [Shift]+[Ctrl]+[P]`
 
 Available languages on wandbox at now :
 Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, Java, JavaScript, Lazy K, Lisp, Lua, Pascal, Perl, PHP, Python, Rill, Ruby, Rust, Scala, SQL, Apple Swift, Vim script

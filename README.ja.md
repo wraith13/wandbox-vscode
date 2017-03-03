@@ -1,9 +1,9 @@
-# wandbox-vscode ( [English](https://github.com/wraith13/wandbox-vscode/blob/master/README.md) )
+# wandbox-vscode ( [🇬🇧 English](https://github.com/wraith13/wandbox-vscode/blob/master/README.md) )
 [![](http://vsmarketplacebadge.apphb.com/version/wraith13.wandbox-vscode.svg) ![](http://vsmarketplacebadge.apphb.com/installs/wraith13.wandbox-vscode.svg) ![](http://vsmarketplacebadge.apphb.com/rating/wraith13.wandbox-vscode.svg)](https://marketplace.visualstudio.com/items?itemName=wraith13.wandbox-vscode)
 
 [Wandbox](http://melpon.org/wandbox)([GitHub](https://github.com/melpon/wandbox/)) はソーシャルコンパレーションサービスです。このエクステンションは Visual Studio Code の為の Wandbox フロントエンドです。
 
-> Wandbox は [@melpon](https://github.com/melpon)( 🐕 dog) が個人的に無償(自腹)で提供しているサービスです。
+> Wandbox は [@melpon](https://github.com/melpon)( 🐕 犬) が個人的に無償(自腹)で提供しているサービスです。
 > このサービスが提供され続ける為、このサービスに高負荷をかけないようにしてください。
 
 ## 機能
@@ -137,10 +137,10 @@ This extension contributes the following settings:
 
 ## 謝辞
 
-Thanks [@melpon](https://github.com/melpon)( 🐕 dog) and [@kikairoya](https://github.com/kikairoya)( 🐂 bull) for awesome compilation service!
+Thanks [@melpon](https://github.com/melpon)( 🐕 犬) and [@kikairoya](https://github.com/kikairoya)( 🐂 牛) for awesome compilation service!
 
 Thanks [@fetus-hina](https://github.com/fetus-hina)( 👶 baby) for a PHP specialized wandbox service!
 
-Thanks [@rhysd](https://github.com/rhysd)( 🐕 dog) for your support in TypeScript!
+Thanks [@rhysd](https://github.com/rhysd)( 🐕 犬) for your support in TypeScript!
 
 Thanks [@chomado](https://github.com/chomado)( 👧 girl) for a great extension icon!
