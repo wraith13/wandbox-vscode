@@ -42,7 +42,7 @@ Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, 
 
 > 自動的にシェアURLを開く挙動は `wandbox.autoOpenShareUrl` の設定で無効化できます。
 
-* `Wandbox: Hello` : open new "Hello, World!" ( if without file extension, show available list of "Hello, World!" )
+* `Wandbox: Hello` : open new "Hello, World!"
 
 ## 表示コマンド
 
