@@ -42,47 +42,47 @@ Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, 
 
 > 自動的にシェアURLを開く挙動は `wandbox.autoOpenShareUrl` の設定で無効化できます。
 
-* `Wandbox: Hello` : open new "Hello, World!"
+* `Wandbox: Hello` : 新規 "Hello, World!" を開きます
 
 ## 表示コマンド
 
-* `Wandbox: Show Raw JSON` : show a wandbox specs as raw JSON
+* `Wandbox: Show Raw JSON` : wandbox の仕様情報を生の JSON で表示します
 
-> see [Wandbox API Reference](https://github.com/melpon/wandbox/blob/master/kennel2/API.rst)
+> 参照： [Wandbox API Reference](https://github.com/melpon/wandbox/blob/master/kennel2/API.rst)
 
-* `Wandbox: Show Web Site` : open wandbox web site
-* `Wandbox: Show Settings` : show all wandbox-vscode settings
-* `Wandbox: Show History` : show share history
+* `Wandbox: Show Web Site` : wandbox web サイトを開きます
+* `Wandbox: Show Settings` : wandbox-vscode の全ての設定表示します。
+* `Wandbox: Show History` : シェア履歴を表示します。
 
 ## 消去コマンド
 
-* `Wandbox: Clear History` : clear share history
+* `Wandbox: Clear History` : シェア履歴を消去します。
 
 ## 設定コマンド
 
-Target of all setting commands is a current document.
-Effect of all setting commands expires with next Visual Studio Code process.
+全ての設定コマンドはカレントのドキュメントに対して行われます。
+全ての設定コマンドの効果は Visual Studio Code を次回起動した時には消えています。
 
-* `Wandbox: Set Server` : set a wandbox server url
+* `Wandbox: Set Server` : wandboxサーバーURLを設定します。
 
-> You can use [`https://wandbox.fetus.jp/`](https://wandbox.fetus.jp/) . This Wandbox server has a wide variety of PHP compilers.
-> This Wandbox server is provided from [@fetus-hina](https://github.com/fetus-hina) as a personal voluntary service.
-> For keep this service, please do not put a high load on this service.
+> [`https://wandbox.fetus.jp/`](https://wandbox.fetus.jp/) を使うこともできます。この Wandbox サーバーには非常に多くの PHP コンパイラがあります。
+> Wandbox は [@fetus-hina](https://github.com/fetus-hina) が個人的に無償(自腹)で提供しているサービスです。
+> このサービスが提供され続ける為、このサービスに高負荷をかけないようにしてください。
 
-* `Wandbox: Set Compiler` : set a compiler 
-* `Wandbox: Set Options` : set options for compile
-* `Wandbox: Set Settings JSON` : set all temporary settings by JSON
-* `Wandbox: Reset Settings` : reset all temporary settings
+* `Wandbox: Set Compiler` : コンパイラを設定します。
+* `Wandbox: Set Options` : コンパイルオプションを設定します。
+* `Wandbox: Set Settings JSON` : JSON で一時的な設定をします。
+* `Wandbox: Reset Settings` : 全ての一時的な設定をリセットします。
 
 
 ## エクステンションの設定
 
 This extension contributes the following settings:
 
-* `wandbox.Servers`: wandbox server url list ( first one is default wandbox server url )
-* `wandbox.simplifyPostData`: simplify post data when showing
-* `wandbox.autoOpenShareUrl`: when make a share url, auto open it
-* `wandbox.outputChannelName`: output channel name
+* `wandbox.Servers`: wandboxサーバーURLリスト ( 最初のURLがデフォルト wandboxサーバーURLになります。 )
+* `wandbox.simplifyPostData`: postデータを表示の際に簡素化します
+* `wandbox.autoOpenShareUrl`: シェアURL作成時に自動的にそのURLを開きます
+* `wandbox.outputChannelName`: 出力チャンネル名
 * `wandbox.languageMapping`: set language in wandbox by language in vscode
 * `wandbox.languageCompilerMapping`: set compiler by language
 * `wandbox.extensionLanguageMapping`: set language by file extension
