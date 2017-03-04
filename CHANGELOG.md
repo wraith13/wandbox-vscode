@@ -8,6 +8,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - DOC: README in Japanese
 - DOC: Tutorial secttion in README
 
+### Fixed
+- Fixed issue that it doesn't write "Canceled" to log when to cancel `Wandbox: Set Options` command.
+
 
 ## 2.1.0 - 2017-03-03
 ### Added
@@ -18,8 +21,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## 2.0.1 - 2017-02-28
 ### Fixed
-- Fixed issue that additionals dosen't work.
-- Fixed issue that error handling in additionals and stdin dosen't work.
+- Fixed issue that additionals doesn't work.
+- Fixed issue that error handling in additionals and stdin doesn't work.
 
 
 ## 2.0.0 - 2017-02-27

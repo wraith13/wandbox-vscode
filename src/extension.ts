@@ -919,7 +919,7 @@ module WandboxVSCode
                 var document = WorkSpace.getActiveDocument();
                 var setting = fileSetting[document.fileName] || {};
                 var additionals = setting['codes'] || [];
-                var result : string = JSON.stringify(additionals);
+                var result : string;
                 let workspaceTextFiles = WorkSpace.getTextFiles();
                 let select = await vscode.window.showQuickPick
                 (
@@ -1231,6 +1231,14 @@ module WandboxVSCode
                         }
                     }
                 }
+                else
+                {
+                    OutputChannel.canceled();
+                }
+            }
+            else
+            {
+                OutputChannel.canceled();
             }
         }
     }
