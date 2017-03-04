@@ -3,6 +3,11 @@ All notable changes to the "wandbox-vscode" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 2.1.1 - 2017-03-??
+### Added
+- DOC: README in Japanese
+
+
 ## 2.1.0 - 2017-03-03
 ### Added
 - Added `Wandbox: Show History` command.

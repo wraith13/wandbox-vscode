@@ -77,7 +77,7 @@ Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, 
 
 ## エクステンションの設定
 
-This extension contributes the following settings:
+このエクステンションは次の設定を提供します。
 
 * `wandbox.Servers`: wandboxサーバーURLリスト ( 最初のURLがデフォルト wandboxサーバーURLになります。 )
 * `wandbox.simplifyPostData`: postデータを表示の際に簡素化します
@@ -94,7 +94,7 @@ This extension contributes the following settings:
 * `wandbox.maxHistorySize`: 最大履歴サイズを設定
 * `wandbox.emoji`: 絵文字を設定
 
-> You can set following if your environment's font is poor.
+> あなたの環境のフォントが貧相な場合は次のような設定にしてください。
 >```json
 >    "wandbox.emoji": {
 >        "stamp": null,
@@ -114,7 +114,7 @@ This extension contributes the following settings:
 >    }
 >```
 >
-> `wandbox.emoji` setting's screenshot in Mac ( for reference )
+> Mac での `wandbox.emoji` 設定のスクリーンショット ( 参考用 )
 >
 > ![](https://wraith13.github.io/wandbox-vscode/screenshots/emoji.png?!)
 
