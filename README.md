@@ -21,13 +21,17 @@ Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, 
 
 
 ## Tutorial
+
 ### 0. ⬇️ Install wandbox-vscode:
 Launch VS Code Quick Open(Mac:`[Command]+[P]`, Windows and Linux: `[Ctrl]+[P]`), Type `ext install wandbox-vscode` and press [Enter] and click [Install].  Restart VS Code when installation is completed.
+
 ### 1. ✨️ Open new "Hello, World!":
 Launch Command Palette(Mac:`[F1]` or `[Shift]+[Command]+[P]`, Windows and Linux: `[F1] or [Shift]+[Ctrl]+[P]`), Execute `Wandbox: Hello` command and select a "Hello, World!" file as you like.
 > 👉 You can also open files in other ways.
+
 ### 2. 🚀 Compile & Run on wandbox:
 Launch Command Palette again, Execute `Wandbox: Run` command.
+
 ### 3. 🔗 Make share URL:
 Launch Command Palette again, Execute `Wandbox: Share` command.
 
