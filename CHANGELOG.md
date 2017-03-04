@@ -6,6 +6,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## 2.1.1 - 2017-03-??
 ### Added
 - DOC: README in Japanese
+- DOC: Tutorial secttion in README
 
 
 ## 2.1.0 - 2017-03-03
