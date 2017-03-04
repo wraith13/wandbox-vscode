@@ -83,16 +83,16 @@ This extension contributes the following settings:
 * `wandbox.simplifyPostData`: postデータを表示の際に簡素化します
 * `wandbox.autoOpenShareUrl`: シェアURL作成時に自動的にそのURLを開きます
 * `wandbox.outputChannelName`: 出力チャンネル名
-* `wandbox.languageMapping`: set language in wandbox by language in vscode
-* `wandbox.languageCompilerMapping`: set compiler by language
-* `wandbox.extensionLanguageMapping`: set language by file extension
-* `wandbox.extensionCompilerMapping`: set compiler by file extension
-* `wandbox.options`: set options by compiler
-* `wandbox.compilerOptionRaw`: set raw option by compiler
-* `wandbox.runtimeOptionRaw`: set raw runtime option by compiler
-* `wandbox.helloWolrdFiles`: set hello world files
-* `wandbox.emoji`: set emoji
-* `wandbox.maxHistorySize`: set max share history size
+* `wandbox.languageMapping`: vscodeでの言語に対しwandboxでの言語を設定します
+* `wandbox.languageCompilerMapping`: 言語に対してコンパイラを設定します
+* `wandbox.extensionLanguageMapping`: ファイル拡張子に対して言語を設定します
+* `wandbox.extensionCompilerMapping`: ファイル拡張子に対してコンパイラを設定します
+* `wandbox.options`: コンパイラに対してオプションを設定します
+* `wandbox.compilerOptionRaw`: コンパイラに対して生のオプションを設定します
+* `wandbox.runtimeOptionRaw`: コンパイラに対して生の実行時オプションを設定します
+* `wandbox.helloWolrdFiles`: hello world ファイルを設定
+* `wandbox.emoji`: 絵文字を設定
+* `wandbox.maxHistorySize`: 最大履歴サイズを設定
 
 > You can set following if your environment's font is poor.
 >```json
