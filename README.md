@@ -91,8 +91,8 @@ This extension contributes the following settings:
 * `wandbox.compilerOptionRaw`: set raw option by compiler
 * `wandbox.runtimeOptionRaw`: set raw runtime option by compiler
 * `wandbox.helloWolrdFiles`: set hello world files
-* `wandbox.emoji`: set emoji
 * `wandbox.maxHistorySize`: set max share history size
+* `wandbox.emoji`: set emoji
 
 > You can set following if your environment's font is poor.
 >```json

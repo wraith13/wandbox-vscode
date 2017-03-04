@@ -91,8 +91,8 @@ This extension contributes the following settings:
 * `wandbox.compilerOptionRaw`: コンパイラに対して生のオプションを設定します
 * `wandbox.runtimeOptionRaw`: コンパイラに対して生の実行時オプションを設定します
 * `wandbox.helloWolrdFiles`: hello world ファイルを設定
-* `wandbox.emoji`: 絵文字を設定
 * `wandbox.maxHistorySize`: 最大履歴サイズを設定
+* `wandbox.emoji`: 絵文字を設定
 
 > You can set following if your environment's font is poor.
 >```json
