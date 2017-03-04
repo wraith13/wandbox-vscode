@@ -3,7 +3,7 @@ All notable changes to the "wandbox-vscode" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## 2.1.1 - 2017-03-??
+## 2.1.1 - 2017-03-04
 ### Added
 - DOC: README in Japanese
 - DOC: Tutorial secttion in README
