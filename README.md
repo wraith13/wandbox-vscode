@@ -27,13 +27,21 @@ Launch VS Code Quick Open(Mac:`[Command]+[P]`, Windows and Linux: `[Ctrl]+[P]`),
 
 ### 1. ✨️ Open new "Hello, World!":
 Launch Command Palette(Mac:`[F1]` or `[Shift]+[Command]+[P]`, Windows and Linux: `[F1]` or `[Shift]+[Ctrl]+[P]`), Execute `Wandbox: Hello` command and select a "Hello, World!" file as you like.
+
 > 👉 You can also open files in other ways.
 
 ### 2. 🚀 Compile & Run on wandbox:
 Launch Command Palette again, Execute `Wandbox: Run` command.
 
 ### 3. 🔗 Make share URL:
-Launch Command Palette again, Execute `Wandbox: Share` command.
+Execute `Wandbox: Share` command from Command Palette.
+
+> 👉 You can disable to auto open share url by `wandbox.autoOpenShareUrl` setting.
+
+### 4. 📅 Show share URL history:
+Execute `Wandbox: History` command from Command Palette.
+
+> 👉 You can change to max history size by `wandbox.maxHistorySize` setting.
 
 
 ## Screenshots
@@ -57,7 +65,7 @@ Launch Command Palette again, Execute `Wandbox: Share` command.
 * `Wandbox: Run` : run a current document on wandbox
 * `Wandbox: Share` : make a share url
 
-> You can disable to auto open share url by `wandbox.autoOpenShareUrl` setting.
+> 👉 You can disable to auto open share url by `wandbox.autoOpenShareUrl` setting.
 
 * `Wandbox: Hello` : open new "Hello, World!"
 
@@ -65,11 +73,13 @@ Launch Command Palette again, Execute `Wandbox: Share` command.
 
 * `Wandbox: Show Raw JSON` : show a wandbox specs as raw JSON
 
-> see [Wandbox API Reference](https://github.com/melpon/wandbox/blob/master/kennel2/API.rst)
+> 👉 see [Wandbox API Reference](https://github.com/melpon/wandbox/blob/master/kennel2/API.rst)
 
 * `Wandbox: Show Web Site` : open wandbox web site
 * `Wandbox: Show Settings` : show all wandbox-vscode settings
 * `Wandbox: Show History` : show share history
+
+> 👉 You can change to max history size by `wandbox.maxHistorySize` setting.
 
 ## Clear Commands
 
@@ -82,7 +92,7 @@ Effect of all setting commands expires with next Visual Studio Code process.
 
 * `Wandbox: Set Server` : set a wandbox server url
 
-> You can use [`https://wandbox.fetus.jp/`](https://wandbox.fetus.jp/) . This Wandbox server has a wide variety of PHP compilers.
+> 👉 You can use [`https://wandbox.fetus.jp/`](https://wandbox.fetus.jp/) . This Wandbox server has a wide variety of PHP compilers.
 > This Wandbox server is provided from [@fetus-hina](https://github.com/fetus-hina) as a personal voluntary service.
 > For keep this service, please do not put a high load on this service.
 
@@ -111,7 +121,7 @@ This extension contributes the following settings:
 * `wandbox.maxHistorySize`: set max share history size
 * `wandbox.emoji`: set emoji
 
-> You can set following if your environment's font is poor.
+> 👉 You can set following if your environment's font is poor.
 >```json
 >    "wandbox.emoji": {
 >        "stamp": null,
