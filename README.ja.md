@@ -14,7 +14,7 @@ wandbox-vscode はコンパイル、実行、シェアを行う為のいくつ�
 >
 > Mac: `[F1]` or `[Shift]+[Command]+[P]`
 >
-> Windows and Linux: `[F1] or [Shift]+[Ctrl]+[P]`
+> Windows and Linux: `[F1]` or `[Shift]+[Ctrl]+[P]`
 
 現在 wandbox で利用可能な言語 :
 Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, Java, JavaScript, Lazy K, Lisp, Lua, Pascal, Perl, PHP, Python, Rill, Ruby, Rust, Scala, SQL, Apple Swift, Vim script
@@ -26,7 +26,7 @@ Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, 
 VS Code のクイックオープンを出して(Mac:`[Command]+[P]`, Windows and Linux: `[Ctrl]+[P]`)、 `ext install wandbox-vscode` とタイプし [Enter] キーを押下し、[Install] をクリックします。インストールが終わったら VS Code を再起動してください。
 
 ### 1. ✨️ 新規"Hello, World!"を開く:
-コマンドパレットを出して(Mac:`[F1]` or `[Shift]+[Command]+[P]`, Windows and Linux: `[F1] or [Shift]+[Ctrl]+[P]`)、 `Wandbox: Hello` コマンドを実行し、適当な "Hello, World!" ファイルを選択します。
+コマンドパレットを出して(Mac:`[F1]` or `[Shift]+[Command]+[P]`, Windows and Linux: `[F1]` or `[Shift]+[Ctrl]+[P]`)、 `Wandbox: Hello` コマンドを実行し、適当な "Hello, World!" ファイルを選択します。
 > 👉 その他の方法で開いたファイルでも構いません。
 
 ### 2. 🚀 wandbox上でのコンパイルと実行:

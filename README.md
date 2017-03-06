@@ -14,7 +14,7 @@ wandbox-vscode provide several commands in the Command Palette for compile, run,
 >
 > Mac: `[F1]` or `[Shift]+[Command]+[P]`
 >
-> Windows and Linux: `[F1] or [Shift]+[Ctrl]+[P]`
+> Windows and Linux: `[F1]` or `[Shift]+[Ctrl]+[P]`
 
 Available languages on wandbox at now :
 Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, Java, JavaScript, Lazy K, Lisp, Lua, Pascal, Perl, PHP, Python, Rill, Ruby, Rust, Scala, SQL, Apple Swift, Vim script
@@ -26,7 +26,7 @@ Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, 
 Launch VS Code Quick Open(Mac:`[Command]+[P]`, Windows and Linux: `[Ctrl]+[P]`), Type `ext install wandbox-vscode` and press [Enter] and click [Install].  Restart VS Code when installation is completed.
 
 ### 1. ✨️ Open new "Hello, World!":
-Launch Command Palette(Mac:`[F1]` or `[Shift]+[Command]+[P]`, Windows and Linux: `[F1] or [Shift]+[Ctrl]+[P]`), Execute `Wandbox: Hello` command and select a "Hello, World!" file as you like.
+Launch Command Palette(Mac:`[F1]` or `[Shift]+[Command]+[P]`, Windows and Linux: `[F1]` or `[Shift]+[Ctrl]+[P]`), Execute `Wandbox: Hello` command and select a "Hello, World!" file as you like.
 > 👉 You can also open files in other ways.
 
 ### 2. 🚀 Compile & Run on wandbox:
