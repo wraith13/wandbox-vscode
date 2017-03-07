@@ -44,7 +44,7 @@ VS Code のクイックオープンを出して(Mac:`[Command]+[P]`, Windows and
 > 👉 `wandbox.maxHistorySize` の設定で保存する履歴の数を指定できます。
 
 ### 5. 🔧 次のステップ:
-`Wandbox: Set Compiler` コマンドでコンパイラを変更できますし、 `Wandbox: Set Options` コマンドで様々なコンパイルオプションを指定できまのでいろいろ試してみてください。 **エンジョイ!**
+`Wandbox: Set Compiler` コマンドでコンパイラを変更できますし、 `Wandbox: Set Options` コマンドで様々なコンパイルオプションを指定できまのでいろいろ試してみてください。
 
 > 👉 オプションの内容は選択されているコンパイラによって大幅に変わります。
 
@@ -176,3 +176,7 @@ Thanks [@fetus-hina](https://github.com/fetus-hina)( 👶 baby) for a PHP specia
 Thanks [@rhysd](https://github.com/rhysd)( 🐕 犬) for your support in TypeScript!
 
 Thanks [@chomado](https://github.com/chomado)( 👧 girl) for a great extension icon!
+
+## リンク
+
+[Wandbox関連プロジェクト](https://github.com/search?p=1&q=wandbox&type=Repositories&utf8=✓)
