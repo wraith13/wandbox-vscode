@@ -41,8 +41,12 @@ Execute `Wandbox: Share` command from Command Palette.
 ### 4. 📅 Show share URL history:
 Execute `Wandbox: History` command from Command Palette.
 
-> 👉 You can change to max history size by `wandbox.maxHistorySize` setting.
+> 👉 You can change max history size by `wandbox.maxHistorySize` setting.
 
+### 5. 🔧 Next step:
+You can change compiler by `Wandbox: Set Compiler` command. And you can specify various options by `Wandbox: Set Options` command. Enjoy!
+
+> 👉 Option repertory depends a selected compiler.
 
 ## Screenshots
 
