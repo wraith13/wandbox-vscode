@@ -12,9 +12,9 @@ wandbox-vscode はコンパイル、実行、シェアを行う為のいくつ�
 
 > コマンドパレットはキーボードショートカットで表示できます。
 >
-> Mac: <kbd>F1</kbd> or <kbd><kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd></kbd>
+> Mac: <kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd>
 >
-> Windows and Linux: <kbd>F1</kbd> or <kbd><kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>P</kbd></kbd>
+> Windows and Linux: <kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>P</kbd>
 
 現在 wandbox で利用可能な言語 :
 Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, Java, JavaScript, Lazy K, Lisp, Lua, Pascal, Perl, PHP, Python, Rill, Ruby, Rust, Scala, SQL, Apple Swift, Vim script
@@ -23,10 +23,10 @@ Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, 
 ## チュートリアル
 
 ### 0. ⬇️ wandbox-vscodeのインストール:
-VS Code のクイックオープンを出して(Mac:<kbd><kbd>Command</kbd>+<kbd>P</kbd></kbd>, Windows and Linux: <kbd><kbd>Ctrl</kbd>+<kbd>P</kbd></kbd>)、 `ext install wandbox-vscode` とタイプし <kbd>Enter</kbd> キーを押下し、<kbd>Install</kbd> をクリックします。インストールが終わったら VS Code を再起動してください。
+VS Code のクイックオープンを出して(Mac:<kbd>Command</kbd>+<kbd>P</kbd>, Windows and Linux: <kbd>Ctrl</kbd>+<kbd>P</kbd>)、 `ext install wandbox-vscode` とタイプし <kbd>Enter</kbd> キーを押下し、<kbd>Install</kbd> をクリックします。インストールが終わったら VS Code を再起動してください。
 
 ### 1. ✨️ 新規"Hello, World!"を開く:
-コマンドパレットを出して(Mac:<kbd>F1</kbd> or <kbd><kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd></kbd>, Windows and Linux: <kbd>F1</kbd> or <kbd><kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>P</kbd></kbd>)、 `Wandbox: Hello` コマンドを実行し、適当な "Hello, World!" ファイルを選択します。
+コマンドパレットを出して(Mac:<kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd>, Windows and Linux: <kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>P</kbd>)、 `Wandbox: Hello` コマンドを実行し、適当な "Hello, World!" ファイルを選択します。
 
 > 👉 その他の方法で開いたファイルでも構いません。
 

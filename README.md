@@ -12,9 +12,9 @@ wandbox-vscode provide several commands in the Command Palette for compile, run,
 
 > You can show Command Palette by keyboard-shortcuts.
 >
-> Mac: <kbd>F1</kbd> or <kbd><kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd></kbd>
+> Mac: <kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd>
 >
-> Windows and Linux: <kbd>F1</kbd> or <kbd><kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>P</kbd></kbd>
+> Windows and Linux: <kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>P</kbd>
 
 Available languages on wandbox at now :
 Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, Java, JavaScript, Lazy K, Lisp, Lua, Pascal, Perl, PHP, Python, Rill, Ruby, Rust, Scala, SQL, Apple Swift, Vim script
@@ -23,10 +23,10 @@ Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, 
 ## Tutorial
 
 ### 0. ⬇️ Install wandbox-vscode:
-Launch VS Code Quick Open(Mac:<kbd><kbd>Command</kbd>+<kbd>P</kbd></kbd>, Windows and Linux: <kbd><kbd>Ctrl</kbd>+<kbd>P</kbd></kbd>), Type `ext install wandbox-vscode` and press <kbd>Enter</kbd> and click <kbd>Install</kbd>.  Restart VS Code when installation is completed.
+Launch VS Code Quick Open(Mac:<kbd>Command</kbd>+<kbd>P</kbd>, Windows and Linux: <kbd>Ctrl</kbd>+<kbd>P</kbd>), Type `ext install wandbox-vscode` and press <kbd>Enter</kbd> and click <kbd>Install</kbd>.  Restart VS Code when installation is completed.
 
 ### 1. ✨️ Open new "Hello, World!":
-Launch Command Palette(Mac:<kbd>F1</kbd> or <kbd><kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd></kbd>, Windows and Linux: <kbd>F1</kbd> or <kbd><kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>P</kbd></kbd>), Execute `Wandbox: Hello` command and select a "Hello, World!" file as you like.
+Launch Command Palette(Mac:<kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd>, Windows and Linux: <kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>P</kbd>), Execute `Wandbox: Hello` command and select a "Hello, World!" file as you like.
 
 > 👉 You can also open files in other ways.
 
