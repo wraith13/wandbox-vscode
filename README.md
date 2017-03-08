@@ -12,7 +12,7 @@ wandbox-vscode provide several commands in the Command Palette for compile, run,
 
 > You can show Command Palette by keyboard-shortcuts.
 >
-> Mac: <kbd>F1</kbd> or <kbd><kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd></kbd>`
+> Mac: <kbd>F1</kbd> or <kbd><kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd></kbd>
 >
 > Windows and Linux: <kbd>F1</kbd> or <kbd><kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>P</kbd></kbd>
 
