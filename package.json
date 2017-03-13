@@ -34,8 +34,6 @@
         "onCommand:extension.invokeWandbox",
         "onCommand:extension.shareWandbox",
         "onCommand:extension.helloWandbox",
-        "onCommand:extension.showWandboxCompiers",
-        "onCommand:extension.showWandboxOptions",
         "onCommand:extension.showWandboxListJson",
         "onCommand:extension.showWandboxWeb",
         "onCommand:extension.showWandboxSettings",
