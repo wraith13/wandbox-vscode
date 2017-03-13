@@ -1,5 +1,8 @@
 # wandbox-vscode ( [🇬🇧 English](https://github.com/wraith13/wandbox-vscode/blob/master/README.md) )
-[![](http://vsmarketplacebadge.apphb.com/version/wraith13.wandbox-vscode.svg) ![](http://vsmarketplacebadge.apphb.com/installs/wraith13.wandbox-vscode.svg) ![](http://vsmarketplacebadge.apphb.com/rating/wraith13.wandbox-vscode.svg)](https://marketplace.visualstudio.com/items?itemName=wraith13.wandbox-vscode)
+
+[![Visual Studio Marketplace](http://vsmarketplacebadge.apphb.com/version/wraith13.wandbox-vscode.svg)
+![installs](http://vsmarketplacebadge.apphb.com/installs/wraith13.wandbox-vscode.svg)
+![rating](http://vsmarketplacebadge.apphb.com/rating/wraith13.wandbox-vscode.svg)](https://marketplace.visualstudio.com/items?itemName=wraith13.wandbox-vscode)
 
 [Wandbox](http://melpon.org/wandbox)([GitHub](https://github.com/melpon/wandbox/)) はソーシャルコンパレーションサービスです。このエクステンションは Visual Studio Code の為の Wandbox フロントエンドです。
 
@@ -23,27 +26,33 @@ Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, 
 ## チュートリアル
 
 ### 0. ⬇️ wandbox-vscodeのインストール:
+
 VS Code のクイックオープンを出して(Mac:<kbd>Command</kbd>+<kbd>P</kbd>, Windows and Linux: <kbd>Ctrl</kbd>+<kbd>P</kbd>)、 `ext install wandbox-vscode` とタイプし <kbd>Enter</kbd> キーを押下し、<kbd>Install</kbd> をクリックします。インストールが終わったら VS Code を再起動してください。
 
 ### 1. ✨️ 新規"Hello, World!"を開く:
+
 コマンドパレットを出して(Mac:<kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd>, Windows and Linux: <kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>P</kbd>)、 `Wandbox: Hello` コマンドを実行し、適当な "Hello, World!" ファイルを選択します。
 
 > 👉 その他の方法で開いたファイルでも構いません。
 
 ### 2. 🚀 wandbox上でのコンパイルと実行:
+
 またコマンドパレットを出して、 `Wandbox: Run` コマンドを実行します。
 
 ### 3. 🔗 シェアURLの作成:
+
 コマンドパレットから `Wandbox: Share` コマンドを実行します。
 
 > 👉 自動的にシェアURLを開く挙動は `wandbox.autoOpenShareUrl` の設定で無効化できます。
 
 ### 4. 📅 シェアURLの履歴表示:
+
 コマンドパレットから `Wandbox: History` コマンドを実行します。
 
 > 👉 `wandbox.maxHistorySize` の設定で保存する履歴の数を指定できます。
 
 ### 5. 🔧 次のステップ:
+
 `Wandbox: Set Compiler` コマンドでコンパイラを変更できますし、 `Wandbox: Set Options` コマンドで様々なコンパイルオプションを指定できまのでいろいろ試してみてください。
 
 > 👉 オプションの内容は選択されているコンパイラによって大幅に変わります。
@@ -52,16 +61,20 @@ VS Code のクイックオープンを出して(Mac:<kbd>Command</kbd>+<kbd>P</k
 ## スクリーンショット
 
 ### コマンドリスト
+
 ![](https://wraith13.github.io/wandbox-vscode/screenshots/command.list.png)
 
 ### 言語
+
 ![](https://wraith13.github.io/wandbox-vscode/screenshots/languages.png)
 ![](https://wraith13.github.io/wandbox-vscode/screenshots/languages2.png)
 
 ### コンパイラ
+
 ![](https://wraith13.github.io/wandbox-vscode/screenshots/compilers.png)
 
 ### オプション
+
 ![](https://wraith13.github.io/wandbox-vscode/screenshots/options.png)
 ![](https://wraith13.github.io/wandbox-vscode/screenshots/options2.png)
 
