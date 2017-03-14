@@ -703,7 +703,7 @@ module WandboxVSCode
     async function showHistory() : Promise<void>
     {
         let history = await getHistory();
-        history.forEach(entry => OutputChannel.appendLine(`${entry.timestamp}\t${entry.shareUrl}\t${entry.language}\t${entry.compiler}\t`))
+        history.forEach(entry => OutputChannel.appendLine(`${entry.timestamp}\t${entry.shareUrl}\t${entry.language}\t${entry.compiler}\t`));
         OutputChannel.appendLine(`${history.length} share urls`);
     }
 
@@ -1483,65 +1483,89 @@ module WandboxVSCode
 
     export function registerCommand(aContext: vscode.ExtensionContext) : void
     {
+        //  oldCommand は deprecated な扱いで今後、削除予定。
         context = aContext;
         [
             {
-                command: 'extension.showWandboxSettings',
+                oldCommand: 'extension.showWandboxSettings',
+                command: 'wandbox.showSettings',
                 callback: showWandboxSettings
             },
             {
-                command: 'extension.showWandboxWeb',
+                oldCommand: 'extension.showWandboxWeb',
+                command: 'wandbox.showWeb',
                 callback: showWandboxWeb
             },
             {
-                command: 'extension.showWandboxListJson',
+                oldCommand: 'extension.showWandboxListJson',
+                command: 'wandbox.showListJson',
                 callback: showWandboxListJson
             },
             {
-                command: 'extension.showHistory',
+                oldCommand: 'extension.showHistory',
+                command: 'wandbox.showHistory',
                 callback: showHistory
             },
             {
-                command: 'extension.clearHistory',
+                oldCommand: 'extension.clearHistory',
+                command: 'wandbox.clearHistory',
                 callback: clearHistory
             },
             {
-                command: 'extension.setWandboxFileServer',
+                oldCommand: 'extension.setWandboxFileServer',
+                command: 'wandbox.setFileServer',
                 callback: setServerSetting
             },
             {
-                command: 'extension.setWandboxFileCompiler',
+                oldCommand: 'extension.setWandboxFileCompiler',
+                command: 'wandbox.setFileCompiler',
                 callback: setCompilerSetting
             },
             {
-                command: 'extension.setWandboxFileOptions',
+                oldCommand: 'extension.setWandboxFileOptions',
+                command: 'wandbox.setFileOptions',
                 callback: setOptionsSetting
             },
             {
-                command: 'extension.setWandboxFileSettingJson',
+                oldCommand: 'extension.setWandboxFileSettingJson',
+                command: 'wandbox.setFileSettingJson',
                 callback: () => setSettingByInputBox(null, 'Enter settings JSON')
             },
             {
-                command: 'extension.resetWandboxFileSettings',
+                oldCommand: 'extension.resetWandboxFileSettings',
+                command: 'wandbox.resetFileSettings',
                 callback: resetWandboxFileSettings
             },
             {
-                command: 'extension.invokeWandbox',
+                oldCommand: 'extension.invokeWandbox',
+                command: 'wandbox.invoke',
                 callback: () => invokeWandbox()
             },
             {
-                command: 'extension.shareWandbox',
+                oldCommand: 'extension.shareWandbox',
+                command: 'wandbox.share',
                 callback: () => invokeWandbox({ share: true })
             },
             {
-                command: 'extension.helloWandbox',
+                oldCommand: 'extension.helloWandbox',
+                command: 'wandbox.hello',
                 callback: helloWandbox
             }
         ]
         .forEach
         (
-            i => context.subscriptions.push
+            i => context.subscriptions.concat
             (
+                vscode.commands.registerCommand
+                (
+                    i.oldCommand,
+                    () =>
+                    {
+                        OutputChannel.makeSure();
+                        OutputChannel.bowWow();
+                        i.callback();
+                    }
+                ),
                 vscode.commands.registerCommand
                 (
                     i.command,

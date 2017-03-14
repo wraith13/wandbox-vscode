@@ -4,6 +4,12 @@ All notable changes to the "wandbox-vscode" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 2.1.2 - 2017-03-??
+
+### Fixed
+
+- Changed all internal command name( example: `extension.invokeWandbox` → `wandbox.run` ). You can still use the old command name. However, they are deprecated and will be deleted in the future.
+
 ## 2.1.1 - 2017-03-04
 
 ### Added

@@ -43,7 +43,20 @@
         "onCommand:extension.setWandboxFileCompiler",
         "onCommand:extension.setWandboxFileOptions",
         "onCommand:extension.setWandboxFileSettingJson",
-        "onCommand:extension.resetWandboxFileSettings"
+        "onCommand:extension.resetWandboxFileSettings",
+        "onCommand:wandbox.run",
+        "onCommand:wandbox.share",
+        "onCommand:wandbox.hello",
+        "onCommand:wandbox.showListJson",
+        "onCommand:wandbox.showWeb",
+        "onCommand:wandbox.showSettings",
+        "onCommand:wandbox.showHistory",
+        "onCommand:wandbox.clearHistory",
+        "onCommand:wandbox.setFileServer",
+        "onCommand:wandbox.setFileCompiler",
+        "onCommand:wandbox.setFileOptions",
+        "onCommand:wandbox.setFileSettingJson",
+        "onCommand:wandbox.resetFileSettings"
     ],
     "main": "./out/src/extension",
     "contributes": {
@@ -282,67 +295,67 @@
         },
         "commands": [
             {
-                "command": "extension.invokeWandbox",
+                "command": "wandbox.run",
                 "title": "Run",
                 "category": "Wandbox"
             },
             {
-                "command": "extension.shareWandbox",
+                "command": "wandbox.share",
                 "title": "Share",
                 "category": "Wandbox"
             },
             {
-                "command": "extension.helloWandbox",
+                "command": "wandbox.hello",
                 "title": "Hello",
                 "category": "Wandbox"
             },
             {
-                "command": "extension.showWandboxListJson",
+                "command": "wandbox.showListJson",
                 "title": "Show Raw JSON",
                 "category": "Wandbox"
             },
             {
-                "command": "extension.showWandboxWeb",
+                "command": "wandbox.showWeb",
                 "title": "Show Web Site",
                 "category": "Wandbox"
             },
             {
-                "command": "extension.showWandboxSettings",
+                "command": "wandbox.showSettings",
                 "title": "Show Settings",
                 "category": "Wandbox"
             },
             {
-                "command": "extension.showHistory",
+                "command": "wandbox.showHistory",
                 "title": "Show History",
                 "category": "Wandbox"
             },
             {
-                "command": "extension.clearHistory",
+                "command": "wandbox.clearHistory",
                 "title": "Clear History",
                 "category": "Wandbox"
             },
             {
-                "command": "extension.setWandboxFileServer",
+                "command": "wandbox.setFileServer",
                 "title": "Set Server",
                 "category": "Wandbox"
             },
             {
-                "command": "extension.setWandboxFileCompiler",
+                "command": "wandbox.setFileCompiler",
                 "title": "Set Compiler",
                 "category": "Wandbox"
             },
             {
-                "command": "extension.setWandboxFileOptions",
+                "command": "wandbox.setFileOptions",
                 "title": "Set Options",
                 "category": "Wandbox"
             },
             {
-                "command": "extension.setWandboxFileSettingJson",
+                "command": "wandbox.setFileSettingJson",
                 "title": "Set Settings JSON",
                 "category": "Wandbox"
             },
             {
-                "command": "extension.resetWandboxFileSettings",
+                "command": "wandbox.resetFileSettings",
                 "title": "Reset Settings",
                 "category": "Wandbox"
             }
