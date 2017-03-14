@@ -57,6 +57,7 @@ VS Code のクイックオープンを出して(Mac:<kbd>Command</kbd>+<kbd>P</k
 
 > 👉 オプションの内容は選択されているコンパイラによって大幅に変わります。
 
+また settings.json で wandbox-vscode の各種設定を変更したり、 keybind.json で wandbox-vscode のコマンドにキーボードショートカットを割り当てる事もできます。
 
 ## スクリーンショット
 
@@ -122,7 +123,7 @@ VS Code のクイックオープンを出して(Mac:<kbd>Command</kbd>+<kbd>P</k
 
 ## エクステンションの設定
 
-このエクステンションは次の設定を提供します。
+[`settings.json`](https://code.visualstudio.com/docs/customization/userandworkspace#_creating-user-and-workspace-settings)( Mac: <kbd>Command</kbd>+<kbd>,</kbd>, Windows / Linux: <kbd>ファイル</kbd> -> <kbd>基本設定</kbd> -> <kbd>設定</kbd> ) で次の設定ができます。
 
 * `wandbox.Servers`: wandboxサーバーURLリスト ( 最初のURLがデフォルト wandboxサーバーURLになります。 )
 * `wandbox.simplifyPostData`: postデータを表示の際に簡素化します
@@ -162,6 +163,11 @@ VS Code のクイックオープンを出して(Mac:<kbd>Command</kbd>+<kbd>P</k
 > Mac での `wandbox.emoji` 設定のスクリーンショット ( 参考用 )
 >
 > ![](https://wraith13.github.io/wandbox-vscode/screenshots/emoji.png?!)
+
+## キーボードショートカットの設定
+
+wandbox-vscode のコマンドには初期状態ではキーボードショートカットが割り当てられていませんが、
+[`keybindngs.json`](https://code.visualstudio.com/docs/customization/keybindings#_customizing-shortcuts)( Mac: <kbd>Code</kbd> -> <kbd>基本設定</kbd> -> <kbd>キーボード ショートカット</kbd>, Windows / Linux: <kbd>ファイル</kbd> -> <kbd>基本設定</kbd> -> <kbd>キーボード ショートカット</kbd>) でキーボードショートカットを割り当てる事ができます。
 
 ## リリースノート
 
