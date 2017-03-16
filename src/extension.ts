@@ -507,7 +507,7 @@ module WandboxVSCode
                     }
                 }
             );
-            var date = new Date(); // 結果がキャッシュされようにする為
+            var date = new Date(); // 結果がキャッシュされないようにする為
             var stamp = date.getFullYear().toString()
                 +("0" +(date.getMonth() +1).toString()).slice(-2)
                 +("0" +date.getDate().toString()).slice(-2)
