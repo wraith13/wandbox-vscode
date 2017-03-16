@@ -55,6 +55,8 @@ You can change compiler by `Wandbox: Set Compiler` command. And you can specify 
 
 > 👉 Option repertory depends a selected compiler.
 
+また settings.json で wandbox-vscode の各種設定を変更したり、 keybind.json で wandbox-vscode のコマンドにキーボードショートカットを割り当てる事もできます。
+
 ## Screenshots
 
 ### command list
@@ -118,6 +120,7 @@ Effect of all setting commands expires with next Visual Studio Code process.
 
 ## Extension Settings
 
+[`settings.json`](https://code.visualstudio.com/docs/customization/userandworkspace#_creating-user-and-workspace-settings)( Mac: <kbd>Command</kbd>+<kbd>,</kbd>, Windows / Linux: <kbd>ファイル</kbd> -> <kbd>基本設定</kbd> -> <kbd>設定</kbd> ) で次の設定ができます。
 This extension contributes the following settings:
 
 * `wandbox.Servers`: wandbox server url list ( first one is default wandbox server url )
@@ -158,6 +161,29 @@ This extension contributes the following settings:
 > `wandbox.emoji` setting's screenshot in Mac ( for reference )
 >
 > ![](https://wraith13.github.io/wandbox-vscode/screenshots/emoji.png?!)
+
+## Keyboard shortcut Settings
+
+wandbox-vscode のコマンドには初期状態ではキーボードショートカットが割り当てられていませんが、
+[`keybindngs.json`](https://code.visualstudio.com/docs/customization/keybindings#_customizing-shortcuts)( Mac: <kbd>Code</kbd> -> <kbd>基本設定</kbd> -> <kbd>キーボード ショートカット</kbd>, Windows / Linux: <kbd>ファイル</kbd> -> <kbd>基本設定</kbd> -> <kbd>キーボード ショートカット</kbd>) でキーボードショートカットを割り当てる事ができます。
+
+`keybindngs.json` で指定するコマンド名はコマンドパレット上で入力する名前は異なりますので、下の対応表を見て設定してください。
+
+|on Command Pallete|on keybindngs.json|
+|-|-|
+|`Wandbox: Run`|`wandbox.run`|
+|`Wandbox: Share`|`wandbox.share`|
+|`Wandbox: Hello`|`wandbox.hello`|
+|`Wandbox: Show Raw JSON`|`wandbox.showListJson`|
+|`Wandbox: Show Web Site`|`wandbox.showWeb`|
+|`Wandbox: Show Settings`|`wandbox.showSettings`|
+|`Wandbox: Show History`|`wandbox.showHistory`|
+|`Wandbox: Clear History`|`wandbox.clearHistory`|
+|`Wandbox: Set Server`|`wandbox.setFileServer`|
+|`Wandbox: Set Compiler`|`wandbox.setFileCompiler`|
+|`Wandbox: Set Options`|`wandbox.setFileOptions`|
+|`Wandbox: Set Settings JSON`|`wandbox.setFileSettingJson`|
+|`Wandbox: Reset Settings`|`wandbox.resetFileSettings`|
 
 ## Release Notes
 

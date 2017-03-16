@@ -169,6 +169,24 @@ VS Code のクイックオープンを出して(Mac:<kbd>Command</kbd>+<kbd>P</k
 wandbox-vscode のコマンドには初期状態ではキーボードショートカットが割り当てられていませんが、
 [`keybindngs.json`](https://code.visualstudio.com/docs/customization/keybindings#_customizing-shortcuts)( Mac: <kbd>Code</kbd> -> <kbd>基本設定</kbd> -> <kbd>キーボード ショートカット</kbd>, Windows / Linux: <kbd>ファイル</kbd> -> <kbd>基本設定</kbd> -> <kbd>キーボード ショートカット</kbd>) でキーボードショートカットを割り当てる事ができます。
 
+`keybindngs.json` で指定するコマンド名はコマンドパレット上で入力する名前は異なりますので、下の対応表を見て設定してください。
+
+|コマンドパレット上|keybindngs.json上|
+|-|-|
+|`Wandbox: Run`|`wandbox.run`|
+|`Wandbox: Share`|`wandbox.share`|
+|`Wandbox: Hello`|`wandbox.hello`|
+|`Wandbox: Show Raw JSON`|`wandbox.showListJson`|
+|`Wandbox: Show Web Site`|`wandbox.showWeb`|
+|`Wandbox: Show Settings`|`wandbox.showSettings`|
+|`Wandbox: Show History`|`wandbox.showHistory`|
+|`Wandbox: Clear History`|`wandbox.clearHistory`|
+|`Wandbox: Set Server`|`wandbox.setFileServer`|
+|`Wandbox: Set Compiler`|`wandbox.setFileCompiler`|
+|`Wandbox: Set Options`|`wandbox.setFileOptions`|
+|`Wandbox: Set Settings JSON`|`wandbox.setFileSettingJson`|
+|`Wandbox: Reset Settings`|`wandbox.resetFileSettings`|
+
 ## リリースノート
 
 [marketplace](https://marketplace.visualstudio.com/items/wraith13.wandbox-vscode/changelog) あるいは [github](https://github.com/wraith13/wandbox-vscode/blob/master/CHANGELOG.md) の ChangLog を参照してください。
