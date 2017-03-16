@@ -1,5 +1,6 @@
 # wandbox-vscode ( [🇯🇵 Japanese](https://github.com/wraith13/wandbox-vscode/blob/master/README.ja.md) )
-[![](http://vsmarketplacebadge.apphb.com/version/wraith13.wandbox-vscode.svg) ![](http://vsmarketplacebadge.apphb.com/installs/wraith13.wandbox-vscode.svg) ![](http://vsmarketplacebadge.apphb.com/rating/wraith13.wandbox-vscode.svg)](https://marketplace.visualstudio.com/items?itemName=wraith13.wandbox-vscode)
+
+[![Visual Studio Marketplace](http://vsmarketplacebadge.apphb.com/version/wraith13.wandbox-vscode.svg) ![installs](http://vsmarketplacebadge.apphb.com/installs/wraith13.wandbox-vscode.svg) ![rating](http://vsmarketplacebadge.apphb.com/rating/wraith13.wandbox-vscode.svg)](https://marketplace.visualstudio.com/items?itemName=wraith13.wandbox-vscode)
 
 [Wandbox](http://melpon.org/wandbox)([GitHub](https://github.com/melpon/wandbox/)) is a social compilation service. This extension is Wandbox front-end for Visual Studio Code.
 
@@ -23,27 +24,33 @@ Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, 
 ## Tutorial
 
 ### 0. ⬇️ Install wandbox-vscode:
+
 Launch VS Code Quick Open(Mac:<kbd>Command</kbd>+<kbd>P</kbd>, Windows and Linux: <kbd>Ctrl</kbd>+<kbd>P</kbd>), Type `ext install wandbox-vscode` and press <kbd>Enter</kbd> and click <kbd>Install</kbd>.  Restart VS Code when installation is completed.
 
 ### 1. ✨️ Open new "Hello, World!":
+
 Launch Command Palette(Mac:<kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd>, Windows and Linux: <kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>P</kbd>), Execute `Wandbox: Hello` command and select a "Hello, World!" file as you like.
 
 > 👉 You can also open files in other ways.
 
 ### 2. 🚀 Compile & Run on wandbox:
+
 Launch Command Palette again, Execute `Wandbox: Run` command.
 
 ### 3. 🔗 Make share URL:
+
 Execute `Wandbox: Share` command from Command Palette.
 
 > 👉 You can disable to auto open share url by `wandbox.autoOpenShareUrl` setting.
 
 ### 4. 📅 Show share URL history:
+
 Execute `Wandbox: History` command from Command Palette.
 
 > 👉 You can change max history size by `wandbox.maxHistorySize` setting.
 
 ### 5. 🔧 Next step:
+
 You can change compiler by `Wandbox: Set Compiler` command. And you can specify various options by `Wandbox: Set Options` command. Enjoy!
 
 > 👉 Option repertory depends a selected compiler.
@@ -51,16 +58,20 @@ You can change compiler by `Wandbox: Set Compiler` command. And you can specify 
 ## Screenshots
 
 ### command list
+
 ![](https://wraith13.github.io/wandbox-vscode/screenshots/command.list.png)
 
 ### languages
+
 ![](https://wraith13.github.io/wandbox-vscode/screenshots/languages.png)
 ![](https://wraith13.github.io/wandbox-vscode/screenshots/languages2.png)
 
 ### compilers
+
 ![](https://wraith13.github.io/wandbox-vscode/screenshots/compilers.png)
 
 ### options
+
 ![](https://wraith13.github.io/wandbox-vscode/screenshots/options.png)
 ![](https://wraith13.github.io/wandbox-vscode/screenshots/options2.png)
 
@@ -104,7 +115,6 @@ Effect of all setting commands expires with next Visual Studio Code process.
 * `Wandbox: Set Options` : set options for compile
 * `Wandbox: Set Settings JSON` : set all temporary settings by JSON
 * `Wandbox: Reset Settings` : reset all temporary settings
-
 
 ## Extension Settings
 
