@@ -1538,7 +1538,7 @@ module WandboxVSCode
             },
             {
                 oldCommand: 'extension.invokeWandbox',
-                command: 'wandbox.invoke',
+                command: 'wandbox.run',
                 callback: () => invokeWandbox()
             },
             {
