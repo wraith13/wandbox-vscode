@@ -6,6 +6,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## 2.1.2 - 2017-03-??
 
+### Added
+
+- Supported OCaml
+
 ### Fixed
 
 - Changed all internal command name( example: `extension.invokeWandbox` → `wandbox.run` ). You can still use the old command name. However, they are deprecated and will be deleted in the future.
