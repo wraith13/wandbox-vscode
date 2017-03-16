@@ -18,7 +18,7 @@ wandbox-vscode provide several commands in the Command Palette for compile, run,
 > Windows and Linux: <kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>P</kbd>
 
 Available languages on wandbox at now :
-Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Groovy, Haskell, Java, JavaScript, Lazy K, Lisp, Lua, OCaml, Pascal, Perl, PHP, Python, Rill, Ruby, Rust, Scala, SQL, Apple Swift, Vim script
+Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Go, Groovy, Haskell, Java, JavaScript, Lazy K, Lisp, Lua, OCaml, Pascal, Perl, PHP, Python, Rill, Ruby, Rust, Scala, SQL, Apple Swift, Vim script
 
 
 ## Tutorial
