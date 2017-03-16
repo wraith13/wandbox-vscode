@@ -6,6 +6,7 @@
 
 > Wandbox is provided from [@melpon](https://github.com/melpon)( 🐕 dog) as a personal voluntary service.
 > For keep this service, please do not put a high load on this service.
+> [You can be a sponsor of the wandbox.](https://gist.github.com/melpon/8f5d7a8e991ed466d09cf887bd8d92ce)( [In English by a third party](https://gist.github.com/Cryolite/85ac45cd0d586e84db230ebf49e18c32) )
 
 ## Features
 

@@ -8,6 +8,7 @@
 
 > Wandbox は [@melpon](https://github.com/melpon)( 🐕 犬) が個人的に無償(自腹)で提供しているサービスです。
 > このサービスが提供され続ける為、このサービスに高負荷をかけないようにしてください。
+> [あなたはスポンサーになることもできます。](https://gist.github.com/melpon/8f5d7a8e991ed466d09cf887bd8d92ce)
 
 ## 機能
 
