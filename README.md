@@ -51,11 +51,13 @@ Execute `Wandbox: History` command from Command Palette.
 
 ### 5. 🔧 Next step:
 
-You can change compiler by `Wandbox: Set Compiler` command. And you can specify various options by `Wandbox: Set Options` command. Enjoy!
+You can change compiler by `Wandbox: Set Compiler` command. And you can specify various options by `Wandbox: Set Options` command.
 
 > 👉 Option repertory depends a selected compiler.
 
-また settings.json で wandbox-vscode の各種設定を変更したり、 keybind.json で wandbox-vscode のコマンドにキーボードショートカットを割り当てる事もできます。
+You can change [settings](#extension-settings) by `settings.json`. And you can apply [keyboard shortcuts](#keyboard-shortcut-settings) by `keybindings.json`.
+
+ Enjoy!
 
 ## Screenshots
 
@@ -120,8 +122,7 @@ Effect of all setting commands expires with next Visual Studio Code process.
 
 ## Extension Settings
 
-[`settings.json`](https://code.visualstudio.com/docs/customization/userandworkspace#_creating-user-and-workspace-settings)( Mac: <kbd>Command</kbd>+<kbd>,</kbd>, Windows / Linux: <kbd>ファイル</kbd> -> <kbd>基本設定</kbd> -> <kbd>設定</kbd> ) で次の設定ができます。
-This extension contributes the following settings:
+This extension contributes the following settings by [`settings.json`](https://code.visualstudio.com/docs/customization/userandworkspace#_creating-user-and-workspace-settings)( Mac: <kbd>Command</kbd>+<kbd>,</kbd>, Windows / Linux: <kbd>File</kbd> -> <kbd>Preferences</kbd> -> <kbd>User Settings</kbd> ):
 
 * `wandbox.Servers`: wandbox server url list ( first one is default wandbox server url )
 * `wandbox.simplifyPostData`: simplify post data when showing
@@ -164,12 +165,13 @@ This extension contributes the following settings:
 
 ## Keyboard shortcut Settings
 
-wandbox-vscode のコマンドには初期状態ではキーボードショートカットが割り当てられていませんが、
-[`keybindngs.json`](https://code.visualstudio.com/docs/customization/keybindings#_customizing-shortcuts)( Mac: <kbd>Code</kbd> -> <kbd>基本設定</kbd> -> <kbd>キーボード ショートカット</kbd>, Windows / Linux: <kbd>ファイル</kbd> -> <kbd>基本設定</kbd> -> <kbd>キーボード ショートカット</kbd>) でキーボードショートカットを割り当てる事ができます。
+In default, wandbox-vscode's commands doesn't apply keyboard shortcuts. Althogh,
+you can apply keyboard shortcuts by [`keybindings.json`](https://code.visualstudio.com/docs/customization/keybindings#_customizing-shortcuts)
+( Mac: <kbd>Code</kbd> -> <kbd>Preferences</kbd> -> <kbd>Keyboard Shortcuts</kbd>, Windows / Linux: <kbd>File</kbd> -> <kbd>Preferences</kbd> -> <kbd>Keyboard Shortcuts</kbd>).
 
-`keybindngs.json` で指定するコマンド名はコマンドパレット上で入力する名前は異なりますので、下の対応表を見て設定してください。
+Command name on `keybindings.json` is diffarent from on Command Pallete. See below table.
 
-|on Command Pallete|on keybindngs.json|
+|on Command Pallete|on keybindings.json|
 |-|-|
 |`Wandbox: Run`|`wandbox.run`|
 |`Wandbox: Share`|`wandbox.share`|
@@ -184,6 +186,8 @@ wandbox-vscode のコマンドには初期状態ではキーボードショー�
 |`Wandbox: Set Options`|`wandbox.setFileOptions`|
 |`Wandbox: Set Settings JSON`|`wandbox.setFileSettingJson`|
 |`Wandbox: Reset Settings`|`wandbox.resetFileSettings`|
+
+> ⚠️ Command name like as `extention.*` is deprecated.
 
 ## Release Notes
 

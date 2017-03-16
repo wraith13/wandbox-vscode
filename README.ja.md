@@ -57,7 +57,7 @@ VS Code のクイックオープンを出して(Mac:<kbd>Command</kbd>+<kbd>P</k
 
 > 👉 オプションの内容は選択されているコンパイラによって大幅に変わります。
 
-また settings.json で wandbox-vscode の各種設定を変更したり、 keybind.json で wandbox-vscode のコマンドにキーボードショートカットを割り当てる事もできます。
+また settings.json で wandbox-vscode の[各種設定](#エクステンションの設定)を変更したり、 keybindings.json で wandbox-vscode のコマンドに[キーボードショートカット](#キーボードショートカットの設定)を割り当てる事もできます。
 
 ## スクリーンショット
 
@@ -123,7 +123,7 @@ VS Code のクイックオープンを出して(Mac:<kbd>Command</kbd>+<kbd>P</k
 
 ## エクステンションの設定
 
-[`settings.json`](https://code.visualstudio.com/docs/customization/userandworkspace#_creating-user-and-workspace-settings)( Mac: <kbd>Command</kbd>+<kbd>,</kbd>, Windows / Linux: <kbd>ファイル</kbd> -> <kbd>基本設定</kbd> -> <kbd>設定</kbd> ) で次の設定ができます。
+[`settings.json`](https://code.visualstudio.com/docs/customization/userandworkspace#_creating-user-and-workspace-settings)( Mac: <kbd>Command</kbd>+<kbd>,</kbd>, Windows / Linux: <kbd>ファイル</kbd> → <kbd>基本設定</kbd> → <kbd>設定</kbd> ) で次の設定ができます。
 
 * `wandbox.Servers`: wandboxサーバーURLリスト ( 最初のURLがデフォルト wandboxサーバーURLになります。 )
 * `wandbox.simplifyPostData`: postデータを表示の際に簡素化します
@@ -167,11 +167,11 @@ VS Code のクイックオープンを出して(Mac:<kbd>Command</kbd>+<kbd>P</k
 ## キーボードショートカットの設定
 
 wandbox-vscode のコマンドには初期状態ではキーボードショートカットが割り当てられていませんが、
-[`keybindngs.json`](https://code.visualstudio.com/docs/customization/keybindings#_customizing-shortcuts)( Mac: <kbd>Code</kbd> -> <kbd>基本設定</kbd> -> <kbd>キーボード ショートカット</kbd>, Windows / Linux: <kbd>ファイル</kbd> -> <kbd>基本設定</kbd> -> <kbd>キーボード ショートカット</kbd>) でキーボードショートカットを割り当てる事ができます。
+[`keybindings.json`](https://code.visualstudio.com/docs/customization/keybindings#_customizing-shortcuts)( Mac: <kbd>Code</kbd> → <kbd>基本設定</kbd> → <kbd>キーボード ショートカット</kbd>, Windows / Linux: <kbd>ファイル</kbd> → <kbd>基本設定</kbd> → <kbd>キーボード ショートカット</kbd>) でキーボードショートカットを割り当てる事ができます。
 
-`keybindngs.json` で指定するコマンド名はコマンドパレット上で入力する名前は異なりますので、下の対応表を見て設定してください。
+`keybindings.json` で指定するコマンド名はコマンドパレット上で入力する名前は異なりますので、下の対応表を見て設定してください。
 
-|コマンドパレット上|keybindngs.json上|
+|コマンドパレット上|keybindings.json上|
 |-|-|
 |`Wandbox: Run`|`wandbox.run`|
 |`Wandbox: Share`|`wandbox.share`|
@@ -186,6 +186,8 @@ wandbox-vscode のコマンドには初期状態ではキーボードショー�
 |`Wandbox: Set Options`|`wandbox.setFileOptions`|
 |`Wandbox: Set Settings JSON`|`wandbox.setFileSettingJson`|
 |`Wandbox: Reset Settings`|`wandbox.resetFileSettings`|
+
+> ⚠️ `extention.*` のようなコマンド名は非推奨となりました。
 
 ## リリースノート
 
