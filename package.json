@@ -101,7 +101,7 @@
                         "fsharp": null,
                         "git-commit": null,
                         "git-rebase": null,
-                        "go": null,
+                        "go": "Go",
                         "groovy": "Groovy",
                         "handlebars": null,
                         "html": null,
