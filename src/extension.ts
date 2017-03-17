@@ -1391,8 +1391,6 @@ module WandboxVSCode
     
     var newDocument =
     {
-        text: null,
-        sourceFile: null,
         additionalTo: null,
         stdinTo: null
     };
@@ -1455,18 +1453,58 @@ module WandboxVSCode
                 }
                 else
                 {
-                    newDocument.text = data.toString();
-                    newDocument.sourceFile = helloFilePath;
-
-                    //  ドキュメント上は vscode.workspace.openTextDocument() で language を指定して新規ファイルオープン
-                    //  できることになってるっぽいんだけど、実際にそういうことができないので代わりに workbench.action.files.newUntitledFile
-                    //  を使っている。 untitled: を使ったやり方は保存予定の実パスを指定する必要があり、ここの目的には沿わない。
-
-                    //  language を指定して新規ファイルオープンできるようになったらその方法での実装に切り替えることを検討すること。
-
-                    await vscode.commands.executeCommand("workbench.action.files.newUntitledFile");
-                    //  ここでは新規オープンされた document 周りの情報がなにも取得できないのでなにもできない。
-                    //  なので　vscode.window.onDidChangeActiveTextEditor　で処理している。
+                    let languageMapping = getConfiguration("languageMapping");
+                    let language = await getLanguageName(null, helloFilePath);
+                    let vscodeLang =
+                    (
+                        Object
+                            .keys(languageMapping)
+                            .map
+                            (
+                                vscodeLang => pass_through =
+                                {
+                                    vscodeLang,
+                                    language:languageMapping[vscodeLang]
+                                }
+                            )
+                            .find(i => i.language === language) ||
+                        { vscodeLang:null }
+                    )
+                    .vscodeLang || "";
+                    console.log("vscodeLang:" +vscodeLang);
+                    //  vscode.workspace.openTextDocument のこの形のオーバーロードが定義ファイル上でのみ漏れてるっぽくって明示的にキャストしてやればちゃんと動作するっぽい。
+                    var document = <vscode.TextDocument>await (<any>vscode.workspace).openTextDocument({"language":vscodeLang});
+                    if (!document)
+                    {
+                        vscode.window.showErrorMessage("Can not open hello world!");
+                    }
+                    else
+                    {
+                        var text = data.toString();
+                        var textEditor = await vscode.window.showTextDocument(document);
+                        if (!textEditor)
+                        {
+                            vscode.window.showErrorMessage(document.languageId);
+                            //vscode.window.showErrorMessage("Can not find text editor!");
+                        }
+                        else
+                        {
+                            textEditor.edit
+                            (
+                                (editBuilder: vscode.TextEditorEdit) =>
+                                {
+                                    editBuilder.insert(new vscode.Position(0,0), text);
+                                }
+                            );
+                            var fileName = document.fileName;
+                            var compiler = await getWandboxCompilerName(undefined, helloFilePath);
+                            if (compiler)
+                            {
+                                fileSetting[fileName] = fileSetting[fileName] || {};
+                                fileSetting[fileName]['compiler'] = compiler;
+                            }
+                        }
+                    }
                 }
             }
             else
@@ -1607,28 +1645,6 @@ module WandboxVSCode
                         if (fileSetting[document.fileName])
                         {
                             delete fileSetting[document.fileName];
-                        }
-                        if (newDocument.text)
-                        {
-                            var text = newDocument.text;
-                            var activeTextEditor = vscode.window.activeTextEditor;
-                            activeTextEditor.edit
-                            (
-                                (editBuilder: vscode.TextEditorEdit) =>
-                                {
-                                    editBuilder.insert(new vscode.Position(0,0), text);
-                                }
-                            );
-                            var fileName = document.fileName;
-                            var compiler = await getWandboxCompilerName(undefined, newDocument.sourceFile);
-                            if (compiler)
-                            {
-                                fileSetting[fileName] = fileSetting[fileName] || {};
-                                fileSetting[fileName]['compiler'] = compiler;
-                            }
-
-                            newDocument.text = null;
-                            newDocument.sourceFile = null;
                         }
                         if (newDocument.additionalTo)
                         {
