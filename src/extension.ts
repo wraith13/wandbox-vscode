@@ -739,12 +739,9 @@ module WandboxVSCode
                 {
                     if ('codes' === name)
                     {
-                        if (!newDocument.additionalTo)
-                        {
-                            var newFiles = JSON.parse(value);
-                            fileSetting[fileName][name] = newFiles;
-                            OutputChannel.appendLine(`Set ${name} "${newFiles.join('","')}" for "${fileName}"`);
-                        }
+                        var newFiles = JSON.parse(value);
+                        fileSetting[fileName][name] = newFiles;
+                        OutputChannel.appendLine(`Set ${name} "${newFiles.join('","')}" for "${fileName}"`);
                     }
                     else
                     if (name)
@@ -976,8 +973,9 @@ module WandboxVSCode
                     }
                     else
                     {
-                        newDocument.additionalTo = document.fileName;
-                        await vscode.commands.executeCommand("workbench.action.files.newUntitledFile");
+                        var newDocument = await openNewTextDocument("");
+                        await vscode.window.showTextDocument(newDocument);
+                        additionals.push(newDocument.fileName);
                     }
                     result = JSON.stringify(additionals);
                 }
@@ -1055,8 +1053,9 @@ module WandboxVSCode
                     }
                     else
                     {
-                        newDocument.stdinTo = document.fileName;
-                        await vscode.commands.executeCommand("workbench.action.files.newUntitledFile");
+                        var newDocument = await openNewTextDocument("");
+                        await vscode.window.showTextDocument(newDocument);
+                        result = newDocument.fileName;
                     }
                 }
                 return result;
@@ -1394,12 +1393,6 @@ module WandboxVSCode
         }
     }
     
-    var newDocument =
-    {
-        additionalTo: null,
-        stdinTo: null
-    };
-
     async function getHelloWorldFiles() : Promise<vscode.QuickPickItem[]>
     {
         var extensionPath = vscode.extensions.getExtension("wraith13.wandbox-vscode").extensionPath;
@@ -1634,24 +1627,6 @@ module WandboxVSCode
                         if (fileSetting[document.fileName])
                         {
                             delete fileSetting[document.fileName];
-                        }
-                        if (newDocument.additionalTo)
-                        {
-                            let fileName = newDocument.additionalTo;
-                            fileSetting[fileName] = fileSetting[fileName] || {};
-                            let newFiles = fileSetting[fileName]['codes'] || [];
-                            newFiles.push(document.fileName);
-                            fileSetting[fileName]['codes'] = newFiles;
-                            OutputChannel.appendLine(`Set codes "${newFiles.join('","')}" for "${fileName}"`);
-                            newDocument.additionalTo = null;
-                        }
-                        if (newDocument.stdinTo)
-                        {
-                            let fileName = newDocument.stdinTo;
-                            fileSetting[fileName] = fileSetting[fileName] || {};
-                            fileSetting[fileName]['stdin'] = document.fileName;
-                            OutputChannel.appendLine(`Set stdin "${document.fileName}" for "${fileName}"`);
-                            newDocument.stdinTo = null;
                         }
                     }
                 }
