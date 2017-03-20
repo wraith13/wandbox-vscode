@@ -4,6 +4,19 @@ All notable changes to the "wandbox-vscode" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 2.1.4 - 2017-03-20
+
+### Fixed
+
+- DOC: Fixed a Date in Change Log
+
+## 2.1.3 - 2017-03-20
+
+### Fixed
+
+- Fixed issue that it doesn't set language mode to hello world document with `Wandbox: Hello` command.
+- Fixed issue that it volatiles settings.
+
 ## 2.1.2 - 2017-03-17
 
 ### Added
