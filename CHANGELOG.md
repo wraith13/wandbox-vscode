@@ -4,6 +4,12 @@ All notable changes to the "wandbox-vscode" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## ?.?.? - 2017-??-??
+
+### Added
+
+- DOC: Added a wandbox-builder link in README
+
 ## 2.1.4 - 2017-03-20
 
 ### Fixed

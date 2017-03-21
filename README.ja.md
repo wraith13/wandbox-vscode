@@ -199,6 +199,8 @@ wandbox-vscode のコマンドには初期状態ではキーボードショー�
 
 問題ありません！　あなたは [wandbox](https://github.com/melpon/wandbox/) にプルリクエストを投げることができます！
 
+> [wandbox-builder](https://github.com/melpon/wandbox-builder) も参照してください。
+
 ## サポート
 
 [GitHub Issues](https://github.com/wraith13/wandbox-vscode/issues)
