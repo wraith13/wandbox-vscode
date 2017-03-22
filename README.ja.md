@@ -21,7 +21,7 @@ wandbox-vscode はコンパイル、実行、シェアを行う為のいくつ�
 > Windows and Linux: <kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>P</kbd>
 
 現在 wandbox で利用可能な言語 :
-Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Go, Groovy, Haskell, Java, JavaScript, Lazy K, Lisp, Lua, OCaml, Pascal, Perl, PHP, Python, Rill, Ruby, Rust, Scala, SQL, Apple Swift, Vim script
+Bash script, C, C#, C++, CoffeeScript, CPP, D, Elixir, Erlang, Go, Groovy, Haskell, Java, JavaScript, Lazy K, Lisp, Lua, OCaml, Pascal, Perl, PHP, Pony, Python, Rill, Ruby, Rust, Scala, SQL, Apple Swift, Vim script
 
 
 ## チュートリアル
