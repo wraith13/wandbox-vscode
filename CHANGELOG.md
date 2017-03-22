@@ -4,11 +4,16 @@ All notable changes to the "wandbox-vscode" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## ?.?.? - 2017-??-??
+## 2.1.5 - 2017-03-23
 
 ### Added
 
+- Supported Pony
 - DOC: Added a wandbox-builder link in README
+
+### Changed
+
+- Changed wandbox server address to a [new server](https://wandbox.org/). ( old url is http://melpon.org/wandbox/ )
 
 ## 2.1.4 - 2017-03-20
 
