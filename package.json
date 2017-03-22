@@ -66,7 +66,7 @@
                 "wandbox.Servers": {
                     "type": "array",
                     "default": [
-                        "http://melpon.org/wandbox/",
+                        "https://wandbox.org/",
                         "https://wandbox.fetus.jp/"
                     ],
                     "description": "wandbox server url list ( first one is default wandbox server url )"
