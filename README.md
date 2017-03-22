@@ -4,7 +4,7 @@
 ![installs](https://vsmarketplacebadge.apphb.com/installs/wraith13.wandbox-vscode.svg)
 ![rating](https://vsmarketplacebadge.apphb.com/rating/wraith13.wandbox-vscode.svg)](https://marketplace.visualstudio.com/items?itemName=wraith13.wandbox-vscode)
 
-[Wandbox](http://melpon.org/wandbox)([GitHub](https://github.com/melpon/wandbox/)) is a social compilation service. This extension is Wandbox front-end for Visual Studio Code.
+[Wandbox](https://wandbox.org)([GitHub](https://github.com/melpon/wandbox/)) is a social compilation service. This extension is Wandbox front-end for Visual Studio Code.
 
 > Wandbox is provided from [@melpon](https://github.com/melpon)( 🐕 dog) as a personal voluntary service.
 > For keep this service, please do not put a high load on this service.

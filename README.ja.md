@@ -4,7 +4,7 @@
 ![installs](https://vsmarketplacebadge.apphb.com/installs/wraith13.wandbox-vscode.svg)
 ![rating](https://vsmarketplacebadge.apphb.com/rating/wraith13.wandbox-vscode.svg)](https://marketplace.visualstudio.com/items?itemName=wraith13.wandbox-vscode)
 
-[Wandbox](http://melpon.org/wandbox)([GitHub](https://github.com/melpon/wandbox/)) はソーシャルコンパレーションサービスです。このエクステンションは Visual Studio Code の為の Wandbox フロントエンドです。
+[Wandbox](https://wandbox.org)([GitHub](https://github.com/melpon/wandbox/)) はソーシャルコンパレーションサービスです。このエクステンションは Visual Studio Code の為の Wandbox フロントエンドです。
 
 > Wandbox は [@melpon](https://github.com/melpon)( 🐕 犬) が個人的に無償(自腹)で提供しているサービスです。
 > このサービスが提供され続ける為、このサービスに高負荷をかけないようにしてください。
