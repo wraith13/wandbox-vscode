@@ -1611,7 +1611,7 @@ module WandboxVSCode
                     fileSetting[document.fileName]
                 )
                 {
-                    OutputChannel.appendLine(`delete fileSetting[${document.fileName}]`);
+                    //OutputChannel.appendLine(`delete fileSetting[${document.fileName}]`);
                     delete fileSetting[document.fileName];
                 }
             }
