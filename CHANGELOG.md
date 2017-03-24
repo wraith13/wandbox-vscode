@@ -4,6 +4,12 @@ All notable changes to the "wandbox-vscode" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 2.1.6 - 2017-03-24
+
+### Added
+
+- Supported Crystal
+
 ## 2.1.5 - 2017-03-23
 
 ### Added
