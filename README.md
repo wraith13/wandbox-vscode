@@ -1,8 +1,6 @@
 # wandbox-vscode ( [🇯🇵 Japanese](https://github.com/wraith13/wandbox-vscode/blob/master/README.ja.md) )
 
-[![Visual Studio Marketplace](https://vsmarketplacebadge.apphb.com/version/wraith13.wandbox-vscode.svg)
-![installs](https://vsmarketplacebadge.apphb.com/installs/wraith13.wandbox-vscode.svg)
-![rating](https://vsmarketplacebadge.apphb.com/rating/wraith13.wandbox-vscode.svg)](https://marketplace.visualstudio.com/items?itemName=wraith13.wandbox-vscode)
+[![Visual Studio Marketplace](https://vsmarketplacebadge.apphb.com/version/wraith13.wandbox-vscode.svg) ![installs](https://vsmarketplacebadge.apphb.com/installs/wraith13.wandbox-vscode.svg) ![rating](https://vsmarketplacebadge.apphb.com/rating/wraith13.wandbox-vscode.svg)](https://marketplace.visualstudio.com/items?itemName=wraith13.wandbox-vscode)
 
 [Wandbox](https://wandbox.org)([GitHub](https://github.com/melpon/wandbox/)) is a social compilation service. This extension is Wandbox front-end for Visual Studio Code.
 
