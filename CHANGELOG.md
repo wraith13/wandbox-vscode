@@ -4,6 +4,12 @@ All notable changes to the "wandbox-vscode" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 2.1.7 - 2017-03-25
+
+### Added
+
+- Supported Nim
+
 ## 2.1.6 - 2017-03-24
 
 ### Added
