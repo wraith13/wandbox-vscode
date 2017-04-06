@@ -121,6 +121,43 @@ module WandboxVSCode
         return <vscode.TextDocument> await (<any>vscode.workspace).openTextDocument({ language });
     }
 
+    async function openNewCodeDocument(language : string, compiler : string, code : string) : Promise<void>
+    {
+        let languageMapping = getConfiguration("languageMapping");
+        let vscodeLang =
+        (
+            Object
+                .keys(languageMapping)
+                .map
+                (
+                    vscodeLang => pass_through =
+                    {
+                        vscodeLang,
+                        language:languageMapping[vscodeLang]
+                    }
+                )
+                .find(i => i.language === language) ||
+            { vscodeLang:null }
+        )
+        .vscodeLang || "";
+        console.log("vscodeLang:" +vscodeLang);
+        var document = await openNewTextDocument(vscodeLang);
+        var textEditor = await vscode.window.showTextDocument(document);
+        textEditor.edit
+        (
+            (editBuilder: vscode.TextEditorEdit) =>
+            {
+                editBuilder.insert(new vscode.Position(0,0), code);
+            }
+        );
+        var fileName = document.fileName;
+        if (compiler)
+        {
+            fileSetting[fileName] = fileSetting[fileName] || {};
+            fileSetting[fileName]['compiler'] = compiler;
+        }
+    }
+
     class HistoryEntry
     {
         public timestamp : Date;
@@ -271,6 +308,50 @@ module WandboxVSCode
                         await getList();
                     }
                     resolve(list[key]);
+                }
+            );
+        }
+
+        export async function getTemplate(templateName : string) : Promise<any[]>
+        {
+            return new Promise<any[]>
+            (
+                async (resolve, reject) =>
+                {
+                    var requestUrl = getUrl() +`/api/template/${templateName}`;
+                    OutputChannel.appendLine(`HTTP GET ${requestUrl}`);
+                    let { error, response, body } = await rx.get
+                    (
+                        requestUrl,
+                    );
+                    OutputChannel.appendLine(`statusCode: ${response.statusCode}`);
+                    if (error)
+                    {
+                        OutputChannel.appendLine(`${emoji("error")}error: ${error}`);
+                        reject(error);
+                    }
+                    else
+                    if (response.statusCode === 200)
+                    {
+                        resolve(templates[templateName] = JSON.parse(body));
+                    }
+                }
+            );
+        }
+
+        var templates : {[name : string] : any[] } = { };
+
+        export function makeSureTempate(templateName : string) : Promise<any[]>
+        {
+            return new Promise<any[]>
+            (
+                async (resolve) =>
+                {
+                    if (!templates[templateName])
+                    {
+                        await getTemplate(templateName);
+                    }
+                    resolve(templates[templateName]);
                 }
             );
         }
@@ -1428,6 +1509,79 @@ module WandboxVSCode
         );
     }
 
+    async function newWandbox() : Promise<void>
+    {
+        var compilerName : string;
+        var document = WorkSpace.getActiveDocument();
+        var vscodeLang = document.languageId;
+        var fileName = document.fileName;
+        var language = await queryLanguageNameToUser(vscodeLang, fileName);
+        if (language)
+        {
+            let compilerList = await getCompilerList(language);
+            if (1 === compilerList.length)
+            {
+                compilerName = compilerList[0].description;
+            }
+            else
+            {
+                let selectedCompiler = await getWandboxCompilerName(vscodeLang, fileName);
+                if (!selectedCompiler || !compilerList.find(i => selectedCompiler === i.description))
+                {
+                    selectedCompiler = compilerList[0].description;
+                }
+                for(let i of compilerList)
+                {
+                    i.label = emoji(selectedCompiler === i.description ? "checkedRadio": "uncheckedRadio") +i.label;
+                }
+                let select = await vscode.window.showQuickPick
+                (
+                    compilerList,
+                    {
+                        placeHolder: "Select a compiler",
+                    }
+                );
+                if (select)
+                {
+                    compilerName = select.description;
+                }
+            }
+            if (compilerName)
+            {
+                var templateName : string;
+                var compiler = (<any[]> await WandboxServer.makeSureList())
+                    .find(i => i.name === compilerName);
+                if (1 === compiler.templates.length)
+                {
+                    templateName = compiler.templates[0];
+                }
+                else
+                {
+                    let select = await vscode.window.showQuickPick
+                    (
+                        compiler.templates,
+                        {
+                            placeHolder: "Select a template",
+                        }
+                    );
+                    if (select)
+                    {
+                        templateName = select;
+                    }
+                }
+                if (templateName)
+                {
+                    await openNewCodeDocument
+                    (
+                        language,
+                        compilerName,
+                        (<any> await WandboxServer.makeSureTempate(templateName)).code
+                    );
+                }
+            }
+        }
+    }
+
     async function helloWandbox() : Promise<void>
     {
         var select = await vscode.window.showQuickPick
@@ -1451,42 +1605,12 @@ module WandboxVSCode
                 }
                 else
                 {
-                    let languageMapping = getConfiguration("languageMapping");
-                    let language = await getLanguageName(null, helloFilePath);
-                    let vscodeLang =
+                    await openNewCodeDocument
                     (
-                        Object
-                            .keys(languageMapping)
-                            .map
-                            (
-                                vscodeLang => pass_through =
-                                {
-                                    vscodeLang,
-                                    language:languageMapping[vscodeLang]
-                                }
-                            )
-                            .find(i => i.language === language) ||
-                        { vscodeLang:null }
-                    )
-                    .vscodeLang || "";
-                    console.log("vscodeLang:" +vscodeLang);
-                    var text = data.toString();
-                    var document = await openNewTextDocument(vscodeLang);
-                    var textEditor = await vscode.window.showTextDocument(document);
-                    textEditor.edit
-                    (
-                        (editBuilder: vscode.TextEditorEdit) =>
-                        {
-                            editBuilder.insert(new vscode.Position(0,0), text);
-                        }
+                        await getLanguageName(null, helloFilePath),
+                        await getWandboxCompilerName(undefined, helloFilePath),
+                        data.toString()
                     );
-                    var fileName = document.fileName;
-                    var compiler = await getWandboxCompilerName(undefined, helloFilePath);
-                    if (compiler)
-                    {
-                        fileSetting[fileName] = fileSetting[fileName] || {};
-                        fileSetting[fileName]['compiler'] = compiler;
-                    }
                 }
             }
             else
@@ -1567,6 +1691,11 @@ module WandboxVSCode
                 callback: () => invokeWandbox({ share: true })
             },
             {
+                oldCommand: null,
+                command: 'wandbox.new',
+                callback: newWandbox
+            },
+            {
                 oldCommand: 'extension.helloWandbox',
                 command: 'wandbox.hello',
                 callback: helloWandbox
@@ -1576,7 +1705,7 @@ module WandboxVSCode
         (
             i => context.subscriptions.concat
             (
-                vscode.commands.registerCommand
+                i.oldCommand && vscode.commands.registerCommand
                 (
                     i.oldCommand,
                     () =>

@@ -4,6 +4,16 @@ All notable changes to the "wandbox-vscode" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## ?.?.? - 2017-04-??
+
+### Added
+
+- Added `Wandbox: New` command.
+
+### Deprecated
+
+- `Wandbox: Hello` command.
+
 ## 2.1.7 - 2017-03-25
 
 ### Added

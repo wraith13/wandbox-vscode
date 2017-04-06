@@ -30,7 +30,7 @@ Launch VS Code Quick Open(Mac:<kbd>Command</kbd>+<kbd>P</kbd>, Windows and Linux
 
 ### 1. ✨️ Open new "Hello, World!":
 
-Launch Command Palette(Mac:<kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd>, Windows and Linux: <kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>P</kbd>), Execute `Wandbox: Hello` command and select a "Hello, World!" file as you like.
+Launch Command Palette(Mac:<kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd>, Windows and Linux: <kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>P</kbd>), Execute `Wandbox: New` command and select a "Hello, World!" code as you like.
 
 > 👉 You can also open files in other ways.
 
@@ -87,7 +87,11 @@ You can change [settings](#extension-settings) by `settings.json`. And you can a
 
 > 👉 You can disable to auto open share url by `wandbox.autoOpenShareUrl` setting.
 
+* `Wandbox: New` : open new "Hello, World!"
 * `Wandbox: Hello` : open new "Hello, World!"
+
+> ⚠️ Because the Wandbox corresponds to the same function, the `[ho
+Since Wandbox was compatible with the same function, `Wandbox: New` is made. And this `Wandbox: Hello` command is deprecated now.
 
 ## Show Commands
 

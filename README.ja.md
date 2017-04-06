@@ -30,7 +30,7 @@ VS Code のクイックオープンを出して(Mac:<kbd>Command</kbd>+<kbd>P</k
 
 ### 1. ✨️ 新規"Hello, World!"を開く:
 
-コマンドパレットを出して(Mac:<kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd>, Windows and Linux: <kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>P</kbd>)、 `Wandbox: Hello` コマンドを実行し、適当な "Hello, World!" ファイルを選択します。
+コマンドパレットを出して(Mac:<kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd>, Windows and Linux: <kbd>F1</kbd> or <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>P</kbd>)、 `Wandbox: New` コマンドを実行し、適当な "Hello, World!" コードを選択します。
 
 > 👉 その他の方法で開いたファイルでも構いません。
 
@@ -85,7 +85,10 @@ VS Code のクイックオープンを出して(Mac:<kbd>Command</kbd>+<kbd>P</k
 
 > 👉 自動的にシェアURLを開く挙動は `wandbox.autoOpenShareUrl` の設定で無効化できます。
 
+* `Wandbox: New` : 新規 "Hello, World!" を開きます
 * `Wandbox: Hello` : 新規 "Hello, World!" を開きます
+
+> ⚠️ 本家 Wandbox が同機能に対応した為、`Wandbox: New` を新設し `Wandbox: Hello` は非推奨となりました。
 
 ## 表示コマンド
 

@@ -46,6 +46,7 @@
         "onCommand:extension.resetWandboxFileSettings",
         "onCommand:wandbox.run",
         "onCommand:wandbox.share",
+        "onCommand:wandbox.new",
         "onCommand:wandbox.hello",
         "onCommand:wandbox.showListJson",
         "onCommand:wandbox.showWeb",
@@ -320,6 +321,11 @@
             {
                 "command": "wandbox.share",
                 "title": "Share",
+                "category": "Wandbox"
+            },
+            {
+                "command": "wandbox.new",
+                "title": "New",
                 "category": "Wandbox"
             },
             {
