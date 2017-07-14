@@ -117,8 +117,7 @@ module WandboxVSCode
     }
     async function openNewTextDocument(language : string) : Promise<vscode.TextDocument>
     {
-        //  vscode.workspace.openTextDocument のこの形のオーバーロードが定義ファイル上でのみ漏れてるっぽくって明示的にキャストしてやればちゃんと動作するっぽい。
-        return <vscode.TextDocument> await (<any>vscode.workspace).openTextDocument({ language });
+        return await vscode.workspace.openTextDocument({ language });
     }
 
     async function openNewCodeDocument(language : string, compiler : string, code : string) : Promise<void>
