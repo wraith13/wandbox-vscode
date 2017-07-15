@@ -1512,11 +1512,12 @@ module WandboxVSCode
     {
         var compilerName : string;
         var document = WorkSpace.getActiveDocument();
-        var vscodeLang = document.languageId;
-        var fileName = document.fileName;
+        var vscodeLang = document ? document.languageId: null;
+        var fileName = document ? document.fileName: null;
         var language = await queryLanguageNameToUser(vscodeLang, fileName);
         if (language)
         {
+            console.log(`🐕: ${language}`);
             let compilerList = await getCompilerList(language);
             if (1 === compilerList.length)
             {
@@ -1524,7 +1525,9 @@ module WandboxVSCode
             }
             else
             {
+            console.log(`🐕: xxxxxxxxxxxxxxxx`);
                 let selectedCompiler = await getWandboxCompilerName(vscodeLang, fileName);
+            console.log(`🐕: yyyyyyyyyyyyyyyyy`);
                 if (!selectedCompiler || !compilerList.find(i => selectedCompiler === i.description))
                 {
                     selectedCompiler = compilerList[0].description;
