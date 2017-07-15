@@ -1517,7 +1517,6 @@ module WandboxVSCode
         var language = await queryLanguageNameToUser(vscodeLang, fileName);
         if (language)
         {
-            console.log(`🐕: ${language}`);
             let compilerList = await getCompilerList(language);
             if (1 === compilerList.length)
             {
@@ -1525,9 +1524,7 @@ module WandboxVSCode
             }
             else
             {
-            console.log(`🐕: xxxxxxxxxxxxxxxx`);
                 let selectedCompiler = await getWandboxCompilerName(vscodeLang, fileName);
-            console.log(`🐕: yyyyyyyyyyyyyyyyy`);
                 if (!selectedCompiler || !compilerList.find(i => selectedCompiler === i.description))
                 {
                     selectedCompiler = compilerList[0].description;
