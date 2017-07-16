@@ -1511,10 +1511,7 @@ module WandboxVSCode
     async function newWandbox() : Promise<void>
     {
         var compilerName : string;
-        var document = WorkSpace.getActiveDocument();
-        var vscodeLang = document ? document.languageId: null;
-        var fileName = document ? document.fileName: null;
-        var language = await queryLanguageNameToUser(vscodeLang, fileName);
+        var language = await queryLanguageNameToUser();
         if (language)
         {
             let compilerList = await getCompilerList(language);
