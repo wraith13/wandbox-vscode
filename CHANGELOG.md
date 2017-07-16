@@ -4,6 +4,12 @@ All notable changes to the "wandbox-vscode" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 2.2.1 - 2017-07-16
+
+### Fixed
+
+- Fixed issue that `Wandbox: New` command dose not work without current text document.
+
 ## 2.2.0 - 2017-04-07
 
 ### Added
