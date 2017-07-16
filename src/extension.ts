@@ -1524,15 +1524,6 @@ module WandboxVSCode
             }
             else
             {
-                let selectedCompiler = await getWandboxCompilerName(vscodeLang, fileName);
-                if (!selectedCompiler || !compilerList.find(i => selectedCompiler === i.description))
-                {
-                    selectedCompiler = compilerList[0].description;
-                }
-                for(let i of compilerList)
-                {
-                    i.label = emoji(selectedCompiler === i.description ? "checkedRadio": "uncheckedRadio") +i.label;
-                }
                 let select = await vscode.window.showQuickPick
                 (
                     compilerList,
