@@ -371,7 +371,7 @@ module WandboxVSCode
                 json['code'] = document.fileName;
                 if (additionals)
                 {
-                    json['codes'] = additionals.join(',');
+                    json['codes'] = additionals.map(i => `'${i}' as '${stripDirectory(i)}'`).join(',');
                 }
 
                 OutputChannel.appendJson(json);
@@ -382,7 +382,7 @@ module WandboxVSCode
                 (
                     filename => pass_through =
                     {
-                        'file': filename,
+                        'file': stripDirectory(filename),
                         'code': vscode.workspace.textDocuments
                             .find(document => filename === document.fileName)
                             .getText()
