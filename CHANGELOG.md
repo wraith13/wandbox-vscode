@@ -4,6 +4,12 @@ All notable changes to the "wandbox-vscode" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## ?.?.? - 2017-??-??
+
+### Fixed
+
+- Fixed issue that multiple files dose not work with saved file. ( [issue #12](https://github.com/wraith13/wandbox-vscode/issues/12) )
+
 ## 2.2.1 - 2017-07-16
 
 ### Fixed
