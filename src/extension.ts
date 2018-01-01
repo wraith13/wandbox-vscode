@@ -1127,8 +1127,8 @@ module WandboxVSCode
                         else
                         {
                             result = select.description
-                                .replace("\\","\\\\")
-                                .replace("\"","\\\"");
+                                .replace(/\\/g, "\\\\")
+                                .replace(/\"/g, "\\\"");
                         }
                     }
                     else
