@@ -7,7 +7,7 @@
     "publisher": "wraith13",
     "license": "SEE LICENSE IN LICENSE_1_0.txt",
     "engines": {
-        "vscode": "^1.5.0"
+        "vscode": "^1.9.1"
     },
     "galleryBanner": {
         "color": "#d6e685",
