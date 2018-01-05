@@ -4,6 +4,12 @@ All notable changes to the "wandbox-vscode" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 2.2.3 - 2018-01-05
+
+### Fixed
+
+- Fixed issue that stdin option dose not work on windows.
+
 ## 2.2.2 - 2017-10-17
 
 ### Fixed
