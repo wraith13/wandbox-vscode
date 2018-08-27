@@ -21,12 +21,11 @@ wandbox-vscode はコンパイル、実行、シェアを行う為のいくつ�
 現在 wandbox で利用可能な言語 :
 Bash script, C, C#, C++, CoffeeScript, CPP, Crystal, D, Elixir, Erlang, Go, Groovy, Haskell, Java, JavaScript, Lazy K, Lisp, Lua, Nim, OCaml, Pascal, Perl, PHP, Pony, Python, Rill, Ruby, Rust, Scala, SQL, Apple Swift, Vim script
 
-
 ## チュートリアル
 
 ### 0. ⬇️ wandbox-vscodeのインストール:
 
-VS Code のクイックオープンを出して(Mac:<kbd>Command</kbd>+<kbd>P</kbd>, Windows and Linux: <kbd>Ctrl</kbd>+<kbd>P</kbd>)、 `ext install wandbox-vscode` とタイプし <kbd>Enter</kbd> キーを押下し、<kbd>Install</kbd> をクリックします。インストールが終わったら VS Code を再起動してください。
+VS Code の拡張サイドバーを出して(Mac:<kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>, Windows and Linux: <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>)、 `wandbox-vscode` とタイプし <kbd>Enter</kbd> キーを押下し、<kbd>Install</kbd> をクリックします。インストールが終わったら VS Code を再起動してください。
 
 ### 1. ✨️ 新規"Hello, World!"を開く:
 

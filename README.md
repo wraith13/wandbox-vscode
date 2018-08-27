@@ -26,7 +26,7 @@ Bash script, C, C#, C++, CoffeeScript, CPP, Crystal, D, Elixir, Erlang, Go, Groo
 
 ### 0. ⬇️ Install wandbox-vscode:
 
-Launch VS Code Quick Open(Mac:<kbd>Command</kbd>+<kbd>P</kbd>, Windows and Linux: <kbd>Ctrl</kbd>+<kbd>P</kbd>), Type `ext install wandbox-vscode` and press <kbd>Enter</kbd> and click <kbd>Install</kbd>.  Restart VS Code when installation is completed.
+Show extension side bar within VS Code(Mac:<kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>, Windows and Linux: <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>), type `wandbox-vscode` and press <kbd>Enter</kbd> and click <kbd>Install</kbd>. Restart VS Code when installation is completed.
 
 ### 1. ✨️ Open new "Hello, World!":
 
