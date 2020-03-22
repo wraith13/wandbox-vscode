@@ -7,91 +7,76 @@ import * as fs from 'fs';
 
 module rx
 {
-    export function get(url : string)
-        : Thenable<{ error : any, response : any, body : any}>
-    {
-        return new Promise
+    export const get = (url : string)
+        : Thenable<{ error : any, response : any, body : any}> => new Promise
+    (
+        resolve => request.get
         (
-            resolve => request.get
+            url,
+            (error, response, body) => resolve
             (
-                url,
-                (error, response, body) => resolve
-                (
-                    {
-                        error,
-                        response,
-                        body
-                    }
-                )
+                {
+                    error,
+                    response,
+                    body
+                }
             )
-        );
-    }
-    export function execute(data : any)
-        : Thenable<{ error : any, response : any, body : any}>
-    {
-        return new Promise
+        )
+    );
+    export const execute = (data : any)
+        : Thenable<{ error : any, response : any, body : any}> => new Promise
+    (
+        resolve => request
         (
-            resolve => request
+            data,
+            (error, response, body) => resolve
             (
-                data,
-                (error, response, body) => resolve
-                (
-                    {
-                        error,
-                        response,
-                        body
-                    }
-                )
+                {
+                    error,
+                    response,
+                    body
+                }
             )
-        );
-    }
+        )
+    );
 }
 
 module fx
 {
-    export function readdir(path : string)
-        : Thenable<{ error : NodeJS.ErrnoException, files : string[] }>
-    {
-        return new Promise
+    export const readdir = (path : string)
+        : Thenable<{ error : NodeJS.ErrnoException, files : string[] }> => new Promise
+    (
+        resolve => fs.readdir
         (
-            resolve => fs.readdir
+            path,
+            (error : NodeJS.ErrnoException, files : string[]) => resolve
             (
-                path,
-                (error : NodeJS.ErrnoException, files : string[]) => resolve
-                (
-                    {
-                        error,
-                        files
-                    }
-                )
+                {
+                    error,
+                    files
+                }
             )
-        );
-    }
+        )
+    );
 
-    export function exists(path : string) : Thenable<boolean>
-    {
-        return new Promise
+    export const exists = (path : string) : Thenable<boolean> => new Promise
+    (
+        resolve => fs.exists
         (
-            resolve => fs.exists
-            (
-                path,
-                exists => resolve(exists)
-            )
-        );
-    }
+            path,
+            exists => resolve(exists)
+        )
+    );
 
-    export function readFile(path : string)
-        : Thenable<{ err : NodeJS.ErrnoException, data : Buffer }>
-    {
-        return new Promise
+    export const readFile = (path : string)
+        : Thenable<{ err : NodeJS.ErrnoException, data : Buffer }> =>new Promise
+    (
+        resolve => fs.readFile
         (
-            resolve => fs.readFile
-            (
-                path,
-                (err : NodeJS.ErrnoException, data : Buffer) => resolve({ err, data })
-            )
-        );
-    }
+            path,
+            (err : NodeJS.ErrnoException, data : Buffer) => resolve({ err, data })
+        )
+    );
 }
 
 module WandboxVSCode
@@ -100,26 +85,21 @@ module WandboxVSCode
     let context: vscode.ExtensionContext;
     const fileSetting = { };
 
-    function stripDirectory(path : string) : string
-    {
-        return path
+    const stripDirectory = (path : string) : string =>path
             .split('\\').reverse()[0]
             .split('/').reverse()[0];
-    }
 
-    function getConfiguration<type>(key ?: string) : type
+    const getConfiguration = <type>(key ?: string) : type =>
     {
         const configuration = vscode.workspace.getConfiguration("wandbox");
         return key ?
             configuration[key]:
             configuration;
-    }
-    async function openNewTextDocument(language : string) : Promise<vscode.TextDocument>
-    {
-        return await vscode.workspace.openTextDocument({ language });
-    }
+    };
+    const openNewTextDocument = async (language : string) : Promise<vscode.TextDocument> =>
+        await vscode.workspace.openTextDocument({ language });
 
-    async function openNewCodeDocument(language : string, compiler : string, code : string) : Promise<void>
+    const openNewCodeDocument = async (language : string, compiler : string, code : string) : Promise<void> =>
     {
         const languageMapping = getConfiguration("languageMapping");
         const vscodeLang =
@@ -154,7 +134,7 @@ module WandboxVSCode
             fileSetting[fileName] = fileSetting[fileName] || {};
             fileSetting[fileName]['compiler'] = compiler;
         }
-    }
+    };
 
     class HistoryEntry
     {
@@ -164,16 +144,12 @@ module WandboxVSCode
         public shareUrl : string;
     }
 
-    async function getHistory() : Promise<HistoryEntry[]>
-    {
-        return await context.globalState.get<HistoryEntry[]>("history", []);
-    }
-    async function updateHistory(history : HistoryEntry[]) : Promise<void>
-    {
+    const getHistory = async () : Promise<HistoryEntry[]> =>
+        await context.globalState.get<HistoryEntry[]>("history", []);
+    const updateHistory = async (history : HistoryEntry[]) : Promise<void> =>
         await context.globalState.update("history", history);
-    }
 
-    function emoji(key : string) : string
+    const emoji = (key : string) : string =>
     {
         let result : string = getConfiguration("emoji")[key];
         if (result)
@@ -185,13 +161,13 @@ module WandboxVSCode
             result = "";
         }
         return result;
-    }
+    };
 
     module OutputChannel
     {
         let outputChannel :vscode.OutputChannel;
 
-        export function makeSure() :vscode.OutputChannel
+        export const makeSure = () :vscode.OutputChannel =>
         {
             if (!outputChannel)
             {
@@ -205,37 +181,29 @@ module WandboxVSCode
                 appendLine('');
             }
             return outputChannel;
-        }
+        };
 
-        export function bowWow() : void
+        export const bowWow = () : void =>
         {
             show();
             appendLine(`${emoji("stamp")}Bow-wow! ${new Date().toString()}`);
-        }
+        };
 
-        export function show() : void
-        {
+        export const show = () : void =>
             outputChannel.show();
-        }
-        export function appendLine(value : string) : void
-        {
+        export const appendLine = (value : string) : void =>
             outputChannel.appendLine(value);
-        }
 
-        export function appendJson(value : any) : void
-        {
+        export const appendJson = (value : any) : void =>
             OutputChannel.appendLine(JSON.stringify(value, null, 4));
-        }
 
-        export function canceled() : void
-        {
+        export const canceled = () : void =>
             appendLine(`Canceled`);
-        }
     }
 
     module WandboxServer
     {
-        export function getServer() : string
+        export const getServer = () : string =>
         {
             let result : string;
             const setting = fileSetting[WorkSpace.getCurrentFilename()];
@@ -248,9 +216,9 @@ module WandboxVSCode
                 result = getConfiguration<string[]>("Servers")[0];
             }
             return result;
-        }
+        };
 
-        function getUrl() :string
+        const getUrl = () :string =>
         {
             let result : string = getServer();
             if (result.endsWith("/"))
@@ -258,103 +226,89 @@ module WandboxVSCode
                 result = result.substr(0, result.length -1);
             }
             return result;
-        }
+        };
 
-        export function getWebUrl() :string
-        {
-            return getUrl() +`/?from=${extentionName}`;
-        }
+        export const getWebUrl = () :string =>
+            getUrl() +`/?from=${extentionName}`;
 
-        export async function getList() : Promise<any[]>
-        {
-            return new Promise<any[]>
-            (
-                async (resolve, reject) =>
+        export const getList = async () : Promise<any[]> => new Promise<any[]>
+        (
+            async (resolve, reject) =>
+            {
+                const requestUrl = getUrl() +`/api/list.json?from=${extentionName}`;
+                OutputChannel.appendLine(`HTTP GET ${requestUrl}`);
+                const { error, response, body } = await rx.get
+                (
+                    requestUrl,
+                );
+                OutputChannel.appendLine(`statusCode: ${response.statusCode}`);
+                if (error)
                 {
-                    const requestUrl = getUrl() +`/api/list.json?from=${extentionName}`;
-                    OutputChannel.appendLine(`HTTP GET ${requestUrl}`);
-                    const { error, response, body } = await rx.get
-                    (
-                        requestUrl,
-                    );
-                    OutputChannel.appendLine(`statusCode: ${response.statusCode}`);
-                    if (error)
-                    {
-                        OutputChannel.appendLine(`${emoji("error")}error: ${error}`);
-                        reject(error);
-                    }
-                    else
-                    if (response.statusCode === 200)
-                    {
-                        resolve(list[getUrl()] = JSON.parse(body));
-                    }
+                    OutputChannel.appendLine(`${emoji("error")}error: ${error}`);
+                    reject(error);
                 }
-            );
-        }
+                else
+                if (response.statusCode === 200)
+                {
+                    resolve(list[getUrl()] = JSON.parse(body));
+                }
+            }
+        );
 
         const list : {[name : string] : any[] } = { };
 
-        export function makeSureList() : Promise<any[]>
-        {
-            return new Promise<any[]>
-            (
-                async (resolve) =>
+        export const makeSureList = () : Promise<any[]> => new Promise<any[]>
+        (
+            async (resolve) =>
+            {
+                const key = getUrl();
+                if (!list[key])
                 {
-                    const key = getUrl();
-                    if (!list[key])
-                    {
-                        await getList();
-                    }
-                    resolve(list[key]);
+                    await getList();
                 }
-            );
-        }
+                resolve(list[key]);
+            }
+        );
 
-        export async function getTemplate(templateName : string) : Promise<any[]>
-        {
-            return new Promise<any[]>
-            (
-                async (resolve, reject) =>
+        export const getTemplate = async (templateName : string) : Promise<any[]> => new Promise<any[]>
+        (
+            async (resolve, reject) =>
+            {
+                const requestUrl = getUrl() +`/api/template/${templateName}`;
+                OutputChannel.appendLine(`HTTP GET ${requestUrl}`);
+                const { error, response, body } = await rx.get
+                (
+                    requestUrl,
+                );
+                OutputChannel.appendLine(`statusCode: ${response.statusCode}`);
+                if (error)
                 {
-                    const requestUrl = getUrl() +`/api/template/${templateName}`;
-                    OutputChannel.appendLine(`HTTP GET ${requestUrl}`);
-                    const { error, response, body } = await rx.get
-                    (
-                        requestUrl,
-                    );
-                    OutputChannel.appendLine(`statusCode: ${response.statusCode}`);
-                    if (error)
-                    {
-                        OutputChannel.appendLine(`${emoji("error")}error: ${error}`);
-                        reject(error);
-                    }
-                    else
-                    if (response.statusCode === 200)
-                    {
-                        resolve(templates[templateName] = JSON.parse(body));
-                    }
+                    OutputChannel.appendLine(`${emoji("error")}error: ${error}`);
+                    reject(error);
                 }
-            );
-        }
+                else
+                if (response.statusCode === 200)
+                {
+                    resolve(templates[templateName] = JSON.parse(body));
+                }
+            }
+        );
 
         const templates : {[name : string] : any[] } = { };
 
-        export function makeSureTempate(templateName : string) : Promise<any[]>
-        {
-            return new Promise<any[]>
-            (
-                async (resolve) =>
+        export const makeSureTempate = (templateName : string) : Promise<any[]> => new Promise<any[]>
+        (
+            async (resolve) =>
+            {
+                if (!templates[templateName])
                 {
-                    if (!templates[templateName])
-                    {
-                        await getTemplate(templateName);
-                    }
-                    resolve(templates[templateName]);
+                    await getTemplate(templateName);
                 }
-            );
-        }
+                resolve(templates[templateName]);
+            }
+        );
 
-        function buildCompileJson(json : { }) : { }
+        const buildCompileJson = (json : { }) : { } =>
         {
             const document : vscode.TextDocument = json['code'];
             let additionals : string[];
@@ -402,9 +356,9 @@ module WandboxVSCode
             }
             
             return json;
-        }
+        };
 
-        async function appendHistory(compiler : string, shareUrl : string) : Promise<void>
+        const appendHistory = async (compiler : string, shareUrl : string) : Promise<void> =>
         {
             const history = await getHistory();
             const maxHistorySize = Math.max(0, getConfiguration<number>("maxHistorySize"));
@@ -425,9 +379,9 @@ module WandboxVSCode
                 }
                 await updateHistory(history);
             }
-        }
+        };
 
-        export async function compile(json : { }) : Promise<void>
+        export const compile = async (json : { }) : Promise<void> =>
         {
             const requestUrl = getUrl() +`/api/compile.json`;
             OutputChannel.appendLine(`HTTP POST ${requestUrl}`);
@@ -513,12 +467,12 @@ module WandboxVSCode
                 }
             }
             OutputChannel.appendLine(`${emoji("lap")}time: ${(endAt.getTime() -startAt.getTime()) /1000} s`);
-        }
+        };
     }
 
     module WorkSpace
     {
-        export function IsOpenFiles(files : string[]) : boolean
+        export const IsOpenFiles = (files : string[]) : boolean =>
         {
             const notFoundFiles = files.filter
             (
@@ -532,9 +486,9 @@ module WandboxVSCode
                 )
             );
             return notFoundFiles.length <= 0;
-        }
+        };
 
-        export function getActiveDocument() :vscode.TextDocument
+        export const getActiveDocument = () :vscode.TextDocument =>
         {
             const activeTextEditor = vscode.window.activeTextEditor;
             if (null !== activeTextEditor && undefined !== activeTextEditor)
@@ -548,7 +502,7 @@ module WandboxVSCode
             return null;
         };
 
-        export function getCurrentFilename() : string
+        export const getCurrentFilename = () : string =>
         {
             let result : string;
             const document = getActiveDocument();
@@ -561,23 +515,21 @@ module WandboxVSCode
                 result = "wandbox-vscode:default";
             }
             return result;
-        }
+        };
 
-        export function getTextFiles() : string[]
-        {
-            return vscode.workspace.textDocuments
-                    .filter
-                    (
-                        i =>
-                            0 === i.fileName.indexOf("Untitled") ||
-                            0 <= i.fileName.indexOf("/") ||
-                            0 <= i.fileName.indexOf("\\")
-                    )
-                    .map(i => i.fileName)
-                    .filter((value, i, self) => self.indexOf(value) === i);
-        }
+        export const getTextFiles = () : string[] =>
+            vscode.workspace.textDocuments
+                .filter
+                (
+                    i =>
+                        0 === i.fileName.indexOf("Untitled") ||
+                        0 <= i.fileName.indexOf("/") ||
+                        0 <= i.fileName.indexOf("\\")
+                )
+                .map(i => i.fileName)
+                .filter((value, i, self) => self.indexOf(value) === i);
 
-        export async function showJson(titile : string, json : any) : Promise<void>
+        export const showJson = async (titile : string, json : any) : Promise<void> =>
         {
             const provider = vscode.workspace.registerTextDocumentContentProvider
             (
@@ -607,10 +559,10 @@ module WandboxVSCode
                 )
             );
             provider.dispose();
-        }
+        };
     }
 
-    async function getLanguageNameFromSetting(vscodeLang? :string, fileName? :string) : Promise<string>
+    const getLanguageNameFromSetting = async (vscodeLang? :string, fileName? :string) : Promise<string> =>
     {
         let result : string;
         if (!result && fileName && fileSetting[fileName])
@@ -635,11 +587,10 @@ module WandboxVSCode
             }
         }
         return result;
-    }
+    };
 
-    async function getLanguageList(selectedLanguage? :string) : Promise<vscode.QuickPickItem[]>
-    {
-        return ((await WandboxServer.makeSureList()) || [])
+    const getLanguageList = async (selectedLanguage? :string) : Promise<vscode.QuickPickItem[]> =>
+        ((await WandboxServer.makeSureList()) || [])
             .map(i => i.language)
             .filter((value, i, self) => self.indexOf(value) === i)
             .sort()
@@ -653,9 +604,8 @@ module WandboxVSCode
                     "value": i
                 })
             );
-    }
 
-    async function queryLanguageNameToUser(vscodeLang? :string, fileName? :string) : Promise<string>
+    const queryLanguageNameToUser = async (vscodeLang? :string, fileName? :string) : Promise<string> =>
     {
         let result : string;
         const selectedLanguage = await getLanguageNameFromSetting(vscodeLang, fileName);
@@ -676,15 +626,13 @@ module WandboxVSCode
             }
         }
         return result;
-    }
+    };
 
-    async function getLanguageName(vscodeLang? :string, fileName? :string) : Promise<string>
-    {
-        return await getLanguageNameFromSetting(vscodeLang, fileName) ||
-            await queryLanguageNameToUser(vscodeLang, fileName);
-    }
+    const getLanguageName = async (vscodeLang? :string, fileName? :string) : Promise<string> =>
+        await getLanguageNameFromSetting(vscodeLang, fileName) ||
+        await queryLanguageNameToUser(vscodeLang, fileName);
 
-    async function getWandboxCompilerName(vscodeLang :string, fileName :string) : Promise<string>
+    const getWandboxCompilerName = async (vscodeLang :string, fileName :string) : Promise<string> =>
     {
         let result : string;
         const list = await WandboxServer.makeSureList();
@@ -715,9 +663,9 @@ module WandboxVSCode
             }
         }
         return result;
-    }
+    };
 
-    async function getOptions(vscodeLang :string, fileName :string) : Promise<string>
+    const getOptions = async (vscodeLang :string, fileName :string) : Promise<string> =>
     {
         let result : string;
         const setting = fileSetting[fileName];
@@ -752,10 +700,9 @@ module WandboxVSCode
         }
 
         return result;
-    }
+    };
 
-    function showWandboxSettings() : void
-    {
+    const showWandboxSettings = () : Promise<void> =>
         WorkSpace.showJson
         (
             "setting",
@@ -764,34 +711,29 @@ module WandboxVSCode
                 "fileSetting": fileSetting
             }
         );
-    }
 
-    function showWandboxWeb() : void
-    {
+    const showWandboxWeb = () : Thenable<void> =>
         vscode.commands.executeCommand
         (
             'vscode.open',
             vscode.Uri.parse(WandboxServer.getWebUrl())
         );
-    }
     
-    async function showWandboxListJson() : Promise<void>
-    {
+    const showWandboxListJson = async () : Promise<void> =>
         WorkSpace.showJson
         (
             "list",
             await WandboxServer.getList()
         );
-    }
     
-    async function showHistory() : Promise<void>
+    const showHistory = async () : Promise<void> =>
     {
         const history = await getHistory();
         history.forEach(entry => OutputChannel.appendLine(`${entry.timestamp}\t${entry.shareUrl}\t${entry.language}\t${entry.compiler}\t`));
         OutputChannel.appendLine(`${history.length} share urls`);
-    }
+    };
 
-    async function clearHistory() : Promise<void>
+    const clearHistory = async () : Promise<void> =>
     {
         if ("Yes" === await vscode.window.showWarningMessage("Are you sure to clear share history?", "Yes"))
         {
@@ -802,9 +744,9 @@ module WandboxVSCode
         {
             OutputChannel.canceled();
         }
-    }
+    };
     
-    async function setSetting(name : string,　dialog : () => Promise<string>) : Promise<void>
+    const setSetting = async (name : string,　dialog : () => Promise<string>) : Promise<void> =>
     {
         const document = WorkSpace.getActiveDocument();
         if (null !== document)
@@ -864,72 +806,65 @@ module WandboxVSCode
         {
             OutputChannel.appendLine(`${emoji("error")}No active text editor!`);
         }
-    }
-    async function setSettingByInputBox(name : string,　prompt : string) : Promise<void>
-    {
-        return setSetting
-        (
-            name,
-            async () => await vscode.window.showInputBox({ prompt }) 
-        );
-    }
+    };
+    const setSettingByInputBox = async (name : string,　prompt : string) : Promise<void> => setSetting
+    (
+        name,
+        async () => await vscode.window.showInputBox({ prompt })
+    );
 
-    async function setServerSetting() : Promise<void>
-    {
-        await setSetting
-        (
-            'server',
-            async function () : Promise<string>
-            {
-                let result : string;
-                const selectedServer = WandboxServer.getServer();
-                const servers = getConfiguration<string[]>("Servers");
-                const list : any[] = servers.map
-                (
-                    i =>
-                    ({
-                        label: emoji(selectedServer === i ? "checkedRadio": "uncheckedRadio") +i,
-                        "description": null,
-                        "detail": null,
-                        "value": i
-                    })
-                );
-                list[0].description = "default";
-                const isOther = servers.indexOf(selectedServer) < 0;
-                list.push
-                (
-                    {
-                        label: emoji(isOther ? "checkedRadio": "uncheckedRadio") +"Other",
-                        "description": "enter a server url by manual",
-                        "detail": isOther ? selectedServer: null
-                    }
-                );
-                const select = await vscode.window.showQuickPick
-                (
-                    list,
-                    {
-                        placeHolder: "Select a server",
-                    }
-                );
-                if (select)
+    const setServerSetting = async () : Promise<void> => await setSetting
+    (
+        'server',
+        async () : Promise<string> =>
+        {
+            let result : string;
+            const selectedServer = WandboxServer.getServer();
+            const servers = getConfiguration<string[]>("Servers");
+            const list : any[] = servers.map
+            (
+                i =>
+                ({
+                    label: emoji(selectedServer === i ? "checkedRadio": "uncheckedRadio") +i,
+                    "description": null,
+                    "detail": null,
+                    "value": i
+                })
+            );
+            list[0].description = "default";
+            const isOther = servers.indexOf(selectedServer) < 0;
+            list.push
+            (
                 {
-                    if (select === list.reverse()[0])
-                    {
-                        result = await vscode.window.showInputBox({prompt : 'Enter a server url'});
-                    }
-                    else
-                    {
-                        result = select.value;
-                    }
+                    label: emoji(isOther ? "checkedRadio": "uncheckedRadio") +"Other",
+                    "description": "enter a server url by manual",
+                    "detail": isOther ? selectedServer: null
                 }
-                return result;
+            );
+            const select = await vscode.window.showQuickPick
+            (
+                list,
+                {
+                    placeHolder: "Select a server",
+                }
+            );
+            if (select)
+            {
+                if (select === list.reverse()[0])
+                {
+                    result = await vscode.window.showInputBox({prompt : 'Enter a server url'});
+                }
+                else
+                {
+                    result = select.value;
+                }
             }
-        );
-    }
+            return result;
+        }
+    );
 
-    async function getCompilerList(language : string) : Promise<vscode.QuickPickItem[]>
-    {
-        return ((await WandboxServer.makeSureList()) || [])
+    const getCompilerList = async (language : string) : Promise<vscode.QuickPickItem[]> =>
+        ((await WandboxServer.makeSureList()) || [])
             .filter(i => i.language === language)
             .map
             (
@@ -940,209 +875,199 @@ module WandboxVSCode
                     "detail": null
                 })
             );
-    }
 
-    async function setCompilerSetting() : Promise<void>
-    {
-        await setSetting
-        (
-            'compiler',
-            async function () : Promise<string>
+    const setCompilerSetting = async () : Promise<void> => await setSetting
+    (
+        'compiler',
+        async () : Promise<string> =>
+        {
+            let result : string;
+            const document = WorkSpace.getActiveDocument();
+            const vscodeLang = document.languageId;
+            const fileName = document.fileName;
+            const language = await queryLanguageNameToUser(vscodeLang, fileName);
+            if (language)
             {
-                let result : string;
-                const document = WorkSpace.getActiveDocument();
-                const vscodeLang = document.languageId;
-                const fileName = document.fileName;
-                const language = await queryLanguageNameToUser(vscodeLang, fileName);
-                if (language)
+                const compilerList = await getCompilerList(language);
+                if (1 === compilerList.length)
                 {
-                    const compilerList = await getCompilerList(language);
-                    if (1 === compilerList.length)
+                    result = compilerList[0].description;
+                }
+                else
+                {
+                    let selectedCompiler = await getWandboxCompilerName(vscodeLang, fileName);
+                    if (!selectedCompiler || !compilerList.find(i => selectedCompiler === i.description))
                     {
-                        result = compilerList[0].description;
+                        selectedCompiler = compilerList[0].description;
                     }
-                    else
+                    for(const i of compilerList)
                     {
-                        let selectedCompiler = await getWandboxCompilerName(vscodeLang, fileName);
-                        if (!selectedCompiler || !compilerList.find(i => selectedCompiler === i.description))
+                        i.label = emoji(selectedCompiler === i.description ? "checkedRadio": "uncheckedRadio") +i.label;
+                    }
+                    const select = await vscode.window.showQuickPick
+                    (
+                        compilerList,
                         {
-                            selectedCompiler = compilerList[0].description;
+                            placeHolder: "Select a compiler",
                         }
-                        for(const i of compilerList)
-                        {
-                            i.label = emoji(selectedCompiler === i.description ? "checkedRadio": "uncheckedRadio") +i.label;
-                        }
-                        const select = await vscode.window.showQuickPick
-                        (
-                            compilerList,
-                            {
-                                placeHolder: "Select a compiler",
-                            }
-                        );
-                        if (select)
-                        {
-                            result = select.description;
-                        }
+                    );
+                    if (select)
+                    {
+                        result = select.description;
                     }
                 }
-                return result;
             }
-        );
-    }
+            return result;
+        }
+    );
 
-    async function setAdditionalsSetting()
-    {
-        await setSetting
-        (
-            'codes',
-            async function () : Promise<string>
-            {
-                const document = WorkSpace.getActiveDocument();
-                const setting = fileSetting[document.fileName] || {};
-                let additionals = setting['codes'] || [];
-                let result : string;
-                const workspaceTextFiles = WorkSpace.getTextFiles();
-                const select = await vscode.window.showQuickPick
+    const setAdditionalsSetting = async () => await setSetting
+    (
+        'codes',
+        async () : Promise<string> =>
+        {
+            const document = WorkSpace.getActiveDocument();
+            const setting = fileSetting[document.fileName] || {};
+            let additionals = setting['codes'] || [];
+            let result : string;
+            const workspaceTextFiles = WorkSpace.getTextFiles();
+            const select = await vscode.window.showQuickPick
+            (
+                [].concat
                 (
-                    [].concat
-                    (
-                        workspaceTextFiles
-                            .map
-                            (
-                                fileName =>
-                                ({
-                                    label: emoji(0 <= additionals.indexOf(fileName) ? "checkedBox": "uncheckedBox") +stripDirectory(fileName),
-                                    description: fileName,
-                                    detail: document.fileName === fileName ? "this file itself": null
-                                })
-                            ),
-                        additionals
-                            .filter(fileName => !workspaceTextFiles.find(i => i === fileName))
-                            .map
-                            (
-                                fileName =>
-                                ({
-                                    label: emoji("checkedBox") +stripDirectory(fileName),
-                                    description: fileName,
-                                    detail: `${emoji("error")}Not found file ( If opened, show this file once. And keep to open it.)`
-                                })
-                            ),
-                        {
-                            label: `${emoji("new")}new untitled document`,
-                            description: null,
-                            detail: null
-                        }
-                    ),
-                    {
-                        placeHolder: "Select a add file( or a remove file )",
-                    }
-                );
-                if (select)
-                {
-                    if (select.description)
-                    {
-                        if (0 <= additionals.indexOf(select.description))
-                        {
-                            additionals = additionals.filter(value => select.description !== value);
-                        }
-                        else
-                        {
-                            additionals.push(select.description);
-                        }
-                    }
-                    else
-                    {
-                        const newDocument = await openNewTextDocument("");
-                        await vscode.window.showTextDocument(newDocument);
-                        additionals.push(newDocument.fileName);
-                    }
-                    result = JSON.stringify(additionals);
-                }
-                return result;
-            }
-        );
-    }
-
-    async function setStdInSetting()
-    {
-        await setSetting
-        (
-            'stdin',
-            async function () : Promise<string>
-            {
-                const document = WorkSpace.getActiveDocument();
-                const setting = fileSetting[document.fileName] || {};
-                const stdin : string = setting['stdin'];
-                const noStdIn : vscode.QuickPickItem = 
-                {
-                    label: emoji(!stdin ? "checkedRadio": "uncheckedRadio") +"no stdin",
-                    description: null,
-                    detail: null
-                };
-                const newUntitledDocument : vscode.QuickPickItem = 
-                {
-                    label: `${emoji("new")}new untitled document`,
-                    description: null,
-                    detail: null
-                };
-                const workspaceTextFiles = WorkSpace.getTextFiles();
-                const select = await vscode.window.showQuickPick
-                (
-                    [].concat
-                    (
-                        noStdIn,
-                        workspaceTextFiles.map
+                    workspaceTextFiles
+                        .map
                         (
                             fileName =>
                             ({
-                                label: emoji(stdin === fileName ? "checkedRadio": "uncheckedRadio") +stripDirectory(fileName),
+                                label: emoji(0 <= additionals.indexOf(fileName) ? "checkedBox": "uncheckedBox") +stripDirectory(fileName),
                                 description: fileName,
                                 detail: document.fileName === fileName ? "this file itself": null
                             })
                         ),
-                        (stdin && !workspaceTextFiles.find(fileName => stdin === fileName)) ?
-                            {
-                                label: emoji("checkedRadio") +stripDirectory(stdin),
-                                description: stdin,
+                    additionals
+                        .filter(fileName => !workspaceTextFiles.find(i => i === fileName))
+                        .map
+                        (
+                            fileName =>
+                            ({
+                                label: emoji("checkedBox") +stripDirectory(fileName),
+                                description: fileName,
                                 detail: `${emoji("error")}Not found file ( If opened, show this file once. And keep to open it.)`
-                            }:
-                            null,
-                        newUntitledDocument
-                    )
-                    .filter(i => i),
+                            })
+                        ),
                     {
-                        placeHolder: "Select a file as a stdin",
+                        label: `${emoji("new")}new untitled document`,
+                        description: null,
+                        detail: null
                     }
-                );
-                let result : string = undefined;
-                if (select)
+                ),
                 {
-                    if (newUntitledDocument !== select)
+                    placeHolder: "Select a add file( or a remove file )",
+                }
+            );
+            if (select)
+            {
+                if (select.description)
+                {
+                    if (0 <= additionals.indexOf(select.description))
                     {
-                        if (noStdIn === select)
-                        {
-                            result = null;
-                        }
-                        else
-                        {
-                            result = select.description
-                                .replace(/\\/g, "\\\\")
-                                .replace(/\"/g, "\\\"");
-                        }
+                        additionals = additionals.filter(value => select.description !== value);
                     }
                     else
                     {
-                        const newDocument = await openNewTextDocument("");
-                        await vscode.window.showTextDocument(newDocument);
-                        result = newDocument.fileName;
+                        additionals.push(select.description);
                     }
                 }
-                return result;
+                else
+                {
+                    const newDocument = await openNewTextDocument("");
+                    await vscode.window.showTextDocument(newDocument);
+                    additionals.push(newDocument.fileName);
+                }
+                result = JSON.stringify(additionals);
             }
-        );
-    }
+            return result;
+        }
+    );
 
-    async function setOptionsSetting() : Promise<void>
+    const setStdInSetting = async () => await setSetting
+    (
+        'stdin',
+        async () : Promise<string> =>
+        {
+            const document = WorkSpace.getActiveDocument();
+            const setting = fileSetting[document.fileName] || {};
+            const stdin : string = setting['stdin'];
+            const noStdIn : vscode.QuickPickItem = 
+            {
+                label: emoji(!stdin ? "checkedRadio": "uncheckedRadio") +"no stdin",
+                description: null,
+                detail: null
+            };
+            const newUntitledDocument : vscode.QuickPickItem = 
+            {
+                label: `${emoji("new")}new untitled document`,
+                description: null,
+                detail: null
+            };
+            const workspaceTextFiles = WorkSpace.getTextFiles();
+            const select = await vscode.window.showQuickPick
+            (
+                [].concat
+                (
+                    noStdIn,
+                    workspaceTextFiles.map
+                    (
+                        fileName =>
+                        ({
+                            label: emoji(stdin === fileName ? "checkedRadio": "uncheckedRadio") +stripDirectory(fileName),
+                            description: fileName,
+                            detail: document.fileName === fileName ? "this file itself": null
+                        })
+                    ),
+                    (stdin && !workspaceTextFiles.find(fileName => stdin === fileName)) ?
+                        {
+                            label: emoji("checkedRadio") +stripDirectory(stdin),
+                            description: stdin,
+                            detail: `${emoji("error")}Not found file ( If opened, show this file once. And keep to open it.)`
+                        }:
+                        null,
+                    newUntitledDocument
+                )
+                .filter(i => i),
+                {
+                    placeHolder: "Select a file as a stdin",
+                }
+            );
+            let result : string = undefined;
+            if (select)
+            {
+                if (newUntitledDocument !== select)
+                {
+                    if (noStdIn === select)
+                    {
+                        result = null;
+                    }
+                    else
+                    {
+                        result = select.description
+                            .replace(/\\/g, "\\\\")
+                            .replace(/\"/g, "\\\"");
+                    }
+                }
+                else
+                {
+                    const newDocument = await openNewTextDocument("");
+                    await vscode.window.showTextDocument(newDocument);
+                    result = newDocument.fileName;
+                }
+            }
+            return result;
+        }
+    );
+
+    const setOptionsSetting = async () : Promise<void> =>
     {
         const document = WorkSpace.getActiveDocument();
         if (null !== document)
@@ -1324,46 +1249,43 @@ module WandboxVSCode
                 OutputChannel.canceled();
             }
         }
-    }
+    };
 
-    async function setRawOptionSetting(name : string,　prompt : string) : Promise<void>
-    {
-        return setSetting
-        (
-            name,
-            async () : Promise<string> =>
+    const setRawOptionSetting = async (name : string,　prompt : string) : Promise<void> =>setSetting
+    (
+        name,
+        async () : Promise<string> =>
+        {
+            let result : string;
+            const document = WorkSpace.getActiveDocument();
+            if (null !== document)
             {
-                let result : string;
-                const document = WorkSpace.getActiveDocument();
-                if (null !== document)
+                const languageId = document.languageId;
+                const fileName = document.fileName;
+                const compilerName = await getWandboxCompilerName
+                (
+                    languageId,
+                    fileName
+                );
+                if (compilerName)
                 {
-                    const languageId = document.languageId;
-                    const fileName = document.fileName;
-                    const compilerName = await getWandboxCompilerName
-                    (
-                        languageId,
-                        fileName
-                    );
-                    if (compilerName)
+                    const compiler = (<any[]> await WandboxServer.makeSureList())
+                        .find(i => i.name === compilerName);
+                    if (compiler && compiler[name])
                     {
-                        const compiler = (<any[]> await WandboxServer.makeSureList())
-                            .find(i => i.name === compilerName);
-                        if (compiler && compiler[name])
-                        {
-                            result = await vscode.window.showInputBox({ prompt });
-                        }
-                        else
-                        {
-                            OutputChannel.appendLine(`${emoji("warning")}This compiler not accept "${name}".`);
-                        }
+                        result = await vscode.window.showInputBox({ prompt });
+                    }
+                    else
+                    {
+                        OutputChannel.appendLine(`${emoji("warning")}This compiler not accept "${name}".`);
                     }
                 }
-                return result;
             }
-        );
-    }
+            return result;
+        }
+    );
 
-    function resetWandboxFileSettings() : void
+    const resetWandboxFileSettings = () : void =>
     {
         const document = WorkSpace.getActiveDocument();
         if (null !== document)
@@ -1383,9 +1305,9 @@ module WandboxVSCode
         {
             OutputChannel.appendLine(`${emoji("error")}No active text editor!`);
         }
-    }
+    };
     
-    async function invokeWandbox(args ?: any) : Promise<void>
+    const invokeWandbox = async (args ?: any) : Promise<void> =>
     {
         const document = WorkSpace.getActiveDocument();
         if (null !== document)
@@ -1470,9 +1392,9 @@ module WandboxVSCode
         {
             OutputChannel.appendLine(`${emoji("error")}No active text editor!`);
         }
-    }
+    };
     
-    async function getHelloWorldFiles() : Promise<vscode.QuickPickItem[]>
+    const getHelloWorldFiles = async () : Promise<vscode.QuickPickItem[]> =>
     {
         const extensionPath = vscode.extensions.getExtension("wraith13.wandbox-vscode").extensionPath;
         const userFiles = getConfiguration<string[]>("helloWolrdFiles");
@@ -1505,9 +1427,9 @@ module WandboxVSCode
                 })
             )
         );
-    }
+    };
 
-    async function newWandbox() : Promise<void>
+    const newWandbox = async () : Promise<void> =>
     {
         let compilerName : string;
         const language = await queryLanguageNameToUser();
@@ -1566,9 +1488,9 @@ module WandboxVSCode
                 }
             }
         }
-    }
+    };
 
-    async function helloWandbox() : Promise<void>
+    const helloWandbox = async () : Promise<void> =>
     {
         const select = await vscode.window.showQuickPick
         (
@@ -1609,9 +1531,9 @@ module WandboxVSCode
         {
             OutputChannel.canceled();
         }
-    }
+    };
 
-    export function registerCommand(aContext: vscode.ExtensionContext) : void
+    export const registerCommand = (aContext: vscode.ExtensionContext) : void =>
     {
         //  oldCommand は deprecated な扱いで今後、削除予定。
         context = aContext;
@@ -1731,17 +1653,13 @@ module WandboxVSCode
                 }
             }
         );
-    }
+    };
 }
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext)
-{
+export const activate = (context: vscode.ExtensionContext) =>
     WandboxVSCode.registerCommand(context);
-}
 
 // this method is called when your extension is deactivated
-export function deactivate()
-{
-}
+export const deactivate = () => { };
