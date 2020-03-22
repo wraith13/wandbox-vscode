@@ -99,7 +99,6 @@ module WandboxVSCode
     const extentionName = "wandbox-vscode";
     let context: vscode.ExtensionContext;
     const fileSetting = { };
-    let pass_through;
 
     function stripDirectory(path : string) : string
     {
@@ -129,11 +128,11 @@ module WandboxVSCode
                 .keys(languageMapping)
                 .map
                 (
-                    vscodeLang => pass_through =
-                    {
+                    vscodeLang =>
+                    ({
                         vscodeLang,
                         language:languageMapping[vscodeLang]
-                    }
+                    })
                 )
                 .find(i => i.language === language) ||
             { vscodeLang:null }
@@ -380,13 +379,13 @@ module WandboxVSCode
             {
                 json['codes'] = additionals.map
                 (
-                    filename => pass_through =
-                    {
+                    filename =>
+                    ({
                         'file': stripDirectory(filename),
                         'code': vscode.workspace.textDocuments
                             .find(document => filename === document.fileName)
                             .getText()
-                    }
+                    })
                 );
             }
             if (json['stdin'])
@@ -646,13 +645,13 @@ module WandboxVSCode
             .sort()
             .map
             (
-                i => pass_through =
-                {
+                i =>
+                ({
                     label: emoji(selectedLanguage === i ? "checkedRadio": "uncheckedRadio") +i,
                     "description": null,
                     "detail": null,
                     "value": i
-                }
+                })
             );
     }
 
@@ -887,13 +886,13 @@ module WandboxVSCode
                 const servers = getConfiguration<string[]>("Servers");
                 const list : any[] = servers.map
                 (
-                    i => pass_through =
-                    {
+                    i =>
+                    ({
                         label: emoji(selectedServer === i ? "checkedRadio": "uncheckedRadio") +i,
                         "description": null,
                         "detail": null,
                         "value": i
-                    }
+                    })
                 );
                 list[0].description = "default";
                 const isOther = servers.indexOf(selectedServer) < 0;
@@ -934,12 +933,12 @@ module WandboxVSCode
             .filter(i => i.language === language)
             .map
             (
-                i => pass_through =
-                {
+                i =>
+                ({
                     "label": i["display-name"] +" " +i["version"],
                     "description": i["name"],
                     "detail": null
-                }
+                })
             );
     }
 
@@ -1010,23 +1009,23 @@ module WandboxVSCode
                         workspaceTextFiles
                             .map
                             (
-                                fileName => pass_through =
-                                {
+                                fileName =>
+                                ({
                                     label: emoji(0 <= additionals.indexOf(fileName) ? "checkedBox": "uncheckedBox") +stripDirectory(fileName),
                                     description: fileName,
                                     detail: document.fileName === fileName ? "this file itself": null
-                                }
+                                })
                             ),
                         additionals
                             .filter(fileName => !workspaceTextFiles.find(i => i === fileName))
                             .map
                             (
-                                fileName => pass_through =
-                                {
+                                fileName =>
+                                ({
                                     label: emoji("checkedBox") +stripDirectory(fileName),
                                     description: fileName,
                                     detail: `${emoji("error")}Not found file ( If opened, show this file once. And keep to open it.)`
-                                }
+                                })
                             ),
                         {
                             label: `${emoji("new")}new untitled document`,
@@ -1094,12 +1093,12 @@ module WandboxVSCode
                         noStdIn,
                         workspaceTextFiles.map
                         (
-                            fileName => pass_through =
-                            {
+                            fileName =>
+                            ({
                                 label: emoji(stdin === fileName ? "checkedRadio": "uncheckedRadio") +stripDirectory(fileName),
                                 description: fileName,
                                 detail: document.fileName === fileName ? "this file itself": null
-                            }
+                            })
                         ),
                         (stdin && !workspaceTextFiles.find(fileName => stdin === fileName)) ?
                             {
@@ -1487,23 +1486,23 @@ module WandboxVSCode
         (
             userFiles.map
             (
-                i => pass_through =
-                {
+                i =>
+                ({
                     "label": stripDirectory(i),
                     "description": i,
                     "detail": null
-                }
+                })
             ),
             (files || [])
             .filter(i => i.startsWith(hello))
             .map
             (
-                i => pass_through =
-                {
+                i =>
+                ({
                     "label": i,
                     "description": `${extensionPath}/hellos/${i}`,
                     "detail": null
-                }
+                })
             )
         );
     }
