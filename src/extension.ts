@@ -190,7 +190,7 @@ module WandboxVSCode
         };
 
         export const show = () : void =>
-            outputChannel.show();
+            outputChannel.show(true);
         export const appendLine = (value : string) : void =>
             outputChannel.appendLine(value);
 
