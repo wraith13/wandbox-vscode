@@ -4,11 +4,21 @@ All notable changes to the "wandbox-vscode" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## ?.?.? - 20??-??-??
+## 3.0.0 - 2020-03-24
+
+### Fixed
+
+- Fixed issue that Settings menu disappears instantly after entering  ( [issue #15](https://github.com/wraith13/wandbox-vscode/issues/15) )
 
 ### Changed
 
 - DOC: Changed description that how to install in README.
+- Minimum VS Code version: 1.9.1 -> 1.43.0
+
+### Security
+
+- `CVE-2020-7598`
+- `npm audit fix --force`
 
 ## 2.2.3 - 2018-01-05
 
