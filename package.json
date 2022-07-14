@@ -7,7 +7,7 @@
     "publisher": "wraith13",
     "license": "SEE LICENSE IN LICENSE_1_0.txt",
     "engines": {
-        "vscode": "^1.43.0"
+        "vscode": "^1.61.0"
     },
     "galleryBanner": {
         "color": "#d6e685",
@@ -59,7 +59,7 @@
         "onCommand:wandbox.setFileSettingJson",
         "onCommand:wandbox.resetFileSettings"
     ],
-    "main": "./out/src/extension",
+    "main": "./out/source/extension",
     "contributes": {
         "configuration": {
             "title": "Wandbox configuration",
@@ -388,17 +388,15 @@
     "scripts": {
         "vscode:prepublish": "tsc -p ./",
         "compile": "tsc -watch -p ./",
-        "test": "node ./node_modules/vscode/bin/test"
-    },
-    "dependencies": {
-        "request": "^2.79.0"
+        "lint": "eslint source --ext ts"
     },
     "devDependencies": {
-        "@types/mocha": "^2.2.32",
-        "@types/node": "^6.0.40",
-        "minimist": ">=1.2.3",
-        "mocha": "^7.1.1",
-        "typescript": "^2.0.3",
-        "vscode": "^0.9.9"
+        "@types/node": "^8.10.25",
+        "@types/request": "^2.48.3",
+        "@types/vscode": "^1.61.0",
+        "@typescript-eslint/eslint-plugin": "^4.31.1",
+        "@typescript-eslint/parser": "^4.31.1",
+        "eslint": "^7.32.0",
+        "typescript": "^4.4.3"
     }
 }
