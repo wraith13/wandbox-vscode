@@ -4,6 +4,12 @@ All notable changes to the "wandbox-vscode" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 3.0.1 - 2022-07-??
+
+### Security
+
+- `npm audit fix --force`
+
 ## 3.0.0 - 2020-03-24
 
 ### Fixed
