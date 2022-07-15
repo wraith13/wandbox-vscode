@@ -2,42 +2,48 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import * as request from 'request';
+import * as https from 'https';
+import { IncomingMessage } from 'http';
 import * as fs from 'fs';
 
 module rx
 {
-    export const get = (url : string)
-        : Thenable<{ error : any, response : any, body : any}> => new Promise
+    export const get = (url: string): Thenable<{ error: any, response: IncomingMessage, body: string }> => new Promise
     (
-        resolve => request.get
+        resolve => https.get
         (
             url,
-            (error, response, body) => resolve
-            (
-                {
-                    error,
-                    response,
-                    body
-                }
-            )
+            response =>
+            {
+                let body = "";
+                response.setEncoding("UTF-8");
+                response.on("data", chunk => body += chunk);
+                response.on("end", () => resolve({ error:undefined, response, body}));
+            }
         )
     );
-    export const execute = (data : any)
-        : Thenable<{ error : any, response : any, body : any}> => new Promise
+    export const execute = (options : https.RequestOptions, data?: string | Buffer | Uint8Array)
+        : Thenable<{ error : any, response : IncomingMessage, body : string}> => new Promise
     (
-        resolve => request
-        (
-            data,
-            (error, response, body) => resolve
+        resolve =>
+        {
+            const request = https.request
             (
+                options,
+                response =>
                 {
-                    error,
-                    response,
-                    body
+                    let body = "";
+                    response.setEncoding("UTF-8");
+                    response.on("data", chunk => body += chunk);
+                    response.on("end", () => resolve({ error:undefined, response, body}));
                 }
-            )
-        )
+            );
+            if (data)
+            {
+                request.write(data);
+            }
+            request.end();
+        }
     );
 }
 
@@ -387,18 +393,22 @@ module WandboxVSCode
             OutputChannel.appendLine(`HTTP POST ${requestUrl}`);
 
             const startAt = new Date();
+            const requestArgs =vscode.Uri.parse(requestUrl);
             const { error, response, body } = await rx.execute
             (
                 {
-                    url: requestUrl,
+                    protocol: `${requestArgs.scheme}:`,
+                    host: requestArgs.authority,
+                    path: requestArgs.path,
+                    // query: requestArgs.query, 🔥
                     method: 'POST',
                     headers:
                     {
                         //'Content-Type': 'application/json',
                         'User-Agent': extentionName
                     },
-                    json: buildCompileJson(json)
-                }
+                },
+                JSON.stringify(buildCompileJson(json))
             );
             const endAt = new Date();
             if (response.statusCode)
@@ -407,51 +417,52 @@ module WandboxVSCode
             }
             if (!error && response.statusCode === 200)
             {
-                if (body.status)
+                const result = JSON.parse(body);
+                if (result.status)
                 {
-                    OutputChannel.appendLine(`status: ${body.status}`);
+                    OutputChannel.appendLine(`status: ${result.status}`);
                 }
-                if (body.signal)
+                if (result.signal)
                 {
-                    OutputChannel.appendLine(`${emoji("signal")}signal: ${body.signal}`);
+                    OutputChannel.appendLine(`${emoji("signal")}signal: ${result.signal}`);
                 }
-                if (body.compiler_output)
+                if (result.compiler_output)
                 {
                     OutputChannel.appendLine('compiler_output: ');
-                    OutputChannel.appendLine(body.compiler_output);
+                    OutputChannel.appendLine(result.compiler_output);
                 }
-                if (body.compiler_error)
+                if (result.compiler_error)
                 {
                     OutputChannel.appendLine(`${emoji("error")}compiler_error: `);
-                    OutputChannel.appendLine(body.compiler_error);
+                    OutputChannel.appendLine(result.compiler_error);
                 }
-                //body.compiler_message
+                //result.compiler_message
                 //merged messages compiler_output and compiler_error
-                if (body.program_output)
+                if (result.program_output)
                 {
                     OutputChannel.appendLine('program_output: ');
-                    OutputChannel.appendLine(body.program_output);
+                    OutputChannel.appendLine(result.program_output);
                 }
-                if (body.program_error)
+                if (result.program_error)
                 {
                     OutputChannel.appendLine(`${emoji("error")}program_error: `);
-                    OutputChannel.appendLine(body.program_error);
+                    OutputChannel.appendLine(result.program_error);
                 }
-                //body.program_message
+                //result.program_message
                 //merged messages program_output and program_error
-                //body.permlink && outputChannel.appendLine(`${emoji("link")}permlink: ${body.permlink}`);
-                if (body.url)
+                //result.permlink && outputChannel.appendLine(`${emoji("link")}permlink: ${result.permlink}`);
+                if (result.url)
                 {
-                    OutputChannel.appendLine(`${emoji("link")}url: ${body.url}`);
+                    OutputChannel.appendLine(`${emoji("link")}url: ${result.url}`);
                     if (getConfiguration<boolean>("autoOpenShareUrl"))
                     {
                         vscode.commands.executeCommand
                         (
                             'vscode.open',
-                            vscode.Uri.parse(body.url)
+                            vscode.Uri.parse(result.url)
                         );
                     }
-                    await appendHistory(json['compiler'], body.url);
+                    await appendHistory(json['compiler'], result.url);
                 }
 
             }
