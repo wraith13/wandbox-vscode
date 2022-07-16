@@ -4,7 +4,12 @@ All notable changes to the "wandbox-vscode" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## 3.0.1 - 2022-07-??
+## 3.0.1 - 2022-07-16
+
+### Added
+
+- Also released on [github.com](https://github.com/wraith13/wandbox-vscode/releases)
+- VSIX download link in README.md
 
 ### Security
 

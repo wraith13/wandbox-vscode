@@ -213,6 +213,10 @@ No probrem! You can pull request to [wandbox](https://github.com/melpon/wandbox/
 
 [Boost Software License](https://github.com/wraith13/wandbox-vscode/blob/master/LICENSE_1_0.txt)
 
+## Download VSIX file ( for VS Code compatible softwares )
+
+[Releases · wraith13/wandbox-vscode](https://github.com/wraith13/wandbox-vscode/releases)
+
 ## Acknowledgments
 
 Thanks [@melpon](https://github.com/melpon)( 🐕 dog) and [@kikairoya](https://github.com/kikairoya)( 🐂 bull) for awesome compilation service!
